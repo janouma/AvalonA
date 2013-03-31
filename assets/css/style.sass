@@ -1,0 +1,65 @@
+
+html
+  height: 100%
+
+#frame-3d
+  background-color: rgba(blue, .05)
+  margin: 10% auto 0 auto
+  width: 600px
+  height: 350px
+  border: darkblue dashed 1px
+
+#rectangle
+  position: relative
+  background-color: #ffff00
+  width: 80%
+  height: 80%
+  margin: 0 2.5% 0 auto
+  padding: .75%
+  border-radius: 7px
+  border: #666 solid 1px
+  +box-shadow(0 0 10px 3px rgba(#000, .5))
+  opacity: .85
+
+#half-circle
+  margin: -50px 0 0 -50px
+  background-color: #ffc80c
+  width: 75px
+  height: 150px
+  border-radius: 0 75px 75px 0
+  border: #666 solid 1px
+  +transform(rotateZ(30deg))
+
+#square
+  position: relative
+  background-color: mediumpurple
+  width: 150px
+  height: 150px
+  border-radius: 7px
+  border: #666 solid 1px
+  +box-shadow(0 0 10px 3px rgba(#000, .5))
+  +transform(rotateZ(45deg))
+
+#inner-square
+  position: absolute
+  bottom: 0
+  left: 0
+  background-color: green
+  width: 75px
+  height: 75px
+  border-radius: 5px
+  border: #666 solid 1px
+  +box-shadow(0 0 10px 3px rgba(#000, .5))
+  +transform(rotateZ(-30deg))
+
+
+#circle
+  position: absolute
+  bottom: -25px
+  right: 5px
+  background-color: red
+  width: 130px
+  height: 130px
+  border-radius: 50%
+  border: #666 solid 1px
+  +box-shadow(0 0 10px 3px rgba(#000, .5))
