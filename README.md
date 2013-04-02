@@ -3,7 +3,7 @@
 *version: 0.1.1*
 
 
-**Avalon(A)** allows you to easily add 3d to a set of html elements in a way that simulates a deepness effect [^1]. To make this 3d effect noticeable, all html elements pertaining to the "3d frame" *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
+**Avalon(A)** allows you to easily add 3d to a set of html elements in a way that simulates a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/))*. To make this 3d effect noticeable, all html elements pertaining to the "3d frame" *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
 
 # Dependencies
 - [Zepto.js 1.0+](http://zeptojs.com) or [jQuery 1.9.1+](http://jquery.com)
@@ -36,4 +36,4 @@ It is mandatory to have at least the "**3d Frame**" and "**rotated layer**" as a
 *In browsers that doesn't support 3d transform, html elements stays simply flat.*
 
 # Preview
-[^1]: **[see jsFiddle preview](http://jsfiddle.net/K3kPx/)**
+**[see jsFiddle preview](http://jsfiddle.net/K3kPx/)**
