@@ -1,5 +1,5 @@
 
-/* AvalonA 0.1
+/* AvalonA 0.1.1
 */
 
 
@@ -7,57 +7,30 @@
   var Frame3d;
 
   Frame3d = (function() {
-    var add3d, addBehavior, debugIsOn, frame3d, id, jQFrame3d, jQMouseEventLayer, mouseEventLayer, setUp;
+    var add3d, addBehavior, debugIsOn, id, innerFrameJQueryNode, outerFrameJQueryNode, setUp;
 
     id = null;
 
-    jQFrame3d = null;
+    outerFrameJQueryNode = null;
 
-    frame3d = null;
-
-    jQMouseEventLayer = null;
-
-    mouseEventLayer = null;
+    innerFrameJQueryNode = null;
 
     debugIsOn = false;
 
     setUp = function() {
-      var mouseEventLayerClass;
-      TweenLite.set(frame3d, {
+      TweenLite.set(innerFrameJQueryNode[0], {
         position: 'relative',
         transformPerspective: 1000,
         Z: 0,
-        transformStyle: 'preserve-3d'
-      });
-      $('[data-avalonA-deepness]', frame3d).css({
-        pointerEvents: 'none'
-      }).each(function() {
-        return TweenLite.set(this, {
-          transformStyle: 'preserve-3d'
-        });
-      });
-      mouseEventLayerClass = 'avalonA-mouseEventLayer';
-      jQFrame3d.prepend("<div class='" + mouseEventLayerClass + "'></div>");
-      jQMouseEventLayer = $("." + mouseEventLayerClass, jQFrame3d);
-      jQMouseEventLayer.css({
-        position: 'absolute',
-        top: 0,
-        left: 0,
+        transformStyle: 'preserve-3d',
         width: '100%',
         height: '100%'
       });
-      if (debugIsOn) {
-        jQMouseEventLayer.css({
-          borderStyle: 'dashed',
-          borderWidth: 1,
-          borderColor: 'blue',
-          backgroundColor: 'lightblue',
-          opacity: .2
+      return $('[data-avalonA-deepness]', innerFrameJQueryNode).each(function() {
+        return TweenLite.set(this, {
+          transformStyle: 'preserve-3d',
+          display: 'block'
         });
-      }
-      mouseEventLayer = jQMouseEventLayer[0];
-      return TweenLite.set(mouseEventLayer, {
-        z: 100
       });
     };
 
@@ -72,20 +45,20 @@
     };
 
     addBehavior = function() {
-      jQFrame3d.mousemove(function(event) {
+      outerFrameJQueryNode.mousemove(function(event) {
         var rotationX, rotationY;
         rotationY = (event.pageX - $(window).prop('innerWidth') / 2) / 25;
         rotationX = -1 * (event.pageY - $(window).prop('innerHeight') / 2) / 15;
         if (debugIsOn) {
           console.log("rotationY: " + rotationY);
         }
-        return TweenLite.set(this, {
+        return TweenLite.set(innerFrameJQueryNode[0], {
           rotationX: rotationX,
           rotationY: rotationY
         });
       });
-      return jQFrame3d.mouseout(function() {
-        return TweenLite.to(this, 1, {
+      return outerFrameJQueryNode.mouseout(function() {
+        return TweenLite.to(innerFrameJQueryNode[0], 1, {
           rotationX: 0,
           rotationY: 0
         });
@@ -98,8 +71,8 @@
       }
       debugIsOn = debug;
       id = domId;
-      jQFrame3d = $("#" + id);
-      frame3d = jQFrame3d[0];
+      outerFrameJQueryNode = $("#" + id);
+      innerFrameJQueryNode = outerFrameJQueryNode.children().eq(0);
       setUp();
       add3d();
       addBehavior();
