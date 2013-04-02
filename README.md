@@ -21,7 +21,7 @@
     	</div>
 	</div>
 
-It is mandatory to have at least the "**3d Frame**" and "**rotated layer**" as a basic structure. Dimensions of the "**rotated layer**" get enforced to 100% by 100%, which means it fits to the dimensions of his parent, the "**3d Frame**".
+It is mandatory to have at least the "3d Frame" and "rotated layer" as a basic structure. Dimensions of the "rotated layer" get enforced to 100% by 100%, which means it fits to the dimensions of his parent, the "3d Frame".
 
 ## Script
     $(function(){
