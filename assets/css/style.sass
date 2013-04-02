@@ -3,11 +3,14 @@ html
   height: 100%
 
 #frame-3d
-  background-color: rgba(blue, .05)
-  margin: 10% auto 0 auto
   width: 600px
   height: 350px
-  border: darkblue dashed 1px
+  margin: 10% auto 0 auto
+  border: rgba(red, .5) dashed 1px
+
+  & > div
+    background-color: rgba(blue, .05)
+    border: darkblue dashed 1px
 
 #rectangle
   position: relative
@@ -20,6 +23,11 @@ html
   border: #666 solid 1px
   +box-shadow(0 0 10px 3px rgba(#000, .5))
   opacity: .85
+
+#text
+  width: 100%
+  height: 130px
+  overflow: scroll
 
 #half-circle
   margin: -50px 0 0 -50px

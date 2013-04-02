@@ -1,4 +1,4 @@
-# AvalonA
+# Avalon(A)
 
 A js micro-framework to add 3d effect to html elements.
 
