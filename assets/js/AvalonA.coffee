@@ -1,4 +1,4 @@
-### AvalonA 0.1.1 ###
+### AvalonA 0.2.0 ###
 
 class Frame3d
   id = null
@@ -62,7 +62,7 @@ class Frame3d
     debugIsOn = debug
     id = domId
     outerFrameJQueryNode = $("##{id}")
-    innerFrameJQueryNode = outerFrameJQueryNode.children().eq(0)
+    innerFrameJQueryNode = outerFrameJQueryNode.children('.avalona-inner-frame').eq(0)
     setUp()
     add3d()
     addBehavior()
