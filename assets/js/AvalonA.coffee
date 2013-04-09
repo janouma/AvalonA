@@ -1,29 +1,28 @@
-### AvalonA 0.2.0 ###
+### AvalonA 0.3.0 ###
 
 class Frame3d
   id = null
   outerFrameJQueryNode = null
-  innerFrameJQueryNode = null
+  innerFramesJQueryNodes = null
   debugIsOn = false
 
 
   setUp =->
-    TweenLite.set(
-      innerFrameJQueryNode[0]
-      position: 'relative'
-      transformPerspective: 1000
-      Z: 0
-      transformStyle: 'preserve-3d'
-      width: '100%'
-      height: '100%'
-    )
-
-    $('[data-avalonA-deepness]', innerFrameJQueryNode).each ->
+    innerFramesJQueryNodes.each ->
       TweenLite.set(
         this
+        position: 'relative'
+        transformPerspective: 1000
+        Z: 0
         transformStyle: 'preserve-3d'
-        display: 'block'
       )
+
+      $('[data-avalonA-deepness]', this).each ->
+        TweenLite.set(
+          this
+          transformStyle: 'preserve-3d'
+          display: 'block'
+        )
 
 
   add3d =->
@@ -42,19 +41,21 @@ class Frame3d
 
       console.log "rotationY: #{rotationY}" if debugIsOn
 
-      TweenLite.set(
-         innerFrameJQueryNode[0]
-         rotationX: rotationX
-         rotationY: rotationY
-       )
+      innerFramesJQueryNodes.each ->
+        TweenLite.set(
+           this
+           rotationX: rotationX
+           rotationY: rotationY
+         )
 
     outerFrameJQueryNode.mouseout ->
-      TweenLite.to(
-        innerFrameJQueryNode[0]
-        1
-        rotationX: 0
-        rotationY: 0
-      )
+      innerFramesJQueryNodes.each ->
+        TweenLite.to(
+          this
+          1
+          rotationX: 0
+          rotationY: 0
+        )
 
 
 
@@ -62,7 +63,7 @@ class Frame3d
     debugIsOn = debug
     id = domId
     outerFrameJQueryNode = $("##{id}")
-    innerFrameJQueryNode = outerFrameJQueryNode.children('.avalona-inner-frame').eq(0)
+    innerFramesJQueryNodes = outerFrameJQueryNode.children(':not(.avalona-inner-frame) .avalona-inner-frame')
     setUp()
     add3d()
     addBehavior()
