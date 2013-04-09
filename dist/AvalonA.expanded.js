@@ -1,5 +1,5 @@
 
-/* AvalonA 0.2.0
+/* AvalonA 0.3.0
 */
 
 
@@ -72,7 +72,7 @@
       debugIsOn = debug;
       id = domId;
       outerFrameJQueryNode = $("#" + id);
-      innerFrameJQueryNode = outerFrameJQueryNode.children('.avalona-inner-frame').eq(0);
+      innerFrameJQueryNode = $('.avalona-inner-frame:nth-child(1)', outerFrameJQueryNode);
       setUp();
       add3d();
       addBehavior();

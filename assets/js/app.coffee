@@ -1,2 +1,2 @@
 $ ->
-  AvalonA('frame-3d')
+  AvalonA('body-3d')
