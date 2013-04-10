@@ -1,5 +1,5 @@
 
-/* AvalonA 0.3.0
+/* AvalonA 0.3.1
 */
 
 
@@ -7,7 +7,7 @@
   var Frame3d;
 
   Frame3d = (function() {
-    var add3d, addBehavior, debugIsOn, id, innerFrameJQueryNode, outerFrameJQueryNode, setUp;
+    var addBehavior, debugIsOn, deepnessAttribute, find3dFrames, id, innerFrameJQueryNode, outerFrameJQueryNode, refresh, refreshDeepness, removeBehavior, setUp;
 
     id = null;
 
@@ -16,6 +16,19 @@
     innerFrameJQueryNode = null;
 
     debugIsOn = false;
+
+    deepnessAttribute = 'data-avalonA-deepness';
+
+    find3dFrames = function() {
+      outerFrameJQueryNode = $("#" + id);
+      innerFrameJQueryNode = $('.avalona-inner-frame:nth-child(1)', outerFrameJQueryNode);
+      if (!outerFrameJQueryNode.size()) {
+        throw new Error("Cannot find 3d frame '#" + id + "' in dom");
+      }
+      if (!innerFrameJQueryNode.size()) {
+        throw new Error("Cannot find 3d inner frame '#" + id + " .avalona-inner-frame' in dom");
+      }
+    };
 
     setUp = function() {
       TweenLite.set(innerFrameJQueryNode[0], {
@@ -26,20 +39,10 @@
         width: '100%',
         height: '100%'
       });
-      return $('[data-avalonA-deepness]', innerFrameJQueryNode).each(function() {
+      return $("[" + deepnessAttribute + "]", innerFrameJQueryNode).each(function() {
         return TweenLite.set(this, {
           transformStyle: 'preserve-3d',
           display: 'block'
-        });
-      });
-    };
-
-    add3d = function() {
-      return $('[data-avalonA-deepness]').each(function() {
-        var z;
-        z = $(this).attr('data-avalonA-deepness');
-        return TweenLite.set(this, {
-          z: z
         });
       });
     };
@@ -65,17 +68,57 @@
       });
     };
 
+    removeBehavior = function() {
+      if (outerFrameJQueryNode != null) {
+        outerFrameJQueryNode.off("mousemove");
+      }
+      return outerFrameJQueryNode != null ? outerFrameJQueryNode.off("mouseout") : void 0;
+    };
+
+    refreshDeepness = function(target) {
+      var targetJqueryNode;
+      if (target == null) {
+        target = $("[" + deepnessAttribute + "]", innerFrameJQueryNode);
+      }
+      targetJqueryNode = typeof target === 'string' ? $(target, innerFrameJQueryNode) : $(target);
+      return targetJqueryNode.each(function() {
+        var z;
+        z = $(this).attr(deepnessAttribute);
+        return TweenLite.to(this, .75, {
+          z: z
+        });
+      });
+    };
+
+    refresh = function() {
+      removeBehavior();
+      find3dFrames();
+      setUp();
+      refreshDeepness();
+      return addBehavior();
+    };
+
+    Frame3d.prototype.start = function() {
+      return refresh();
+    };
+
+    Frame3d.prototype.refreshDeepness = function(target) {
+      if (target == null) {
+        target = null;
+      }
+      return refreshDeepness(target);
+    };
+
+    Frame3d.prototype.refresh = function() {
+      return refresh();
+    };
+
     function Frame3d(domId, debug) {
       if (debug == null) {
         debug = false;
       }
       debugIsOn = debug;
       id = domId;
-      outerFrameJQueryNode = $("#" + id);
-      innerFrameJQueryNode = $('.avalona-inner-frame:nth-child(1)', outerFrameJQueryNode);
-      setUp();
-      add3d();
-      addBehavior();
     }
 
     return Frame3d;
