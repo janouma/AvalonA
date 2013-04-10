@@ -1,10 +1,14 @@
-### AvalonA 0.3.0 ###
+### AvalonA 0.3.1 ###
 
 class Frame3d
+
+  # Private properties
+
   id = null
   outerFrameJQueryNode = null
   innerFrameJQueryNode = null
   debugIsOn = false
+  deepnessAttribute = 'data-avalonA-deepness'
 
 
   setUp =->
@@ -18,7 +22,7 @@ class Frame3d
       height: '100%'
     )
 
-    $('[data-avalonA-deepness]', innerFrameJQueryNode).each ->
+    $("[#{deepnessAttribute}]", innerFrameJQueryNode).each ->
       TweenLite.set(
         this
         transformStyle: 'preserve-3d'
@@ -28,9 +32,10 @@ class Frame3d
 
   add3d =->
     $('[data-avalonA-deepness]').each ->
-      z = $(this).attr 'data-avalonA-deepness'
-      TweenLite.set(
+      z = $(this).attr deepnessAttribute
+      TweenLite.to(
         this
+        .75
         z: z
       )
 
@@ -56,6 +61,25 @@ class Frame3d
         rotationY: 0
       )
 
+  refresh = (target)->
+    targetJqueryNode = if typeof target is 'string' then $(target, innerFrameJQueryNode) else $(target)
+    targetJqueryNode.each ->
+      z = $(this).attr deepnessAttribute
+      TweenLite.to(
+        this
+        .75
+        z: z
+      )
+
+  # Public properties
+
+  refresh: (target = null)->
+    if not target
+      console.log "Refreshing all '#{deepnessAttribute}" if debugIsOn
+      refresh $("[#{deepnessAttribute}]", innerFrameJQueryNode)
+    else
+      console.log "Refreshing only one '#{deepnessAttribute}'" if debugIsOn
+      refresh target
 
 
   constructor: (domId, debug = false)->
@@ -69,6 +93,5 @@ class Frame3d
 
 
 
-window.AvalonA = (id, debug = false)->
-  new Frame3d(id, debug)
+window.AvalonA = (id, debug = false)-> new Frame3d(id, debug)
 
