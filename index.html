@@ -20,8 +20,9 @@
 
 </head>
 
-<body id="body-3d"> <!-- Mouse event layer -->
+<body data-outter="body-3d"> <!-- Mouse event layer -->
 
+<button id="start">Start</button>
 <button id="shuffle-all">Shuffle all</button>
 <button id="shuffle-one">Shuffle one</button>
 
@@ -29,7 +30,7 @@
     <div>Before frame</div>
     <div>
         Frame wrapper
-        <div class="avalona-inner-frame"> <!-- 3d layer changing orientation -->
+        <div data-inner="yes"> <!-- 3d layer changing orientation -->
             <div id="half-circle" data-avalonA-deepness="-300"></div>
             <div id="rectangle" data-avalonA-deepness="50">
                 <div id="square" data-avalonA-deepness="75">

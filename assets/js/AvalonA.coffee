@@ -10,6 +10,12 @@ class Frame3d
   debugIsOn = false
   deepnessAttribute = 'data-avalonA-deepness'
 
+  find3dFrames =->
+    outerFrameJQueryNode = $("##{id}")
+    innerFrameJQueryNode = $('.avalona-inner-frame:nth-child(1)', outerFrameJQueryNode)
+    throw new Error "Cannot find 3d frame '##{id}' in dom" if not outerFrameJQueryNode.size()
+    throw new Error "Cannot find 3d inner frame '##{id} .avalona-inner-frame' in dom" if not innerFrameJQueryNode.size()
+
 
   setUp =->
     TweenLite.set(
@@ -24,19 +30,9 @@ class Frame3d
 
     $("[#{deepnessAttribute}]", innerFrameJQueryNode).each ->
       TweenLite.set(
-        this
+        @
         transformStyle: 'preserve-3d'
         display: 'block'
-      )
-
-
-  add3d =->
-    $('[data-avalonA-deepness]').each ->
-      z = $(this).attr deepnessAttribute
-      TweenLite.to(
-        this
-        .75
-        z: z
       )
 
 
@@ -61,35 +57,40 @@ class Frame3d
         rotationY: 0
       )
 
-  refresh = (target)->
+  removeBehavior =->
+    outerFrameJQueryNode?.off "mousemove"
+    outerFrameJQueryNode?.off "mouseout"
+
+  refreshDeepness = (target)->
+    target ?= $("[#{deepnessAttribute}]", innerFrameJQueryNode)
     targetJqueryNode = if typeof target is 'string' then $(target, innerFrameJQueryNode) else $(target)
     targetJqueryNode.each ->
-      z = $(this).attr deepnessAttribute
+      z = $(@).attr deepnessAttribute
       TweenLite.to(
-        this
+        @
         .75
         z: z
       )
 
+  refresh =->
+    removeBehavior()
+    find3dFrames()
+    setUp()
+    refreshDeepness()
+    addBehavior()
+
+
   # Public properties
 
-  refresh: (target = null)->
-    if not target
-      console.log "Refreshing all '#{deepnessAttribute}" if debugIsOn
-      refresh $("[#{deepnessAttribute}]", innerFrameJQueryNode)
-    else
-      console.log "Refreshing only one '#{deepnessAttribute}'" if debugIsOn
-      refresh target
+  start: -> refresh()
 
+  refreshDeepness: (target = null)-> refreshDeepness target
+
+  refresh: -> refresh()
 
   constructor: (domId, debug = false)->
     debugIsOn = debug
     id = domId
-    outerFrameJQueryNode = $("##{id}")
-    innerFrameJQueryNode = $('.avalona-inner-frame:nth-child(1)', outerFrameJQueryNode)
-    setUp()
-    add3d()
-    addBehavior()
 
 
 
