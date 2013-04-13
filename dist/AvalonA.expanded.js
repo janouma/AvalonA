@@ -1,5 +1,5 @@
 
-/* AvalonA 0.3.2
+/* AvalonA 0.3.3
 */
 
 
@@ -32,17 +32,12 @@
 
     setUp = function() {
       TweenLite.set(innerFrameJQueryNode[0], {
-        position: 'relative',
         transformPerspective: 1000,
-        Z: 0,
-        transformStyle: 'preserve-3d',
-        width: '100%',
-        height: '100%'
+        transformStyle: 'preserve-3d'
       });
       return $("[" + deepnessAttribute + "]", innerFrameJQueryNode).each(function() {
         return TweenLite.set(this, {
-          transformStyle: 'preserve-3d',
-          display: 'block'
+          transformStyle: 'preserve-3d'
         });
       });
     };
@@ -60,7 +55,7 @@
           rotationY: rotationY
         });
       });
-      return outerFrameJQueryNode.mouseout(function() {
+      return outerFrameJQueryNode.on("mouseout", "#" + id, function() {
         return TweenLite.to(innerFrameJQueryNode[0], 1, {
           rotationX: 0,
           rotationY: 0

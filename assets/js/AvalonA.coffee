@@ -1,4 +1,4 @@
-### AvalonA 0.3.2 ###
+### AvalonA 0.3.3 ###
 
 class Frame3d
 
@@ -20,19 +20,14 @@ class Frame3d
   setUp =->
     TweenLite.set(
       innerFrameJQueryNode[0]
-      position: 'relative'
       transformPerspective: 1000
-      Z: 0
       transformStyle: 'preserve-3d'
-      width: '100%'
-      height: '100%'
     )
 
     $("[#{deepnessAttribute}]", innerFrameJQueryNode).each ->
       TweenLite.set(
         @
         transformStyle: 'preserve-3d'
-        display: 'block'
       )
 
 
@@ -49,7 +44,7 @@ class Frame3d
          rotationY: rotationY
        )
 
-    outerFrameJQueryNode.mouseout ->
+    outerFrameJQueryNode.on "mouseout", "##{id}", ->
       TweenLite.to(
         innerFrameJQueryNode[0]
         1

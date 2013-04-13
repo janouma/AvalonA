@@ -1,6 +1,6 @@
 # Avalon(A) — Bring deepness to your web apps
 
-*version: 0.3.2*
+*version: 0.3.3*
 
 
 **Avalon(A)** allows you to easily add 3d to a set of html elements in a way that simulates a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/2))*. To make this 3d effect noticeable, all html elements pertaining to the "3d frame" *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
