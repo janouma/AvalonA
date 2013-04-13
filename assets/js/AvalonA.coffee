@@ -1,4 +1,4 @@
-### AvalonA 0.3.1 ###
+### AvalonA 0.3.2 ###
 
 class Frame3d
 
@@ -12,7 +12,7 @@ class Frame3d
 
   find3dFrames =->
     outerFrameJQueryNode = $("##{id}")
-    innerFrameJQueryNode = $('.avalona-inner-frame:nth-child(1)', outerFrameJQueryNode)
+    innerFrameJQueryNode = $('.avalona-inner-frame', outerFrameJQueryNode).eq(0)
     throw new Error "Cannot find 3d frame '##{id}' in dom" if not outerFrameJQueryNode.size()
     throw new Error "Cannot find 3d inner frame '##{id} .avalona-inner-frame' in dom" if not innerFrameJQueryNode.size()
 

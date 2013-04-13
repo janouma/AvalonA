@@ -1,5 +1,5 @@
 
-/* AvalonA 0.3.1
+/* AvalonA 0.3.2
 */
 
 
@@ -21,7 +21,7 @@
 
     find3dFrames = function() {
       outerFrameJQueryNode = $("#" + id);
-      innerFrameJQueryNode = $('.avalona-inner-frame:nth-child(1)', outerFrameJQueryNode);
+      innerFrameJQueryNode = $('.avalona-inner-frame', outerFrameJQueryNode).eq(0);
       if (!outerFrameJQueryNode.size()) {
         throw new Error("Cannot find 3d frame '#" + id + "' in dom");
       }
