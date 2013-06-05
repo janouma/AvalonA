@@ -1,5 +1,5 @@
 
-/* AvalonA 0.3.4
+/* AvalonA 0.3.5
 */
 
 
@@ -26,11 +26,12 @@
       TweenLite.set(this.innerFrameJQueryNode[0], {
         transformPerspective: 1000,
         transformStyle: 'preserve-3d',
-        overflow: 'visible !important'
+        overflow: 'visible'
       });
       return $("[" + deepnessAttribute + "]", this.innerFrameJQueryNode).each(function() {
         return TweenLite.set(this, {
-          transformStyle: 'preserve-3d'
+          transformStyle: 'preserve-3d',
+          overflow: 'visible'
         });
       });
     };
@@ -78,7 +79,8 @@
         var z;
         z = $(this).attr(deepnessAttribute);
         return TweenLite.to(this, .75, {
-          z: z
+          z: z,
+          overflow: 'visible'
         });
       });
     };

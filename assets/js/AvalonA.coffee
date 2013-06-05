@@ -1,4 +1,4 @@
-### AvalonA 0.3.4 ###
+### AvalonA 0.3.5 ###
 
 class Frame3d
 
@@ -16,13 +16,14 @@ class Frame3d
       @innerFrameJQueryNode[0]
       transformPerspective: 1000
       transformStyle: 'preserve-3d'
-      overflow: 'visible !important'
+      overflow: 'visible'
     )
 
     $("[#{deepnessAttribute}]", @innerFrameJQueryNode).each ->
       TweenLite.set(
         @
         transformStyle: 'preserve-3d'
+        overflow: 'visible'
       )
 
 
@@ -62,6 +63,7 @@ class Frame3d
         @
         .75
         z: z
+        overflow: 'visible'
       )
 
 
