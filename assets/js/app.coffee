@@ -4,7 +4,7 @@ $ ->
 
   $('#start').click ->
     outer = $('[data-outter]')
-    outer.attr id: outer.attr('data-outter')
+    outer.attr('id', outer.attr('data-outter'))
     inner = $('[data-inner]')
     inner.addClass 'avalona-inner-frame'
     frame3d.start()
