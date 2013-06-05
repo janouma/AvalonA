@@ -1,4 +1,4 @@
-`/* AvalonA 0.3.4 */`
+### AvalonA 0.3.4 ###
 
 class Frame3d
 
@@ -16,6 +16,7 @@ class Frame3d
       @innerFrameJQueryNode[0]
       transformPerspective: 1000
       transformStyle: 'preserve-3d'
+      overflow: 'visible !important'
     )
 
     $("[#{deepnessAttribute}]", @innerFrameJQueryNode).each ->
@@ -78,7 +79,7 @@ class Frame3d
 
 
 
-# Export
+### Export ###
 
 window.AvalonA = (id, debug = false)-> new Frame3d(id, debug)
 
