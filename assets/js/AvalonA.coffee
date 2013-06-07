@@ -1,17 +1,25 @@
-### AvalonA 0.3.5 ###
+### AvalonA 0.4.0 ###
 
 class Frame3d
 
-  deepnessAttribute = 'data-avalonA-deepness'
-
   find3dFrames: ->
     @outerFrameJQueryNode = $("##{@id}")
-    @innerFrameJQueryNode = $('.avalona-inner-frame', @outerFrameJQueryNode).eq(0)
+    @deepnessAttribute = @outerFrameJQueryNode.attr('data-avalonA-deepness-attr')
+    @deepnessAttribute = if @deepnessAttribute then "data-#{@deepnessAttribute}" else 'data-avalonA-deepness'
+    @cssClass = @outerFrameJQueryNode.attr('data-avalonA-class') or 'avalona-inner-frame'
+    @innerFrameJQueryNode = $(".#{@cssClass}", @outerFrameJQueryNode).eq(0)
+
+    if @debugIsOn
+      console.log "@deepnessAttribute: #{@deepnessAttribute}"
+      console.log "@cssClass: #{@cssClass}"
+
+
     throw new Error "Cannot find 3d frame '##{@id}' in dom" if not @outerFrameJQueryNode.size()
-    throw new Error "Cannot find 3d inner frame '##{@id} .avalona-inner-frame' in dom" if not @innerFrameJQueryNode.size()
+    throw new Error "Cannot find 3d inner frame '##{@id} .#{@cssClass}' in dom" if not @innerFrameJQueryNode.size()
 
 
   setUp: ->
+    self = @
     TweenLite.set(
       @innerFrameJQueryNode[0]
       transformPerspective: 1000
@@ -19,7 +27,10 @@ class Frame3d
       overflow: 'visible'
     )
 
-    $("[#{deepnessAttribute}]", @innerFrameJQueryNode).each ->
+    $("[#{@deepnessAttribute}]", @innerFrameJQueryNode).each ->
+
+      console.log "$(@).attr('id'): #{$(@).attr('id')}" if self.debugIsOn
+
       TweenLite.set(
         @
         transformStyle: 'preserve-3d'
@@ -28,11 +39,16 @@ class Frame3d
 
 
   addBehavior: ->
+    if @debugIsOn
+      debugCode = (rotationX, rotationY)-> console.log "rotationY: #{rotationY}"
+    else
+      debugCode = ->
+
     @outerFrameJQueryNode.mousemove (event)=>
       rotationY = (event.pageX - $(window).prop('innerWidth')/2)/25
       rotationX = -1*(event.pageY - $(window).prop('innerHeight')/2)/15
 
-      console.log "rotationY: #{rotationY}" if @debugIsOn
+      debugCode rotationX, rotationY
 
       TweenLite.set(
          @innerFrameJQueryNode[0]
@@ -55,10 +71,11 @@ class Frame3d
 
 
   refreshDeepness: (target = null)->
-    target ?= $("[#{deepnessAttribute}]", @innerFrameJQueryNode)
+    self = @
+    target ?= $("[#{@deepnessAttribute}]", @innerFrameJQueryNode)
     targetJqueryNode = if typeof target is 'string' then $(target, @innerFrameJQueryNode) else $(target)
     targetJqueryNode.each ->
-      z = $(@).attr deepnessAttribute
+      z = $(@).attr self.deepnessAttribute
       TweenLite.to(
         @
         .75
