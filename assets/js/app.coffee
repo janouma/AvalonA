@@ -1,5 +1,10 @@
 $ ->
-  frame3d = AvalonA('body-3d')
+  frame3d = AvalonA(
+    'body-3d'
+    class: 'aa3d'
+    zAttr: 'data-aaz'
+    #debug: on
+  )
   layerCursor = 0
 
   $('#start').click ->

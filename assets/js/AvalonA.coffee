@@ -4,12 +4,9 @@ class Frame3d
 
   find3dFrames: ->
     @outerFrameJQueryNode = $("##{@id}")
-    @deepnessAttribute = @outerFrameJQueryNode.attr('data-avalonA-deepness-attr')
-    @deepnessAttribute = if @deepnessAttribute then "data-#{@deepnessAttribute}" else 'data-avalonA-deepness'
-    @cssClass = @outerFrameJQueryNode.attr('data-avalonA-class') or 'avalona-inner-frame'
     @innerFrameJQueryNode = $(".#{@cssClass}", @outerFrameJQueryNode).eq(0)
 
-    if @debugIsOn
+    if @debug is on
       console.log "@deepnessAttribute: #{@deepnessAttribute}"
       console.log "@cssClass: #{@cssClass}"
 
@@ -39,7 +36,7 @@ class Frame3d
 
 
   addBehavior: ->
-    if @debugIsOn
+    if @debug is on
       debugCode = (rotationX, rotationY)-> console.log "rotationY: #{rotationY}"
     else
       debugCode = ->
@@ -94,7 +91,11 @@ class Frame3d
 
   start: -> @refresh()
 
-  constructor: (@id, @debugIsOn = false)->
+  constructor: (@id, options = {})->
+    @debug = options.debug
+    @deepnessAttribute = options.zAttr or 'data-avalonA-deepness'
+    @cssClass = options.class or 'avalona-inner-frame'
+
 
 
 
