@@ -1,4 +1,4 @@
-### AvalonA 0.4.0 ###
+### AvalonA 0.5.0 ###
 
 class Frame3d
   transitionDuration = 0.75
@@ -40,8 +40,8 @@ class Frame3d
 
       TweenLite.set(
          @innerFrameJQueryNode[0]
-         rotationX: rotationX
-         rotationY: rotationY
+         rotationX: rotationX * @yFactor
+         rotationY: rotationY * @xFactor
        )
 
     @outerFrameJQueryNode.on "mouseout", "##{@id}", =>
@@ -119,6 +119,8 @@ class Frame3d
     @debug = options.debug
     @deepnessAttribute = options.zAttr or 'data-avalonA-deepness'
     @cssClass = options.class or 'avalona-inner-frame'
+    @xFactor = options.xFactor or 1
+    @yFactor = options.yFactor or 1
 
 
 

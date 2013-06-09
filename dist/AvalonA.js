@@ -1,5 +1,5 @@
 
-/* AvalonA 0.4.0
+/* AvalonA 0.5.0
 */
 
 
@@ -53,8 +53,8 @@
         rotationX = -1 * (event.pageY - $(window).prop('innerHeight') / 2) / 15;
         debugCode(rotationX, rotationY);
         return TweenLite.set(_this.innerFrameJQueryNode[0], {
-          rotationX: rotationX,
-          rotationY: rotationY
+          rotationX: rotationX * _this.yFactor,
+          rotationY: rotationY * _this.xFactor
         });
       });
       return this.outerFrameJQueryNode.on("mouseout", "#" + this.id, function() {
@@ -152,6 +152,8 @@
       this.debug = options.debug;
       this.deepnessAttribute = options.zAttr || 'data-avalonA-deepness';
       this.cssClass = options["class"] || 'avalona-inner-frame';
+      this.xFactor = options.xFactor || 1;
+      this.yFactor = options.yFactor || 1;
     }
 
     return Frame3d;

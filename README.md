@@ -1,9 +1,9 @@
 # Avalon(A) — Bring deepness to your web apps
 
-*version: 0.3.5*
+*version: 0.5.0*
 
 
-**Avalon(A)** allows you to easily add 3d to a set of html elements in a way that simulates a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/2))*. To make this 3d effect noticeable, all html elements pertaining to the "3d frame" *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
+**Avalon(A)** allows you to easily add 3d to a set of html elements to simulate a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/2))*. To make this 3d effect noticeable, all html elements pertaining to the `transformed layer` *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
 
 # Dependencies
 - [Zepto.js 1.0+](http://zeptojs.com) or [jQuery 1.9.1+](http://jquery.com)
@@ -21,7 +21,7 @@
     	</div>
 	</div>
 
-It is mandatory to have at least the "3d Frame" and "transformed layer" as a basic structure. Within the "3d Frame", the first child div having the class **avalona-inner-frame** becomes the "transformed layer".
+It is mandatory to have at least the `3d Frame` and `transformed layer` defined when **Avalon(A)** initialization occurs. Within the `3d Frame`, the first child div having the class `avalona-inner-frame` becomes the `transformed layer`.
 
 ## Script
     $(function(){
@@ -29,14 +29,36 @@ It is mandatory to have at least the "3d Frame" and "transformed layer" as a bas
     });
 
 # API
-#### start()
-Fetch "3d Frame" and "transformed layer" from the DOM and apply initial setup.
+## Constructor options
+It is possible to pass an object along with the id of the `3d Frame` to set options:
 
-#### refresh()
+    $(function(){
+        AvalonA('frame-3d', {option: value}).start();
+    });
+
+##### *class*
+Changes the name of the class used to tag an element as the `transformed layer`. Default value is `avalona-inner-frame`.
+
+##### *zAttr*
+Changes the name of the attribute used to define layer **z translation**. Default value is `data-avalonA-deepness`.
+
+##### *yFactor*
+Affects the amount of rotation triggered by the mouse movements on the **y axis**. Default value is 1.
+
+##### *xFactor*
+Affects the amount of rotation triggered by the mouse movements on the **x axis**. Default value is 1.
+
+By setting a negative value as `xFactor` or `yFactor` you could invert the rotation angle. By setting 0 you prevent rotation on **x** or **y** axis.
+
+## Methods
+##### *start()*
+Fetch `3d Frame` and `transformed layer` from the DOM and apply initial setup.
+
+##### *refresh()*
 Alias for ***start()***.
 
-#### refreshDeepness( *[target : selector OR html node]* )
-Update **z translation** according to new values of **data-avalonA-deepness**.
+##### *zRefresh( [target : selector OR html node] )*
+Update **z translation** according to new values of `data-avalonA-deepness`.
 When **target** is provided, only matching html nodes get updated.
 
 # Browser compatibility

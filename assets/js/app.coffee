@@ -3,6 +3,8 @@ $ ->
     'body-3d'
     class: 'aa3d'
     zAttr: 'data-aaz'
+    yFactor: 0.5
+    xFactor: 2
     #debug: on
   )
   layerCursor = 0
