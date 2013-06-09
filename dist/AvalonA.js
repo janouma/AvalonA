@@ -152,8 +152,8 @@
       this.debug = options.debug;
       this.deepnessAttribute = options.zAttr || 'data-avalonA-deepness';
       this.cssClass = options["class"] || 'avalona-inner-frame';
-      this.xFactor = options.xFactor || 1;
-      this.yFactor = options.yFactor || 1;
+      this.xFactor = options.xFactor != null ? options.xFactor : 1;
+      this.yFactor = options.yFactor != null ? options.yFactor : 1;
     }
 
     return Frame3d;

@@ -119,8 +119,8 @@ class Frame3d
     @debug = options.debug
     @deepnessAttribute = options.zAttr or 'data-avalonA-deepness'
     @cssClass = options.class or 'avalona-inner-frame'
-    @xFactor = options.xFactor or 1
-    @yFactor = options.yFactor or 1
+    @xFactor = if options.xFactor? then options.xFactor else 1
+    @yFactor = if options.yFactor? then options.yFactor else 1
 
 
 
