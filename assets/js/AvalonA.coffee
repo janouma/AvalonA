@@ -77,7 +77,7 @@ class Frame3d
   zRefreshChild: (child)=>
     throw new Error "zRefreshChild child argument cannot be null" if not child
 
-    if child.children("[#{@deepnessAttribute}]").length
+    if $("[#{@deepnessAttribute}]", child).length
       console.log "zRefresh child #{debugName child} has children" if @debug is on
       @zRefresh child
     else if child.attr @deepnessAttribute
