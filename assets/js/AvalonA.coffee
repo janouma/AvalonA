@@ -1,6 +1,10 @@
 ### AvalonA 0.4.0 ###
 
 class Frame3d
+  transitionDuration = 0.75
+
+  debugName = (node)->
+    "#{node.prop('tagName')}(#{node.attr('id') or node.attr('class') or node.attr('href')})"
 
   find3dFrames: ->
     @outerFrameJQueryNode = $("##{@id}")
@@ -16,23 +20,10 @@ class Frame3d
 
 
   setUp: ->
-    self = @
     TweenLite.set(
       @innerFrameJQueryNode[0]
       transformPerspective: 1000
-      transformStyle: 'preserve-3d'
-      overflow: 'visible'
     )
-
-    $("[#{@deepnessAttribute}]", @innerFrameJQueryNode).each ->
-
-      console.log "$(@).attr('id'): #{$(@).attr('id')}" if self.debugIsOn
-
-      TweenLite.set(
-        @
-        transformStyle: 'preserve-3d'
-        overflow: 'visible'
-      )
 
 
   addBehavior: ->
@@ -67,17 +58,50 @@ class Frame3d
     @outerFrameJQueryNode?.off "mouseout"
 
 
-  refreshDeepness: (target = null)->
+  zRefresh: (node = null)->
     self = @
-    target ?= $("[#{@deepnessAttribute}]", @innerFrameJQueryNode)
-    targetJqueryNode = if typeof target is 'string' then $(target, @innerFrameJQueryNode) else $(target)
-    targetJqueryNode.each ->
-      z = $(@).attr self.deepnessAttribute
+    node ?= @innerFrameJQueryNode
+    target = if typeof node is 'string' then $(target, @innerFrameJQueryNode) else $(node)
+
+    console.log "target: #{debugName target}" if @debug is on
+
+    @setZOf target
+    firstChild = target.children().eq(0)
+
+    console.log "zRefresh firstChild: #{debugName firstChild}" if @debug is on
+
+    @zRefreshChild(firstChild).siblings().each ->
+      self.zRefreshChild $(@)
+
+
+  zRefreshChild: (child)=>
+    throw new Error "zRefreshChild child argument cannot be null" if not child
+
+    if child.children("[#{@deepnessAttribute}]").length
+      console.log "zRefresh child #{debugName child} has children" if @debug is on
+      @zRefresh child
+    else if child.attr @deepnessAttribute
+      console.log "zRefresh child #{debugName child} has '#{@deepnessAttribute}'" if @debug is on
+      @setZOf child
+
+    child
+
+
+  setZOf: (target)->
+    throw new Error "setZOf target argument cannot be null" if not target
+
+    TweenLite.set(
+      target[0]
+      transformStyle: 'preserve-3d'
+      overflow: 'visible'
+    )
+
+    z = target.attr @deepnessAttribute
+    if z
       TweenLite.to(
-        @
-        .75
+        target[0]
+        transitionDuration
         z: z
-        overflow: 'visible'
       )
 
 
@@ -85,7 +109,7 @@ class Frame3d
     @removeBehavior()
     @find3dFrames()
     @setUp()
-    @refreshDeepness()
+    @zRefresh()
     @addBehavior()
 
 

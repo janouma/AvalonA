@@ -19,11 +19,11 @@ $ ->
   $('#shuffle-all').click ->
     $('[data-aaz]').each ->
       $(@).attr 'data-aaz': Math.round(Math.random() * 400 - 200)
-    frame3d.refreshDeepness()
+    frame3d.zRefresh()
 
 
   $('#shuffle-one').click ->
     node = $('[data-aaz]').eq(layerCursor)
     node.attr 'data-aaz': Math.round(Math.random() * 400 - 200)
-    frame3d.refreshDeepness(node)
+    frame3d.zRefresh(node)
     layerCursor = (layerCursor + 1) % $('[data-aaz]').size()
