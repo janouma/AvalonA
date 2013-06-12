@@ -3,8 +3,8 @@ $ ->
     'body-3d'
     class: 'aa3d'
     zAttr: 'data-aaz'
-    yFactor: 0.5
-    xFactor: 2
+    fy: (rotation)-> 0.5 * rotation
+    fx: (rotation)-> 2 * rotation
     #debug: on
   )
   layerCursor = 0
