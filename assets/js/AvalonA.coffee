@@ -3,6 +3,28 @@
 class Frame3d
   transitionDuration = 0.75
   noeffect = (rotation)-> rotation
+  transformStyleIsSupported = null
+
+  detectTransformStyleSupport = ->
+    if transformStyleIsSupported is null
+      id = 'avalona-detection-element'
+      body = $('body').prepend "<b id='#{id}' style='position:absolute; top:0; left:0;'></b>"
+      element = $ "##{id}"
+
+      element[0].style?.webkitTransformStyle = 'preserve-3d'
+      element[0].style?.MozTransformStyle = 'preserve-3d'
+      element[0].style?.msTransformStyle = 'preserve-3d'
+      element[0].style?.transformStyle = 'preserve-3d'
+
+      computedStyle = getComputedStyle(element[0], null)
+      style = computedStyle.getPropertyValue('-webkit-transform-style') or computedStyle.getPropertyValue('-moz-transform-style') or computedStyle.getPropertyValue('-ms-transform-style') or computedStyle.getPropertyValue('transform-style')
+
+      transformStyleIsSupported = style is 'preserve-3d'
+      element.remove()
+
+    transformStyleIsSupported
+
+
 
   debugName = (node)->
     "#{node.prop('tagName')}(#{node.attr('id') or node.attr('class') or node.attr('href')})"
@@ -118,10 +140,16 @@ class Frame3d
 
   constructor: (@id, options = {})->
     @debug = options.debug
-    @deepnessAttribute = options.zAttr or 'data-avalonA-deepness'
-    @cssClass = options.class or 'avalona-inner-frame'
-    @fx = if typeof options.fx is 'function' then options.fx else noeffect
-    @fy = if typeof options.fy is 'function' then options.fy else noeffect
+    detectTransformStyleSupport()
+    console.log "transformStyleIsSupported: #{transformStyleIsSupported}" if @debug is on
+
+    if transformStyleIsSupported
+      @deepnessAttribute = options.zAttr or 'data-avalonA-deepness'
+      @cssClass = options.class or 'avalona-inner-frame'
+      @fx = if typeof options.fx is 'function' then options.fx else noeffect
+      @fy = if typeof options.fy is 'function' then options.fy else noeffect
+    else
+      @refresh = @setZOf = @zRefreshChild = @zRefresh = @removeBehavior = @addBehavior = @setUp = ->
 
 
 
