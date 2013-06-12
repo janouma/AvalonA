@@ -1,5 +1,5 @@
 
-/* AvalonA 0.5.0
+/* AvalonA 0.6.0
 */
 
 
@@ -8,9 +8,13 @@
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   Frame3d = (function() {
-    var debugName, transitionDuration;
+    var debugName, noeffect, transitionDuration;
 
     transitionDuration = 0.75;
+
+    noeffect = function(rotation) {
+      return rotation;
+    };
 
     debugName = function(node) {
       return "" + (node.prop('tagName')) + "(" + (node.attr('id') || node.attr('class') || node.attr('href')) + ")";
@@ -53,8 +57,8 @@
         rotationX = -1 * (event.pageY - $(window).prop('innerHeight') / 2) / 15;
         debugCode(rotationX, rotationY);
         return TweenLite.set(_this.innerFrameJQueryNode[0], {
-          rotationX: rotationX * _this.yFactor,
-          rotationY: rotationY * _this.xFactor
+          rotationX: _this.fy(rotationX),
+          rotationY: _this.fx(rotationY)
         });
       });
       return this.outerFrameJQueryNode.on("mouseout", "#" + this.id, function() {
@@ -152,8 +156,8 @@
       this.debug = options.debug;
       this.deepnessAttribute = options.zAttr || 'data-avalonA-deepness';
       this.cssClass = options["class"] || 'avalona-inner-frame';
-      this.xFactor = options.xFactor != null ? options.xFactor : 1;
-      this.yFactor = options.yFactor != null ? options.yFactor : 1;
+      this.fx = typeof options.fx === 'function' ? options.fx : noeffect;
+      this.fy = typeof options.fy === 'function' ? options.fy : noeffect;
     }
 
     return Frame3d;
