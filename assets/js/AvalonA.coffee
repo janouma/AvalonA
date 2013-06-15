@@ -4,6 +4,7 @@ class Frame3d
   transitionDuration = 0.75
   noeffect = (rotation)-> rotation
   transformStyleIsSupported = null
+  dimensionPattern = /^\d+(%|px)?$/gi
 
   detectTransformStyleSupport = ->
     if transformStyleIsSupported is null
@@ -42,41 +43,86 @@ class Frame3d
     throw new Error "Cannot find 3d inner frame '##{@id} .#{@cssClass}' in dom" if not @innerFrameJQueryNode.size()
 
 
-  setUp: ->
+  setPerspective: ->
     TweenLite.set(
       @innerFrameJQueryNode[0]
       transformPerspective: 1000
     )
 
 
-  addBehavior: ->
+  trackMouseMovements: ->
     if @debug is on
-      debugCode = (rotationX, rotationY)-> console.log "rotationY: #{rotationY}"
+      @outerFrameJQueryNode.prepend "<div id='avalona-active-area' style='background-color:hotpink;opacity:0.5;pointer-events:none;position:absolute;visibility:hidden;'>AvalonA Active Area</div>"
+      debugCode = (rotationX, rotationY)-> console.log "rotationX: #{rotationX}, rotationY: #{rotationY}"
     else
       debugCode = ->
 
     @outerFrameJQueryNode.mousemove (event)=>
-      rotationY = (event.pageX - $(window).prop('innerWidth')/2)/25
-      rotationX = -1*(event.pageY - $(window).prop('innerHeight')/2)/15
+      if not @activeArea or @mouseIsOnActiveArea(event)
+        rotationY = (event.pageX - $(window).prop('innerWidth')/2)/25
+        rotationX = -1*(event.pageY - $(window).prop('innerHeight')/2)/15
 
-      debugCode rotationX, rotationY
+        debugCode rotationX, rotationY
 
-      TweenLite.set(
-         @innerFrameJQueryNode[0]
-         rotationX: @fy(rotationX)
-         rotationY: @fx(rotationY)
-       )
+        TweenLite.set(
+          @innerFrameJQueryNode[0]
+          rotationX: @fy(rotationX)
+          rotationY: @fx(rotationY)
+        )
+      else
+        @cancelRotation()
 
-    @outerFrameJQueryNode.on "mouseout", "##{@id}", =>
-      TweenLite.to(
-        @innerFrameJQueryNode[0]
-        1
-        rotationX: 0
-        rotationY: 0
+    if not @activeArea
+      @outerFrameJQueryNode.on "mouseout", "##{@id}", =>
+        @cancelRotation()
+
+
+  mouseIsOnActiveArea: (event)->
+    bounds = @computeActiveAreaBounds()
+
+    if @debug is on
+      $('#avalona-active-area').css(
+        visibility: 'visible'
+        left: "#{bounds.xMin}px"
+        top: "#{bounds.yMin}px"
+        width: "#{bounds.xMax - bounds.xMin}px"
+        height: "#{bounds.yMax - bounds.yMin}px"
       )
 
 
-  removeBehavior: ->
+    bounds.xMin <= event.pageX <= bounds.xMax and bounds.yMin <= event.pageY <= bounds.yMax
+
+
+  cancelRotation: ->
+    TweenLite.to(
+      @innerFrameJQueryNode[0]
+      1
+      rotationX: 0
+      rotationY: 0
+    )
+
+  computeActiveAreaBounds: ->
+    outerFrameWidth = @outerFrameJQueryNode.width()
+    outerFrameHeight = @outerFrameJQueryNode.height()
+
+    if typeof @activeArea.position isnt 'object'
+      xMin = (if @activeArea.width.isFluid then ((50 - @activeArea.width.value / 2)/100) * outerFrameWidth else outerFrameWidth/2 - @activeArea.width.value / 2)
+
+      yMin = (if @activeArea.height.isFluid then ((50 - @activeArea.height.value / 2)/100) * outerFrameHeight else outerFrameHeight/2 - @activeArea.height.value / 2)
+    else
+      xMin = if @activeArea.position.x.isFluid then (@activeArea.position.x.value/100) * outerFrameWidth else @activeArea.position.x.value
+      yMin = if @activeArea.position.y.isFluid then (@activeArea.position.y.value/100) * outerFrameHeight else @activeArea.position.y.value
+
+    xMin += @outerFrameJQueryNode.prop('scrollLeft') if @activeArea.attachment is 'fixed'
+    yMin += @outerFrameJQueryNode.prop('scrollTop') if @activeArea.attachment is 'fixed'
+    
+    xMin: xMin
+    xMax: xMin + (if @activeArea.width.isFluid then (@activeArea.width.value/100) * outerFrameWidth else @activeArea.height.value)
+    yMin: yMin
+    yMax: yMin + (if @activeArea.height.isFluid then (@activeArea.height.value/100) * outerFrameHeight else @activeArea.height.value)
+
+
+  untrackMouseMovements: ->
     @outerFrameJQueryNode?.off "mousemove"
     @outerFrameJQueryNode?.off "mouseout"
 
@@ -129,14 +175,79 @@ class Frame3d
 
 
   refresh: ->
-    @removeBehavior()
+    @untrackMouseMovements()
     @find3dFrames()
-    @setUp()
+    @setPerspective()
     @zRefresh()
-    @addBehavior()
+    @trackMouseMovements()
 
 
   start: -> @refresh()
+
+  init: (options)->
+    @deepnessAttribute = options.zAttr or 'data-avalonA-deepness'
+    @cssClass = options.class or 'avalona-inner-frame'
+    @fx = if typeof options.fx is 'function' then options.fx else noeffect
+    @fy = if typeof options.fy is 'function' then options.fy else noeffect
+    @activeArea = options.activeArea
+
+    if @activeArea
+      @activeArea.position ?= 'auto'
+      @activeArea.attachment ?= 'fixed'
+      @assertActiveAreaIsValid()
+      @processActiveArea()
+
+
+  assertActiveAreaIsValid: ->
+    errors = ['The following validation errors occured:']
+
+    if typeof @activeArea.position isnt 'object'
+      errors.push "activeArea.position is not valid (#{@activeArea.position})" if @activeArea.position isnt 'auto'
+    else
+      errors.push "activeArea.position.x is not valid (#{@activeArea.position.x}})" if not dimensionPattern.test @activeArea.position.x
+      dimensionPattern.lastIndex = 0
+      errors.push "activeArea.position.y is not valid (#{@activeArea.position.y}})" if not dimensionPattern.test @activeArea.position.y
+      dimensionPattern.lastIndex = 0
+
+    errors.push "activeArea.attachment is not valid (#{@activeArea.attachment})" if @activeArea.attachment not in ['fixed', 'scroll']
+    errors.push "activeArea.width is not valid (#{@activeArea.width})" if not dimensionPattern.test @activeArea.width
+    dimensionPattern.lastIndex = 0
+    errors.push "activeArea.height is not valid (#{@activeArea.height})" if not dimensionPattern.test @activeArea.height
+    dimensionPattern.lastIndex = 0
+
+    throw new Error errors.join("\n") if errors.length > 1
+
+
+  processActiveArea: ->
+    if typeof @activeArea.position is 'object'
+      @activeArea.position.x =
+        value: parseInt(@activeArea.position.x, 10)
+        isFluid: dimensionPattern.exec(@activeArea.position.x)[1] is '%'
+
+      dimensionPattern.lastIndex = 0
+
+      @activeArea.position.y =
+        value: parseInt(@activeArea.position.y, 10)
+        isFluid: dimensionPattern.exec(@activeArea.position.y)[1] is '%'
+
+      dimensionPattern.lastIndex = 0
+
+    @activeArea.width =
+      value: parseInt(@activeArea.width, 10)
+      isFluid: dimensionPattern.exec(@activeArea.width)[1] is '%'
+
+    dimensionPattern.lastIndex = 0
+
+    @activeArea.height =
+      value: parseInt(@activeArea.height, 10)
+      isFluid: dimensionPattern.exec(@activeArea.height)[1] is '%'
+
+    dimensionPattern.lastIndex = 0
+
+    if @debug is on
+      console.log "activeArea.width (#{@activeArea.width.value}) is #{if not @activeArea.width.isFluid then 'not ' else ''}fluid"
+      console.log "activeArea.height (#{@activeArea.height.value}) is #{if not @activeArea.height.isFluid then 'not ' else ''}fluid"
+
 
   constructor: (@id, options = {})->
     @debug = options.debug
@@ -144,12 +255,9 @@ class Frame3d
     console.log "transformStyleIsSupported: #{transformStyleIsSupported}" if @debug is on
 
     if transformStyleIsSupported
-      @deepnessAttribute = options.zAttr or 'data-avalonA-deepness'
-      @cssClass = options.class or 'avalona-inner-frame'
-      @fx = if typeof options.fx is 'function' then options.fx else noeffect
-      @fy = if typeof options.fy is 'function' then options.fy else noeffect
+      @init options
     else
-      @refresh = @setZOf = @zRefreshChild = @zRefresh = @removeBehavior = @addBehavior = @setUp = ->
+      @refresh = @setZOf = @zRefreshChild = @zRefresh = @untrackMouseMovements = @trackMouseMovements = @setPerspective = ->
 
 
 

@@ -5,8 +5,20 @@ $ ->
     zAttr: 'data-aaz'
     fy: (rotation)-> 0.5 * rotation
     fx: (rotation)-> 2 * rotation
-    #debug: on
+
+    activeArea:
+      ###
+      position:
+        x: '20%'
+        y: 150
+      ###
+      attachment: 'scroll'
+      width: '75%' #600
+      height: 350
+
+    debug: on
   )
+
   layerCursor = 0
 
   $('#start').click ->
