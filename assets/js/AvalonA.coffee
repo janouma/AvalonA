@@ -16,8 +16,8 @@ class ActiveArea
     if typeof @position isnt 'object'
       errors.push "area.position is not valid (#{@position})" if @position isnt 'auto'
     else
-      errors.push "area.position.x is not valid (#{@position.x}})" if not validDimension @position.x
-      errors.push "area.position.y is not valid (#{@position.y}})" if not validDimension @position.y
+      errors.push "area.position.x is not valid (#{@position.x}})" if @position.x isnt 'auto' and not validDimension @position.x
+      errors.push "area.position.y is not valid (#{@position.y}})" if @position.y isnt 'auto' and not validDimension @position.y
 
     errors.push "area.attachment is not valid (#{@attachment})" if @attachment not in ['fixed', 'scroll']
     errors.push "area.width is not valid (#{@area.width})" if not validDimension @area.width
@@ -28,43 +28,21 @@ class ActiveArea
 
   processActiveArea: ->
     @width = parseInt(@area.width, 10)
-    widthIsFluid = dimensionPattern.exec(@area.width)[1] is '%'
+    @widthIsFluid = dimensionPattern.exec(@area.width)[1] is '%'
     dimensionPattern.lastIndex = 0
 
     @height = parseInt(@area.height, 10)
-    heightIsFluid = dimensionPattern.exec(@area.height)[1] is '%'
+    @heightIsFluid = dimensionPattern.exec(@area.height)[1] is '%'
     dimensionPattern.lastIndex = 0
 
-    self = @
-
     if typeof @position is 'object'
-      @x = parseInt(@position.x, 10)
-      
-      if dimensionPattern.exec(@position.x)[1] is '%'
-        xBase = -> (self.x/100) * self.frame.width()
-      else
-        xBase = -> self.x
+      @x = parseInt(@position.x, 10) if @position.x isnt 'auto'
+      @y = parseInt(@position.y, 10) if @position.y isnt 'auto'
 
-      dimensionPattern.lastIndex = 0
+    xBase = @getXBaseComputation()
+    yBase = @getYBaseComputation()
 
-      @y = parseInt(@position.y, 10)
-
-      if dimensionPattern.exec(@position.y)[1] is '%'
-        yBase = -> (self.y/100) * self.frame.height()
-      else
-        yBase = -> self.y
-      
-      dimensionPattern.lastIndex = 0
-    else
-      if widthIsFluid
-        xBase = -> ((50 - self.width/2)/100) * self.frame.width()
-      else
-        xBase = -> self.frame.width()/2 - self.width/2
-
-      if heightIsFluid
-        yBase = -> ((50 - self.height/2)/100) * self.frame.height()
-      else
-        yBase = -> self.frame.height()/2 - self.height/2
+    self = @
 
     if @attachment is 'fixed'
       xPadding = -> self.frame.prop('scrollLeft')
@@ -75,15 +53,53 @@ class ActiveArea
     @xMin = -> xBase() + xPadding()
     @yMin = -> yBase() + yPadding()
     
-    if widthIsFluid
+    if @widthIsFluid
       @xMax = -> @xMin() + (@width/100) * @frame.width()
     else
       @xMax = -> @xMin() + @width
 
-    if heightIsFluid
+    if @heightIsFluid
       @yMax = -> @yMin() + (@height/100) * @frame.height()
     else
       @yMax = -> @yMin() + @height
+
+
+  getXBaseComputation: ->
+    self = @
+
+    if @position.x and @position.x isnt 'auto'
+      if dimensionPattern.exec(@position.x)[1] is '%'
+        xBase = -> (self.x/100) * self.frame.width()
+      else
+        xBase = -> self.x
+
+      dimensionPattern.lastIndex = 0
+    else
+      if @widthIsFluid
+        xBase = -> ((50 - self.width/2)/100) * self.frame.width()
+      else
+        xBase = -> self.frame.width()/2 - self.width/2
+
+    xBase
+
+
+  getYBaseComputation: ->
+    self = @
+
+    if @position.y and @position.y isnt 'auto'
+      if dimensionPattern.exec(@position.y)[1] is '%'
+        yBase = -> (self.y/100) * self.frame.height()
+      else
+        yBase = -> self.y
+
+      dimensionPattern.lastIndex = 0
+    else
+      if @heightIsFluid
+        yBase = -> ((50 - self.height/2)/100) * self.frame.height()
+      else
+        yBase = -> self.frame.height()/2 - self.height/2
+
+    yBase
 
 
   mouseover: (event)-> @xMin() <= event.pageX <= @xMax() and @yMin() <= event.pageY <= @yMax()
@@ -99,6 +115,12 @@ class ActiveArea
   constructor: (@area)->
     throw new Error "area argument is missing" if not @area
     @position = @area.position or 'auto'
+
+    if typeof @position is 'object'
+      @position.x ?= 'auto'
+      @position.y ?= 'auto'
+      @position = 'auto' if @position.x is 'auto' and @position.y is 'auto'
+
     @attachment = @area.attachment or 'fixed'
     @assertValid()
     @processActiveArea()

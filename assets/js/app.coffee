@@ -9,11 +9,11 @@ $ ->
     activeArea:
       ###
       position:
-        x: '20%'
-        y: 150
+        x: 50
+        y: '10%'
       ###
       attachment: 'scroll'
-      width: '75%' #600
+      width: '75%'
       height: 350
 
     debug: on
