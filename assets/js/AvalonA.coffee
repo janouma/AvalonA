@@ -1,10 +1,114 @@
 ### AvalonA 0.6.0 ###
 
+class ActiveArea
+  dimensionPattern = /^\d+(%|px)?$/gi
+
+  validDimension = (dimension)->
+    dimensionPattern.lastIndex = 0
+    result = dimensionPattern.test dimension
+    dimensionPattern.lastIndex = 0
+    result
+    
+
+  assertValid: ->
+    errors = ['The following validation errors occured:']
+
+    if typeof @position isnt 'object'
+      errors.push "area.position is not valid (#{@position})" if @position isnt 'auto'
+    else
+      errors.push "area.position.x is not valid (#{@position.x}})" if not validDimension @position.x
+      errors.push "area.position.y is not valid (#{@position.y}})" if not validDimension @position.y
+
+    errors.push "area.attachment is not valid (#{@attachment})" if @attachment not in ['fixed', 'scroll']
+    errors.push "area.width is not valid (#{@area.width})" if not validDimension @area.width
+    errors.push "area.height is not valid (#{@area.height})" if not validDimension @area.height
+
+    throw new Error errors.join("\n") if errors.length > 1
+
+
+  processActiveArea: ->
+    @width = parseInt(@area.width, 10)
+    widthIsFluid = dimensionPattern.exec(@area.width)[1] is '%'
+    dimensionPattern.lastIndex = 0
+
+    @height = parseInt(@area.height, 10)
+    heightIsFluid = dimensionPattern.exec(@area.height)[1] is '%'
+    dimensionPattern.lastIndex = 0
+
+    self = @
+
+    if typeof @position is 'object'
+      @x = parseInt(@position.x, 10)
+      
+      if dimensionPattern.exec(@position.x)[1] is '%'
+        xBase = -> (self.x/100) * self.frame.width()
+      else
+        xBase = -> self.x
+
+      dimensionPattern.lastIndex = 0
+
+      @y = parseInt(@position.y, 10)
+
+      if dimensionPattern.exec(@position.y)[1] is '%'
+        yBase = -> (self.y/100) * self.frame.height()
+      else
+        yBase = -> self.y
+      
+      dimensionPattern.lastIndex = 0
+    else
+      if widthIsFluid
+        xBase = -> ((50 - self.width/2)/100) * self.frame.width()
+      else
+        xBase = -> self.frame.width()/2 - self.width/2
+
+      if heightIsFluid
+        yBase = -> ((50 - self.height/2)/100) * self.frame.height()
+      else
+        yBase = -> self.frame.height()/2 - self.height/2
+
+    if @attachment is 'fixed'
+      xPadding = -> self.frame.prop('scrollLeft')
+      yPadding = -> self.frame.prop('scrollTop')
+    else
+      xPadding = yPadding = -> 0
+        
+    @xMin = -> xBase() + xPadding()
+    @yMin = -> yBase() + yPadding()
+    
+    if widthIsFluid
+      @xMax = -> @xMin() + (@width/100) * @frame.width()
+    else
+      @xMax = -> @xMin() + @width
+
+    if heightIsFluid
+      @yMax = -> @yMin() + (@height/100) * @frame.height()
+    else
+      @yMax = -> @yMin() + @height
+
+
+  mouseover: (event)-> @xMin() <= event.pageX <= @xMax() and @yMin() <= event.pageY <= @yMax()
+
+
+  bounds: ->
+    xMin: @xMin()
+    xMax: @xMax()
+    yMin: @yMin()
+    yMax: @yMax()
+
+
+  constructor: (@area)->
+    throw new Error "area argument is missing" if not @area
+    @position = @area.position or 'auto'
+    @attachment = @area.attachment or 'fixed'
+    @assertValid()
+    @processActiveArea()
+
+
+#================================================================================================
 class Frame3d
   transitionDuration = 0.75
   noeffect = (rotation)-> rotation
   transformStyleIsSupported = null
-  dimensionPattern = /^\d+(%|px)?$/gi
 
   detectTransformStyleSupport = ->
     if transformStyleIsSupported is null
@@ -53,12 +157,32 @@ class Frame3d
   trackMouseMovements: ->
     if @debug is on
       @outerFrameJQueryNode.prepend "<div id='avalona-active-area' style='background-color:hotpink;opacity:0.5;pointer-events:none;position:absolute;visibility:hidden;'>AvalonA Active Area</div>"
-      debugCode = (rotationX, rotationY)-> console.log "rotationX: #{rotationX}, rotationY: #{rotationY}"
+
+      activeAreaPlaceholder = $('#avalona-active-area')
+      self = @
+
+      debugCode = (rotationX, rotationY)->
+        console.log "rotationX: #{rotationX}, rotationY: #{rotationY}"
+
+        bounds = self.activeArea.bounds()
+        activeAreaPlaceholder.css(
+          visibility: 'visible'
+          left: "#{bounds.xMin}px"
+          top: "#{bounds.yMin}px"
+          width: "#{bounds.xMax - bounds.xMin}px"
+          height: "#{bounds.yMax - bounds.yMin}px"
+        )
     else
       debugCode = ->
 
+    if @activeArea
+      @activeArea.frame = @outerFrameJQueryNode
+    else
+      @outerFrameJQueryNode.on "mouseout", "##{@id}", =>
+        @cancelRotation()
+
     @outerFrameJQueryNode.mousemove (event)=>
-      if not @activeArea or @mouseIsOnActiveArea(event)
+      if not @activeArea or @activeArea.mouseover(event)
         rotationY = (event.pageX - $(window).prop('innerWidth')/2)/25
         rotationX = -1*(event.pageY - $(window).prop('innerHeight')/2)/15
 
@@ -72,26 +196,6 @@ class Frame3d
       else
         @cancelRotation()
 
-    if not @activeArea
-      @outerFrameJQueryNode.on "mouseout", "##{@id}", =>
-        @cancelRotation()
-
-
-  mouseIsOnActiveArea: (event)->
-    bounds = @computeActiveAreaBounds()
-
-    if @debug is on
-      $('#avalona-active-area').css(
-        visibility: 'visible'
-        left: "#{bounds.xMin}px"
-        top: "#{bounds.yMin}px"
-        width: "#{bounds.xMax - bounds.xMin}px"
-        height: "#{bounds.yMax - bounds.yMin}px"
-      )
-
-
-    bounds.xMin <= event.pageX <= bounds.xMax and bounds.yMin <= event.pageY <= bounds.yMax
-
 
   cancelRotation: ->
     TweenLite.to(
@@ -100,26 +204,6 @@ class Frame3d
       rotationX: 0
       rotationY: 0
     )
-
-  computeActiveAreaBounds: ->
-    outerFrameWidth = @outerFrameJQueryNode.width()
-    outerFrameHeight = @outerFrameJQueryNode.height()
-
-    if typeof @activeArea.position isnt 'object'
-      xMin = (if @activeArea.width.isFluid then ((50 - @activeArea.width.value / 2)/100) * outerFrameWidth else outerFrameWidth/2 - @activeArea.width.value / 2)
-
-      yMin = (if @activeArea.height.isFluid then ((50 - @activeArea.height.value / 2)/100) * outerFrameHeight else outerFrameHeight/2 - @activeArea.height.value / 2)
-    else
-      xMin = if @activeArea.position.x.isFluid then (@activeArea.position.x.value/100) * outerFrameWidth else @activeArea.position.x.value
-      yMin = if @activeArea.position.y.isFluid then (@activeArea.position.y.value/100) * outerFrameHeight else @activeArea.position.y.value
-
-    xMin += @outerFrameJQueryNode.prop('scrollLeft') if @activeArea.attachment is 'fixed'
-    yMin += @outerFrameJQueryNode.prop('scrollTop') if @activeArea.attachment is 'fixed'
-    
-    xMin: xMin
-    xMax: xMin + (if @activeArea.width.isFluid then (@activeArea.width.value/100) * outerFrameWidth else @activeArea.height.value)
-    yMin: yMin
-    yMax: yMin + (if @activeArea.height.isFluid then (@activeArea.height.value/100) * outerFrameHeight else @activeArea.height.value)
 
 
   untrackMouseMovements: ->
@@ -189,64 +273,8 @@ class Frame3d
     @cssClass = options.class or 'avalona-inner-frame'
     @fx = if typeof options.fx is 'function' then options.fx else noeffect
     @fy = if typeof options.fy is 'function' then options.fy else noeffect
-    @activeArea = options.activeArea
-
-    if @activeArea
-      @activeArea.position ?= 'auto'
-      @activeArea.attachment ?= 'fixed'
-      @assertActiveAreaIsValid()
-      @processActiveArea()
-
-
-  assertActiveAreaIsValid: ->
-    errors = ['The following validation errors occured:']
-
-    if typeof @activeArea.position isnt 'object'
-      errors.push "activeArea.position is not valid (#{@activeArea.position})" if @activeArea.position isnt 'auto'
-    else
-      errors.push "activeArea.position.x is not valid (#{@activeArea.position.x}})" if not dimensionPattern.test @activeArea.position.x
-      dimensionPattern.lastIndex = 0
-      errors.push "activeArea.position.y is not valid (#{@activeArea.position.y}})" if not dimensionPattern.test @activeArea.position.y
-      dimensionPattern.lastIndex = 0
-
-    errors.push "activeArea.attachment is not valid (#{@activeArea.attachment})" if @activeArea.attachment not in ['fixed', 'scroll']
-    errors.push "activeArea.width is not valid (#{@activeArea.width})" if not dimensionPattern.test @activeArea.width
-    dimensionPattern.lastIndex = 0
-    errors.push "activeArea.height is not valid (#{@activeArea.height})" if not dimensionPattern.test @activeArea.height
-    dimensionPattern.lastIndex = 0
-
-    throw new Error errors.join("\n") if errors.length > 1
-
-
-  processActiveArea: ->
-    if typeof @activeArea.position is 'object'
-      @activeArea.position.x =
-        value: parseInt(@activeArea.position.x, 10)
-        isFluid: dimensionPattern.exec(@activeArea.position.x)[1] is '%'
-
-      dimensionPattern.lastIndex = 0
-
-      @activeArea.position.y =
-        value: parseInt(@activeArea.position.y, 10)
-        isFluid: dimensionPattern.exec(@activeArea.position.y)[1] is '%'
-
-      dimensionPattern.lastIndex = 0
-
-    @activeArea.width =
-      value: parseInt(@activeArea.width, 10)
-      isFluid: dimensionPattern.exec(@activeArea.width)[1] is '%'
-
-    dimensionPattern.lastIndex = 0
-
-    @activeArea.height =
-      value: parseInt(@activeArea.height, 10)
-      isFluid: dimensionPattern.exec(@activeArea.height)[1] is '%'
-
-    dimensionPattern.lastIndex = 0
-
-    if @debug is on
-      console.log "activeArea.width (#{@activeArea.width.value}) is #{if not @activeArea.width.isFluid then 'not ' else ''}fluid"
-      console.log "activeArea.height (#{@activeArea.height.value}) is #{if not @activeArea.height.isFluid then 'not ' else ''}fluid"
+    @activeArea = new ActiveArea(options.activeArea) if options.activeArea
+    @activeArea?.debug = @debug
 
 
   constructor: (@id, options = {})->
