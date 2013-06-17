@@ -16,7 +16,7 @@ $ ->
       width: '75%'
       height: 350
 
-    debug: on
+    #debug: on
   )
 
   layerCursor = 0

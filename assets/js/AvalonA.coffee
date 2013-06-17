@@ -178,7 +178,7 @@ class Frame3d
 
   trackMouseMovements: ->
     if @debug is on
-      @outerFrameJQueryNode.prepend "<div id='avalona-active-area' style='background-color:hotpink;opacity:0.5;pointer-events:none;position:absolute;visibility:hidden;'>AvalonA Active Area</div>"
+      $('body').append "<div id='avalona-active-area' style='background-color:hotpink;opacity:0.75;pointer-events:none;position:absolute;visibility:hidden;z-index:10000;'>AvalonA Active Area</div>"
 
       activeAreaPlaceholder = $('#avalona-active-area')
       self = @
