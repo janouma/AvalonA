@@ -203,15 +203,19 @@ class Frame3d
       @outerFrameJQueryNode.on "mouseout", "##{@id}", =>
         @cancelRotation()
 
+    mouseMoveCount = 0
     @outerFrameJQueryNode.mousemove (event)=>
+      return if ++mouseMoveCount % 5 > 0
+
       if not @activeArea or @activeArea.mouseover(event)
         rotationY = (event.pageX - $(window).prop('innerWidth')/2)/25
         rotationX = -1*(event.pageY - $(window).prop('innerHeight')/2)/15
 
         debugCode rotationX, rotationY
 
-        TweenLite.set(
+        TweenLite.to(
           @innerFrameJQueryNode[0]
+          0.1
           rotationX: @fy(rotationX)
           rotationY: @fx(rotationY)
         )
