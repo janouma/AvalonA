@@ -266,7 +266,7 @@
     };
 
     Frame3d.prototype.trackMouseMovements = function() {
-      var activeAreaPlaceholder, debugCode, self,
+      var activeAreaPlaceholder, debugCode, mouseMoveCount, self,
         _this = this;
       if (this.debug === true) {
         $('body').append("<div id='avalona-active-area' style='background-color:hotpink;opacity:0.75;pointer-events:none;position:absolute;visibility:hidden;z-index:10000;'>AvalonA Active Area</div>");
@@ -294,13 +294,17 @@
           return _this.cancelRotation();
         });
       }
+      mouseMoveCount = 0;
       return this.outerFrameJQueryNode.mousemove(function(event) {
         var rotationX, rotationY;
+        if (++mouseMoveCount % 5 > 0) {
+          return;
+        }
         if (!_this.activeArea || _this.activeArea.mouseover(event)) {
           rotationY = (event.pageX - $(window).prop('innerWidth') / 2) / 25;
           rotationX = -1 * (event.pageY - $(window).prop('innerHeight') / 2) / 15;
           debugCode(rotationX, rotationY);
-          return TweenLite.set(_this.innerFrameJQueryNode[0], {
+          return TweenLite.to(_this.innerFrameJQueryNode[0], 0.1, {
             rotationX: _this.fy(rotationX),
             rotationY: _this.fx(rotationY)
           });

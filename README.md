@@ -1,6 +1,6 @@
 # Avalon(A) — Bring deepness to your web apps
 
-*version: 0.5.0*
+*version: 0.6*
 
 
 **Avalon(A)** allows you to easily add 3d to a set of html elements to simulate a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/2))*. To make this 3d effect noticeable, all html elements pertaining to the `transformed layer` *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
@@ -42,13 +42,69 @@ Changes the name of the class used to tag an element as the `transformed layer`.
 ##### *zAttr*
 Changes the name of the attribute used to define layer **z translation**. Default value is `data-avalonA-deepness`.
 
-##### *yFactor*
-Affects the amount of rotation triggered by the mouse movements on the **y axis**. Default value is 1.
+##### *fy*
+A function that affects the amount of rotation triggered by the mouse movements on the **y axis**.
 
-##### *xFactor*
-Affects the amount of rotation triggered by the mouse movements on the **x axis**. Default value is 1.
+	AvalonA('frame-3d',{fy: function(rotation){
+		return rotation * 2;
+	} }).start();
 
-By setting a negative value as `xFactor` or `yFactor` you could invert the rotation angle. By setting 0 you prevent rotation on **x** or **y** axis.
+Default function as no effect on the rotation value.
+
+##### *fx*
+A function that affects the amount of rotation triggered by the mouse movements on the **x axis**. Default function as no effect on the rotation value.
+
+##### *activeArea*
+When available, restrict mouse movements tracking to this area: moving outside the area reset the `transformed layer` rotation.
+
+	options = {
+		activeArea: {
+			position: {
+				x: 'auto',
+				y: '15%'
+			},
+			attachement: 'scroll',
+			width: '150px'
+			height: 100
+		}
+	};
+	AvalonA('frame-3d', options).start();
+
+Enable the `debug` option to display the area *( for development purpose only )*.
+
+##### *activeArea.width*
+
+- numeric like `200`
+- length like `'200px'`
+- percent like `'30%'`
+
+##### *activeArea.height*
+
+- numeric like `100`
+- length like `'100px'`
+- percent like `'20%'`
+
+
+##### *[activeArea.position]*
+Set the position of the area. Possible values:
+
+- `'auto'` means that the area will be centered within the browser window. ***(default)***
+- `{x: value, y: value}` where ***value*** can be
+	- `null`
+	- `'auto'`
+	- numeric
+	- length
+	- percent
+
+##### *[activeArea.attachment]*
+Act like css `position: absolute|fixed`. Possible values:
+
+- `'fixed'` same as css `position: fixed`. ***(default)***
+- `'scroll'` like css `position: absolute`, the area will scroll along with the `transformed layer`
+
+
+##### *debug*
+Enable debug logs and display when set to `true`.
 
 ## Methods
 ##### *start()*
