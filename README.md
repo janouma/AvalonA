@@ -64,7 +64,7 @@ When available, restrict mouse movements tracking to this area: moving outside t
 				y: '15%'
 			},
 			attachement: 'scroll',
-			width: '150px'
+			width: '150px',
 			height: 100
 		}
 	};
