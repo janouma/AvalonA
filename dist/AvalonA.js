@@ -1,5 +1,5 @@
 
-/* AvalonA 0.6.0
+/* AvalonA 0.6.1
 */
 
 
@@ -50,7 +50,6 @@
     };
 
     ActiveArea.prototype.processActiveArea = function() {
-      var self, xBase, xPadding, yBase, yPadding;
       this.width = parseInt(this.area.width, 10);
       this.widthIsFluid = dimensionPattern.exec(this.area.width)[1] === '%';
       dimensionPattern.lastIndex = 0;
@@ -62,118 +61,151 @@
           this.x = parseInt(this.position.x, 10);
         }
         if (this.position.y !== 'auto') {
-          this.y = parseInt(this.position.y, 10);
+          return this.y = parseInt(this.position.y, 10);
         }
-      }
-      xBase = this.getXBaseComputation();
-      yBase = this.getYBaseComputation();
-      self = this;
-      if (this.attachment === 'fixed') {
-        xPadding = function() {
-          return self.frame.prop('scrollLeft');
-        };
-        yPadding = function() {
-          return self.frame.prop('scrollTop');
-        };
-      } else {
-        xPadding = yPadding = function() {
-          return 0;
-        };
-      }
-      this.xMin = function() {
-        return xBase() + xPadding();
-      };
-      this.yMin = function() {
-        return yBase() + yPadding();
-      };
-      if (this.widthIsFluid) {
-        this.xMax = function() {
-          return this.xMin() + (this.width / 100) * this.frame.width();
-        };
-      } else {
-        this.xMax = function() {
-          return this.xMin() + this.width;
-        };
-      }
-      if (this.heightIsFluid) {
-        return this.yMax = function() {
-          return this.yMin() + (this.height / 100) * this.frame.height();
-        };
-      } else {
-        return this.yMax = function() {
-          return this.yMin() + this.height;
-        };
       }
     };
 
-    ActiveArea.prototype.getXBaseComputation = function() {
-      var self, xBase;
-      self = this;
-      if (this.position.x && this.position.x !== 'auto') {
-        if (dimensionPattern.exec(this.position.x)[1] === '%') {
-          xBase = function() {
-            return (self.x / 100) * self.frame.width();
+    ActiveArea.prototype.init = function(frame) {
+      var resizeDebugCode, scrollDebugCode, self, xBaseComputation, yBaseComputation,
+        _this = this;
+      this.frame = frame;
+      if (!this.frame) {
+        throw new Error("frame argument cannot be null");
+      }
+      this.xBase = (xBaseComputation = this.getXBaseComputation())();
+      this.yBase = (yBaseComputation = this.getYBaseComputation())();
+      if (this.widthIsFluid) {
+        this.xMaxComputation = function() {
+          return this.xMin + (this.width / 100) * this.frame.width();
+        };
+      } else {
+        this.xMaxComputation = function() {
+          return this.xMin + this.width;
+        };
+      }
+      if (this.heightIsFluid) {
+        this.yMaxComputation = function() {
+          return this.yMin + (this.height / 100) * this.frame.height();
+        };
+      } else {
+        this.yMaxComputation = function() {
+          return this.yMin + this.height;
+        };
+      }
+      if (this.attachment === 'fixed') {
+        this.xPadding = this.frame.prop('scrollLeft');
+        this.yPadding = this.frame.prop('scrollTop');
+        if (this.debug === true) {
+          console.log("Listen to scroll event");
+          self = this;
+          scrollDebugCode = function() {
+            return console.log("Scroll : @xPadding = " + self.xPadding + ", @yPadding = " + self.yPadding);
           };
         } else {
-          xBase = function() {
-            return self.x;
+          scrollDebugCode = function() {};
+        }
+        $(window).scroll(function() {
+          _this.xPadding = _this.frame.prop('scrollLeft');
+          _this.yPadding = _this.frame.prop('scrollTop');
+          _this.refreshBounds();
+          return scrollDebugCode();
+        });
+      } else {
+        this.xPadding = this.yPadding = 0;
+      }
+      if (this.debug === true) {
+        self = this;
+        resizeDebugCode = function() {
+          return console.log("Resize : @frame.width() = " + (self.frame.width()) + ", @frame.height() = " + (self.frame.height()));
+        };
+      } else {
+        resizeDebugCode = function() {};
+      }
+      $(window).resize(function() {
+        _this.xBase = xBaseComputation();
+        _this.yBase = yBaseComputation();
+        _this.refreshBounds();
+        return resizeDebugCode();
+      });
+      return this.refreshBounds();
+    };
+
+    ActiveArea.prototype.refreshBounds = function() {
+      this.xMin = this.xBase + this.xPadding;
+      this.xMax = this.xMaxComputation();
+      this.yMin = this.yBase + this.yPadding;
+      return this.yMax = this.yMaxComputation();
+    };
+
+    ActiveArea.prototype.bounds = function() {
+      return {
+        xMin: this.xMin,
+        xMax: this.xMax,
+        yMin: this.yMin,
+        yMax: this.yMax
+      };
+    };
+
+    ActiveArea.prototype.getXBaseComputation = function() {
+      var xBaseComputation,
+        _this = this;
+      if (this.position.x && this.position.x !== 'auto') {
+        if (dimensionPattern.exec(this.position.x)[1] === '%') {
+          xBaseComputation = function() {
+            return (_this.x / 100) * _this.frame.width();
+          };
+        } else {
+          xBaseComputation = function() {
+            return _this.x;
           };
         }
         dimensionPattern.lastIndex = 0;
       } else {
         if (this.widthIsFluid) {
-          xBase = function() {
-            return ((50 - self.width / 2) / 100) * self.frame.width();
+          xBaseComputation = function() {
+            return ((50 - _this.width / 2) / 100) * _this.frame.width();
           };
         } else {
-          xBase = function() {
-            return self.frame.width() / 2 - self.width / 2;
+          xBaseComputation = function() {
+            return _this.frame.width() / 2 - _this.width / 2;
           };
         }
       }
-      return xBase;
+      return xBaseComputation;
     };
 
     ActiveArea.prototype.getYBaseComputation = function() {
-      var self, yBase;
-      self = this;
+      var yBaseComputation,
+        _this = this;
       if (this.position.y && this.position.y !== 'auto') {
         if (dimensionPattern.exec(this.position.y)[1] === '%') {
-          yBase = function() {
-            return (self.y / 100) * self.frame.height();
+          yBaseComputation = function() {
+            return (_this.y / 100) * _this.frame.height();
           };
         } else {
-          yBase = function() {
-            return self.y;
+          yBaseComputation = function() {
+            return _this.y;
           };
         }
         dimensionPattern.lastIndex = 0;
       } else {
         if (this.heightIsFluid) {
-          yBase = function() {
-            return ((50 - self.height / 2) / 100) * self.frame.height();
+          yBaseComputation = function() {
+            return ((50 - _this.height / 2) / 100) * _this.frame.height();
           };
         } else {
-          yBase = function() {
-            return self.frame.height() / 2 - self.height / 2;
+          yBaseComputation = function() {
+            return _this.frame.height() / 2 - _this.height / 2;
           };
         }
       }
-      return yBase;
+      return yBaseComputation;
     };
 
     ActiveArea.prototype.mouseover = function(event) {
       var _ref, _ref1;
-      return (this.xMin() <= (_ref = event.pageX) && _ref <= this.xMax()) && (this.yMin() <= (_ref1 = event.pageY) && _ref1 <= this.yMax());
-    };
-
-    ActiveArea.prototype.bounds = function() {
-      return {
-        xMin: this.xMin(),
-        xMax: this.xMax(),
-        yMin: this.yMin(),
-        yMax: this.yMax()
-      };
+      return (this.xMin <= (_ref = event.pageX) && _ref <= this.xMax) && (this.yMin <= (_ref1 = event.pageY) && _ref1 <= this.yMax);
     };
 
     function ActiveArea(area) {
@@ -288,7 +320,7 @@
         debugCode = function() {};
       }
       if (this.activeArea) {
-        this.activeArea.frame = this.outerFrameJQueryNode;
+        this.activeArea.init(this.outerFrameJQueryNode);
       } else {
         this.outerFrameJQueryNode.on("mouseout", "#" + this.id, function() {
           return _this.cancelRotation();
