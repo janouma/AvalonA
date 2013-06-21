@@ -1,4 +1,4 @@
-### AvalonA 0.6.0 ###
+### AvalonA 0.6.1 ###
 
 class ActiveArea
   dimensionPattern = /^\d+(%|px)?$/gi
@@ -39,77 +39,106 @@ class ActiveArea
       @x = parseInt(@position.x, 10) if @position.x isnt 'auto'
       @y = parseInt(@position.y, 10) if @position.y isnt 'auto'
 
-    xBase = @getXBaseComputation()
-    yBase = @getYBaseComputation()
 
-    self = @
+  init: (@frame)->
+    throw new Error "frame argument cannot be null" if not @frame
 
-    if @attachment is 'fixed'
-      xPadding = -> self.frame.prop('scrollLeft')
-      yPadding = -> self.frame.prop('scrollTop')
-    else
-      xPadding = yPadding = -> 0
-        
-    @xMin = -> xBase() + xPadding()
-    @yMin = -> yBase() + yPadding()
-    
+    @xBase = (xBaseComputation = @getXBaseComputation())()
+    @yBase = (yBaseComputation = @getYBaseComputation())()
+
     if @widthIsFluid
-      @xMax = -> @xMin() + (@width/100) * @frame.width()
+      @xMaxComputation = -> @xMin + (@width/100) * @frame.width()
     else
-      @xMax = -> @xMin() + @width
+      @xMaxComputation = -> @xMin + @width
 
     if @heightIsFluid
-      @yMax = -> @yMin() + (@height/100) * @frame.height()
+      @yMaxComputation = -> @yMin + (@height/100) * @frame.height()
     else
-      @yMax = -> @yMin() + @height
+      @yMaxComputation = -> @yMin + @height
+
+    if @attachment is 'fixed'
+      @xPadding = @frame.prop('scrollLeft')
+      @yPadding = @frame.prop('scrollTop')
+
+      if @debug is on
+        console.log "Listen to scroll event"
+        self = @
+        scrollDebugCode = -> console.log "Scroll : @xPadding = #{self.xPadding}, @yPadding = #{self.yPadding}"
+      else
+        scrollDebugCode = ->
+
+      $(window).scroll =>
+        @xPadding = @frame.prop('scrollLeft')
+        @yPadding = @frame.prop('scrollTop')
+        @refreshBounds()
+        scrollDebugCode()
+    else
+      @xPadding = @yPadding = 0
+
+    if @debug is on
+      self = @
+      resizeDebugCode = -> console.log "Resize : @frame.width() = #{self.frame.width()}, @frame.height() = #{self.frame.height()}"
+    else
+      resizeDebugCode = ->
+
+    $(window).resize =>
+      @xBase = xBaseComputation()
+      @yBase = yBaseComputation()
+      @refreshBounds()
+      resizeDebugCode()
+
+    @refreshBounds()
+
+
+  refreshBounds: ->
+    @xMin = @xBase + @xPadding
+    @xMax = @xMaxComputation()
+    @yMin = @yBase + @yPadding
+    @yMax = @yMaxComputation()
+
+
+  bounds: ->
+    xMin: @xMin
+    xMax: @xMax
+    yMin: @yMin
+    yMax: @yMax
 
 
   getXBaseComputation: ->
-    self = @
-
     if @position.x and @position.x isnt 'auto'
       if dimensionPattern.exec(@position.x)[1] is '%'
-        xBase = -> (self.x/100) * self.frame.width()
+        xBaseComputation = => (@x/100) * @frame.width()
       else
-        xBase = -> self.x
+        xBaseComputation = => @x
 
       dimensionPattern.lastIndex = 0
     else
       if @widthIsFluid
-        xBase = -> ((50 - self.width/2)/100) * self.frame.width()
+        xBaseComputation = => ((50 - @width/2)/100) * @frame.width()
       else
-        xBase = -> self.frame.width()/2 - self.width/2
+        xBaseComputation = => @frame.width()/2 - @width/2
 
-    xBase
+    xBaseComputation
 
 
   getYBaseComputation: ->
-    self = @
-
     if @position.y and @position.y isnt 'auto'
       if dimensionPattern.exec(@position.y)[1] is '%'
-        yBase = -> (self.y/100) * self.frame.height()
+        yBaseComputation = => (@y/100) * @frame.height()
       else
-        yBase = -> self.y
+        yBaseComputation = => @y
 
       dimensionPattern.lastIndex = 0
     else
       if @heightIsFluid
-        yBase = -> ((50 - self.height/2)/100) * self.frame.height()
+        yBaseComputation = => ((50 - @height/2)/100) * @frame.height()
       else
-        yBase = -> self.frame.height()/2 - self.height/2
+        yBaseComputation = => @frame.height()/2 - @height/2
 
-    yBase
-
-
-  mouseover: (event)-> @xMin() <= event.pageX <= @xMax() and @yMin() <= event.pageY <= @yMax()
+    yBaseComputation
 
 
-  bounds: ->
-    xMin: @xMin()
-    xMax: @xMax()
-    yMin: @yMin()
-    yMax: @yMax()
+  mouseover: (event)-> @xMin <= event.pageX <= @xMax and @yMin <= event.pageY <= @yMax
 
 
   constructor: (@area)->
@@ -198,7 +227,7 @@ class Frame3d
       debugCode = ->
 
     if @activeArea
-      @activeArea.frame = @outerFrameJQueryNode
+      @activeArea.init @outerFrameJQueryNode
     else
       @outerFrameJQueryNode.on "mouseout", "##{@id}", =>
         @cancelRotation()
