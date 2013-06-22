@@ -1,4 +1,4 @@
-### AvalonA 0.6.1 ###
+### AvalonA 0.6.2 ###
 
 class ActiveArea
   dimensionPattern = /^\d+(%|px)?$/gi
@@ -68,6 +68,12 @@ class ActiveArea
         scrollDebugCode = ->
 
       $(window).scroll =>
+        @xPadding = $(window).prop 'pageXOffset'
+        @yPadding = $(window).prop 'pageYOffset'
+        @refreshBounds()
+        scrollDebugCode()
+
+      @frame.scroll =>
         @xPadding = @frame.prop('scrollLeft')
         @yPadding = @frame.prop('scrollTop')
         @refreshBounds()
