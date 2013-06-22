@@ -1,5 +1,5 @@
 
-/* AvalonA 0.6.1
+/* AvalonA 0.6.2
 */
 
 
@@ -106,6 +106,12 @@
           scrollDebugCode = function() {};
         }
         $(window).scroll(function() {
+          _this.xPadding = $(window).prop('pageXOffset');
+          _this.yPadding = $(window).prop('pageYOffset');
+          _this.refreshBounds();
+          return scrollDebugCode();
+        });
+        this.frame.scroll(function() {
           _this.xPadding = _this.frame.prop('scrollLeft');
           _this.yPadding = _this.frame.prop('scrollTop');
           _this.refreshBounds();
