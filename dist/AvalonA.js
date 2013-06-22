@@ -1,5 +1,5 @@
 
-/* AvalonA 0.6.2
+/* AvalonA 0.6.3
 */
 
 
@@ -67,7 +67,7 @@
     };
 
     ActiveArea.prototype.init = function(frame) {
-      var resizeDebugCode, scrollDebugCode, self, xBaseComputation, yBaseComputation,
+      var frameScrollCount, resizeDebugCode, scrollDebugCode, self, windowScrollCount, xBaseComputation, yBaseComputation,
         _this = this;
       this.frame = frame;
       if (!this.frame) {
@@ -105,13 +105,21 @@
         } else {
           scrollDebugCode = function() {};
         }
+        windowScrollCount = 0;
         $(window).scroll(function() {
+          if (++windowScrollCount % 5 > 0) {
+            return;
+          }
           _this.xPadding = $(window).prop('pageXOffset');
           _this.yPadding = $(window).prop('pageYOffset');
           _this.refreshBounds();
           return scrollDebugCode();
         });
+        frameScrollCount = 0;
         this.frame.scroll(function() {
+          if (++frameScrollCount % 5 > 0) {
+            return;
+          }
           _this.xPadding = _this.frame.prop('scrollLeft');
           _this.yPadding = _this.frame.prop('scrollTop');
           _this.refreshBounds();
