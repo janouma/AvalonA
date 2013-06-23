@@ -1,4 +1,4 @@
-### AvalonA 0.6.3 ###
+### AvalonA 0.6.4 ###
 
 class ActiveArea
   dimensionPattern = /^\d+(%|px)?$/gi
@@ -245,24 +245,41 @@ class Frame3d
     mouseMoveCount = 0
     @outerFrameJQueryNode.mousemove (event)=>
       return if ++mouseMoveCount % 5 > 0
-
       if not @activeArea or @activeArea.mouseover(event)
-        rotationY = (event.pageX - $(window).prop('innerWidth')/2)/25
-        rotationX = -1*(event.pageY - $(window).prop('innerHeight')/2)/15
+        @onrotation()
+        @rotationY = (event.pageX - $(window).prop('innerWidth')/2)/25
+        @rotationX = -1*(event.pageY - $(window).prop('innerHeight')/2)/15
 
-        debugCode rotationX, rotationY
+        debugCode @rotationX, @rotationY
 
         TweenLite.to(
           @innerFrameJQueryNode[0]
           0.1
-          rotationX: @fy(rotationX)
-          rotationY: @fx(rotationY)
+          rotationX: @fy(@rotationX)
+          rotationY: @fx(@rotationY)
         )
       else
-        @cancelRotation()
+        @cancelRotation() if @rotationX or @rotationY
+
+
+  onrotation: ->
+    clearTimeout @timeoutId
+
+    if not @rotating
+      @onstartrotation?()
+      @rotating = on
+
+    if @onendrotation
+      @timeoutId = setTimeout(
+        =>
+          @rotating = off
+          @onendrotation()
+        1000
+      )
 
 
   cancelRotation: ->
+    @rotationX = @rotationY = 0
     TweenLite.to(
       @innerFrameJQueryNode[0]
       1
@@ -340,6 +357,8 @@ class Frame3d
     @fy = if typeof options.fy is 'function' then options.fy else noeffect
     @activeArea = new ActiveArea(options.activeArea) if options.activeArea
     @activeArea?.debug = @debug
+    @onstartrotation = options.on?.startrotation
+    @onendrotation = options.on?.endrotation
 
 
   constructor: (@id, options = {})->

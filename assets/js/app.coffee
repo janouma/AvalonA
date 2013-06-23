@@ -16,6 +16,10 @@ $ ->
       width: '75%'
       height: 350
 
+    on:
+      startrotation: -> console.log "3d rotation on"
+      endrotation: -> console.log "3d rotation off"
+
     #debug: on
   )
 
