@@ -1,6 +1,6 @@
 # Avalon(A) — Bring deepness to your web apps
 
-*version: 0.6.3*
+*version: 0.6.4*
 
 
 **Avalon(A)** allows you to easily add 3d to a set of html elements to simulate a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/2))*. To make this 3d effect noticeable, all html elements pertaining to the `transformed layer` *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
@@ -57,7 +57,7 @@ A function that affects the amount of rotation triggered by the mouse movements 
 ##### *activeArea*
 When available, restrict mouse movements tracking to this area: moving outside the area reset the `transformed layer` rotation.
 
-	options = {
+	var options = {
 		activeArea: {
 			position: {
 				x: 'auto',
@@ -117,12 +117,35 @@ Alias for ***start()***.
 Update **z translation** according to new values of `data-avalonA-deepness`.
 When **target** is provided, only matching html nodes get updated.
 
+##  Events
+It is possible to add event listeners like this
+
+	var options = {
+    	on: {
+    		event: function(){ /* event code goes here */ },
+    	}
+	};
+	AvalonA('frame-3d', options).start();
+	
+or this
+
+	var a = AvalonA('frame-3d', options).start();
+	a.onevent = function(){ /* event code goes here */ };
+	
+Available events:
+
+##### *startrotation*
+Triggered when `transformed layer` rotation starts.
+
+##### *endrotation*
+Triggered when `transformed layer` rotation ends.
+
 # Browser compatibility
 - Safari
 - Chrome
 - Firefox
 
-*In browsers that doesn't support 3d transform, html elements stays simply flat.*
+*Nothing happens on browsers that doesn't support 3d transform.*
 
 # Preview
 **[see jsFiddle preview](http://jsfiddle.net/K3kPx/2)**

@@ -1,5 +1,5 @@
 
-/* AvalonA 0.6.3
+/* AvalonA 0.6.4
 */
 
 
@@ -342,25 +342,45 @@
       }
       mouseMoveCount = 0;
       return this.outerFrameJQueryNode.mousemove(function(event) {
-        var rotationX, rotationY;
         if (++mouseMoveCount % 5 > 0) {
           return;
         }
         if (!_this.activeArea || _this.activeArea.mouseover(event)) {
-          rotationY = (event.pageX - $(window).prop('innerWidth') / 2) / 25;
-          rotationX = -1 * (event.pageY - $(window).prop('innerHeight') / 2) / 15;
-          debugCode(rotationX, rotationY);
+          _this.onrotation();
+          _this.rotationY = (event.pageX - $(window).prop('innerWidth') / 2) / 25;
+          _this.rotationX = -1 * (event.pageY - $(window).prop('innerHeight') / 2) / 15;
+          debugCode(_this.rotationX, _this.rotationY);
           return TweenLite.to(_this.innerFrameJQueryNode[0], 0.1, {
-            rotationX: _this.fy(rotationX),
-            rotationY: _this.fx(rotationY)
+            rotationX: _this.fy(_this.rotationX),
+            rotationY: _this.fx(_this.rotationY)
           });
         } else {
-          return _this.cancelRotation();
+          if (_this.rotationX || _this.rotationY) {
+            return _this.cancelRotation();
+          }
         }
       });
     };
 
+    Frame3d.prototype.onrotation = function() {
+      var _this = this;
+      clearTimeout(this.timeoutId);
+      if (!this.rotating) {
+        if (typeof this.onstartrotation === "function") {
+          this.onstartrotation();
+        }
+        this.rotating = true;
+      }
+      if (this.onendrotation) {
+        return this.timeoutId = setTimeout(function() {
+          _this.rotating = false;
+          return _this.onendrotation();
+        }, 1000);
+      }
+    };
+
     Frame3d.prototype.cancelRotation = function() {
+      this.rotationX = this.rotationY = 0;
       return TweenLite.to(this.innerFrameJQueryNode[0], 1, {
         rotationX: 0,
         rotationY: 0
@@ -446,7 +466,7 @@
     };
 
     Frame3d.prototype.init = function(options) {
-      var _ref;
+      var _ref, _ref1, _ref2;
       this.deepnessAttribute = options.zAttr || 'data-avalonA-deepness';
       this.cssClass = options["class"] || 'avalona-inner-frame';
       this.fx = typeof options.fx === 'function' ? options.fx : noeffect;
@@ -454,7 +474,11 @@
       if (options.activeArea) {
         this.activeArea = new ActiveArea(options.activeArea);
       }
-      return (_ref = this.activeArea) != null ? _ref.debug = this.debug : void 0;
+      if ((_ref = this.activeArea) != null) {
+        _ref.debug = this.debug;
+      }
+      this.onstartrotation = (_ref1 = options.on) != null ? _ref1.startrotation : void 0;
+      return this.onendrotation = (_ref2 = options.on) != null ? _ref2.endrotation : void 0;
     };
 
     function Frame3d(id, options) {
