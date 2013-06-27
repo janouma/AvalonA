@@ -1,4 +1,4 @@
-### AvalonA 0.6.4 ###
+### AvalonA 0.7 ###
 
 class ActiveArea
   dimensionPattern = /^\d+(%|px)?$/gi
@@ -196,22 +196,23 @@ class Frame3d
     "#{node.prop('tagName')}(#{node.attr('id') or node.attr('class') or node.attr('href')})"
 
   find3dFrames: ->
-    @outerFrameJQueryNode = $("##{@id}")
-    @innerFrameJQueryNode = $(".#{@cssClass}", @outerFrameJQueryNode).eq(0)
+    @frame = $("##{@id}")
+    @transformedLayer = $(".#{@cssClass}", @frame).eq(0)
 
     if @debug is on
       console.log "@deepnessAttribute: #{@deepnessAttribute}"
       console.log "@cssClass: #{@cssClass}"
 
 
-    throw new Error "Cannot find 3d frame '##{@id}' in dom" if not @outerFrameJQueryNode.size()
-    throw new Error "Cannot find 3d inner frame '##{@id} .#{@cssClass}' in dom" if not @innerFrameJQueryNode.size()
+    throw new Error "Cannot find 3d frame '##{@id}' in dom" if not @frame.size()
+    throw new Error "Cannot find 3d inner frame '##{@id} .#{@cssClass}' in dom" if not @transformedLayer.size()
 
 
   setPerspective: ->
     TweenLite.set(
-      @innerFrameJQueryNode[0]
-      transformPerspective: 1000
+      @transformedLayer[0]
+      css:
+        transformPerspective: 1000
     )
 
 
@@ -237,13 +238,13 @@ class Frame3d
       debugCode = ->
 
     if @activeArea
-      @activeArea.init @outerFrameJQueryNode
+      @activeArea.init @frame
     else
-      @outerFrameJQueryNode.on "mouseout", "##{@id}", =>
+      @frame.on "mouseout", "##{@id}", =>
         @cancelRotation()
 
     mouseMoveCount = 0
-    @outerFrameJQueryNode.mousemove (event)=>
+    @frame.mousemove (event)=>
       return if ++mouseMoveCount % 5 > 0
       if not @activeArea or @activeArea.mouseover(event)
         @onrotation()
@@ -253,10 +254,11 @@ class Frame3d
         debugCode @rotationX, @rotationY
 
         TweenLite.to(
-          @innerFrameJQueryNode[0]
+          @transformedLayer[0]
           0.1
-          rotationX: @fy(@rotationX)
-          rotationY: @fx(@rotationY)
+          css:
+            rotationX: @fy(@rotationX)
+            rotationY: @fx(@rotationY)
         )
       else
         @cancelRotation() if @rotationX or @rotationY
@@ -266,14 +268,16 @@ class Frame3d
     clearTimeout @timeoutId
 
     if not @rotating
+      @animator?.pause()
       @onstartrotation?()
       @rotating = on
 
-    if @onendrotation
+    if @onendrotation or @animator
       @timeoutId = setTimeout(
         =>
           @rotating = off
-          @onendrotation()
+          @onendrotation?()
+          @animator?.play()
         1000
       )
 
@@ -281,22 +285,23 @@ class Frame3d
   cancelRotation: ->
     @rotationX = @rotationY = 0
     TweenLite.to(
-      @innerFrameJQueryNode[0]
+      @transformedLayer[0]
       1
-      rotationX: 0
-      rotationY: 0
+      css:
+        rotationX: 0
+        rotationY: 0
     )
 
 
   untrackMouseMovements: ->
-    @outerFrameJQueryNode?.off "mousemove"
-    @outerFrameJQueryNode?.off "mouseout"
+    @frame?.off "mousemove"
+    @frame?.off "mouseout"
 
 
   zRefresh: (node = null)->
     self = @
-    node ?= @innerFrameJQueryNode
-    target = if typeof node is 'string' then $(target, @innerFrameJQueryNode) else $(node)
+    node ?= @transformedLayer
+    target = if typeof node is 'string' then $(target, @transformedLayer) else $(node)
 
     console.log "target: #{debugName target}" if @debug is on
 
@@ -327,8 +332,9 @@ class Frame3d
 
     TweenLite.set(
       target[0]
-      transformStyle: 'preserve-3d'
-      overflow: 'visible'
+      css:
+        transformStyle: 'preserve-3d'
+        overflow: 'visible'
     )
 
     z = target.attr @deepnessAttribute
@@ -336,16 +342,19 @@ class Frame3d
       TweenLite.to(
         target[0]
         transitionDuration
-        z: z
+        css:
+          z: z
       )
 
 
   refresh: ->
+    @animator?.pause()
     @untrackMouseMovements()
     @find3dFrames()
     @setPerspective()
     @zRefresh()
     @trackMouseMovements()
+    @animator?.animate @transformedLayer[0]
 
 
   start: -> @refresh()
@@ -359,6 +368,14 @@ class Frame3d
     @activeArea?.debug = @debug
     @onstartrotation = options.on?.startrotation
     @onendrotation = options.on?.endrotation
+    @animator = options.animator
+    @assertAnimatorValid() if @animator
+
+
+  assertAnimatorValid:->
+    throw new Error "animator.animate must be a function" if not @animator.animate or typeof @animator.animate isnt 'function'
+    throw new Error "animator.play must be a function" if not @animator.play or typeof @animator.play isnt 'function'
+    throw new Error "animator.pause must be a function" if not @animator.pause or typeof @animator.pause isnt 'function'
 
 
   constructor: (@id, options = {})->

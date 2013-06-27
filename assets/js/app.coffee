@@ -3,7 +3,7 @@ $ ->
     'body-3d'
     class: 'aa3d'
     zAttr: 'data-aaz'
-    fy: (rotation)-> 0.5 * rotation
+    fy: (rotation)-> 0.75 * rotation
     fx: (rotation)-> 2 * rotation
 
     activeArea:
@@ -19,6 +19,39 @@ $ ->
     on:
       startrotation: -> console.log "3d rotation on"
       endrotation: -> console.log "3d rotation off"
+
+    animator:
+      duration: 1.5
+      getTimeline: ->
+        @timeline = new TweenMax(
+          @animatedLayer
+          @duration
+          paused: on
+          css:
+            rotationY: 30
+          repeat: -1
+          yoyo: on
+          ease: Power1.easeInOut
+        )
+
+      animate: (@animatedLayer)->
+        if not @timeline
+          @getTimeline()
+        @play()
+
+      play: ->
+        TweenLite.to(
+          @animatedLayer
+          @duration
+          overwrite: on
+          css:
+            rotationX: 0
+            rotationY: -30
+          ease: Power1.easeInOut
+          onComplete: => @getTimeline().play()
+        )
+
+      pause: -> @timeline?.pause()
 
     #debug: on
   )
