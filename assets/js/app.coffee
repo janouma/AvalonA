@@ -20,38 +20,18 @@ $ ->
       startrotation: -> console.log "3d rotation on"
       endrotation: -> console.log "3d rotation off"
 
-    animator:
-      duration: 1.5
-      getTimeline: ->
-        @timeline = new TweenMax(
-          @animatedLayer
-          @duration
-          paused: on
-          css:
-            rotationY: 30
-          repeat: -1
-          yoyo: on
-          ease: Power1.easeInOut
-        )
-
-      animate: (@animatedLayer)->
-        if not @timeline
-          @getTimeline()
-        @play()
-
-      play: ->
-        TweenLite.to(
-          @animatedLayer
-          @duration
-          overwrite: on
-          css:
-            rotationX: 0
-            rotationY: -30
-          ease: Power1.easeInOut
-          onComplete: => @getTimeline().play()
-        )
-
-      pause: -> @timeline?.pause()
+    animation: AvalonAnimation.Balance()
+    ###
+    animation: AvalonAnimation.Balance(
+      duration: 0.75
+      from:
+        rx: 30
+        ry: -30
+      to:
+        rx: -90
+        ry: 30
+    )
+    ###
 
     #debug: on
   )

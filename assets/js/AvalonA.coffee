@@ -268,16 +268,16 @@ class Frame3d
     clearTimeout @timeoutId
 
     if not @rotating
-      @animator?.pause()
+      @animation?.pause()
       @onstartrotation?()
       @rotating = on
 
-    if @onendrotation or @animator
+    if @onendrotation or @animation
       @timeoutId = setTimeout(
         =>
           @rotating = off
           @onendrotation?()
-          @animator?.play()
+          @animation?.play()
         1000
       )
 
@@ -348,13 +348,13 @@ class Frame3d
 
 
   refresh: ->
-    @animator?.pause()
+    @animation?.pause()
     @untrackMouseMovements()
     @find3dFrames()
     @setPerspective()
     @zRefresh()
     @trackMouseMovements()
-    @animator?.animate @transformedLayer[0]
+    @animation?.play @transformedLayer[0]
 
 
   start: -> @refresh()
@@ -368,14 +368,13 @@ class Frame3d
     @activeArea?.debug = @debug
     @onstartrotation = options.on?.startrotation
     @onendrotation = options.on?.endrotation
-    @animator = options.animator
-    @assertAnimatorValid() if @animator
+    @animation = options.animation
+    @assertAnimatorValid() if @animation
 
 
   assertAnimatorValid:->
-    throw new Error "animator.animate must be a function" if not @animator.animate or typeof @animator.animate isnt 'function'
-    throw new Error "animator.play must be a function" if not @animator.play or typeof @animator.play isnt 'function'
-    throw new Error "animator.pause must be a function" if not @animator.pause or typeof @animator.pause isnt 'function'
+    throw new Error "animation.play must be a function" if not @animation.play or typeof @animation.play isnt 'function'
+    throw new Error "animation.pause must be a function" if not @animation.pause or typeof @animation.pause isnt 'function'
 
 
   constructor: (@id, options = {})->
