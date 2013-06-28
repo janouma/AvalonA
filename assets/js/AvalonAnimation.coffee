@@ -60,7 +60,7 @@ window.AvalonAnimation =
     {direction: direction, duration: duration, angle: angle} = options
 
     direction ?= 'cw'
-    duration = if not duration? then 2.75 else parseFloat(duration)
+    duration = if not duration? then 8 else parseFloat(duration)
     angle = if not angle? then 20 else parseFloat(angle)
 
     throw new Error "Spotlight.direction must be either 'cw'(clockwise) or 'ccw'(counter-clockwise)" if direction not in ['cw', 'ccw']
@@ -68,10 +68,11 @@ window.AvalonAnimation =
     throw new Error "Spotlight.angle is not valid" if not angle or not (0 <= angle <= 180)
 
     path = [
-      [angle, 0]
-      [0, angle]
-      [-angle, 0]
-      [0, -angle]
+      {rotationX: angle, rotationY: 0}
+      {rotationX: 0, rotationY: angle}
+      {rotationX: -angle, rotationY: 0}
+      {rotationX: 0, rotationY: -angle}
+      {rotationX: angle, rotationY: 0}
     ]
 
     path = path.reverse() if direction is 'ccw'
@@ -79,42 +80,25 @@ window.AvalonAnimation =
     lastPosition = path[path.length - 1]
 
     getTimeline: ->
-      @timeline = new TimelineMax repeat: -1
-
-      for coordinates in path
-        @timeline.add(
-          new TimelineMax(align: 'start').add(
-            [
-              new TweenMax(
-                @animatedObject
-                duration
-                ease: Linear.easeNone
-                css:
-                  rotationX: coordinates[0]
-              )
-              new TweenMax(
-                @animatedObject
-                duration
-                ease: Linear.easeNone
-                css:
-                  rotationY: coordinates[1]
-              )
-            ]
-          )
-        )
-
-      @timeline
+      @timeline = new TweenMax(
+        @animatedObject
+        duration
+        paused: on
+        overwrite: on
+        repeat: -1
+        ease: Linear.easeNone
+        bezier: path
+      )
 
     play: (target)->
       @animatedObject = target if target
-
       if @animatedObject
         @timeline = TweenLite.to(
           @animatedObject
-          duration
-          css:
-            rotationX: lastPosition[0]
-            rotationY: lastPosition[1]
+          duration / 4
+          overwrite: on
+          ease: Linear.easeNone
+          bezier: [lastPosition]
           onComplete: => @getTimeline().play()
         )
 
