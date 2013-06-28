@@ -191,7 +191,7 @@ Adds a balancing movement between two rotation angles.
 
 *options*
 
-- duration *(seconds) – **default value is 2.75***
+- duration *(seconds)* – ***default value is 2.75***
 - from: { rx: *< rotation on X axis >*, ry: *< rotation on Y axis >* } – ***default value is { rx: 0 , ry: -20 }***
 - to: { rx: *< rotation on X axis >*, ry: *< rotation on Y axis >* } – ***default value is the negative version of `from`***
 
