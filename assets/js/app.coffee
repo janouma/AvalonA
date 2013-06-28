@@ -7,11 +7,9 @@ $ ->
     fx: (rotation)-> 2 * rotation
 
     activeArea:
-      ###
-      position:
-        x: 50
-        y: '10%'
-      ###
+      #position:
+      #  x: 50
+      #  y: '10%'
       attachment: 'scroll'
       width: '75%'
       height: 350
@@ -20,18 +18,8 @@ $ ->
       startrotation: -> console.log "3d rotation on"
       endrotation: -> console.log "3d rotation off"
 
-    animation: AvalonAnimation.Balance()
-    ###
-    animation: AvalonAnimation.Balance(
-      duration: 0.75
-      from:
-        rx: 30
-        ry: -30
-      to:
-        rx: -90
-        ry: 30
-    )
-    ###
+    #animation: AvalonAnimation.Balance()
+    animation: AvalonAnimation.Spotlight()
 
     #debug: on
   )

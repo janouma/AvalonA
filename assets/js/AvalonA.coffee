@@ -1,4 +1,4 @@
-### AvalonA 0.7 ###
+### AvalonA 0.7.1 ###
 
 class ActiveArea
   dimensionPattern = /^\d+(%|px)?$/gi
@@ -221,12 +221,11 @@ class Frame3d
       $('body').append "<div id='avalona-active-area' style='background-color:hotpink;opacity:0.75;pointer-events:none;position:absolute;visibility:hidden;z-index:10000;'>AvalonA Active Area</div>"
 
       activeAreaPlaceholder = $('#avalona-active-area')
-      self = @
 
-      debugCode = (rotationX, rotationY)->
-        console.log "rotationX: #{rotationX}, rotationY: #{rotationY}"
+      @debugMouseMove = ->
+        console.log "rotationX: #{@rotationX}, rotationY: #{@rotationY}"
 
-        bounds = self.activeArea.bounds()
+        bounds = @activeArea.bounds()
         activeAreaPlaceholder.css(
           visibility: 'visible'
           left: "#{bounds.xMin}px"
@@ -235,33 +234,38 @@ class Frame3d
           height: "#{bounds.yMax - bounds.yMin}px"
         )
     else
-      debugCode = ->
+      @debugMouseMove = ->
 
     if @activeArea
       @activeArea.init @frame
     else
-      @frame.on "mouseout", "##{@id}", =>
-        @cancelRotation()
+      @frame.on "mouseout", "##{@id}", @mouseout
 
-    mouseMoveCount = 0
-    @frame.mousemove (event)=>
-      return if ++mouseMoveCount % 5 > 0
-      if not @activeArea or @activeArea.mouseover(event)
-        @onrotation()
-        @rotationY = (event.pageX - $(window).prop('innerWidth')/2)/25
-        @rotationX = -1*(event.pageY - $(window).prop('innerHeight')/2)/15
+    @frame.mousemove @mousemove
 
-        debugCode @rotationX, @rotationY
 
-        TweenLite.to(
-          @transformedLayer[0]
-          0.1
-          css:
-            rotationX: @fy(@rotationX)
-            rotationY: @fx(@rotationY)
-        )
-      else
-        @cancelRotation() if @rotationX or @rotationY
+  mouseout: => @cancelRotation()
+
+  mouseMoveCount: 0
+
+  mousemove: (event)=>
+    return if ++@mouseMoveCount % 5 > 0
+    if not @activeArea or @activeArea.mouseover(event)
+      @onrotation()
+      @rotationY = (event.pageX - $(window).prop('innerWidth')/2)/25
+      @rotationX = -1*(event.pageY - $(window).prop('innerHeight')/2)/15
+
+      @debugMouseMove()
+
+      TweenLite.to(
+        @transformedLayer[0]
+        0.1
+        css:
+          rotationX: @fy(@rotationX)
+          rotationY: @fx(@rotationY)
+      )
+    else
+      @cancelRotation() if @rotationX or @rotationY
 
 
   onrotation: ->
@@ -294,8 +298,8 @@ class Frame3d
 
 
   untrackMouseMovements: ->
-    @frame?.off "mousemove"
-    @frame?.off "mouseout"
+    @frame?.off "mousemove", @mousemove
+    @frame?.off "mouseout", @mouseout
 
 
   zRefresh: (node = null)->
