@@ -1,6 +1,6 @@
 # Avalon(A) — Bring deepness to your web apps
 
-*version: 0.7*
+*version: 0.7.1*
 
 
 **Avalon(A)** allows you to easily add 3d to a set of html elements to simulate a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/3))*. To make this 3d effect noticeable, all html elements pertaining to the `transformed layer` *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
@@ -160,20 +160,22 @@ Triggered when `transformed layer` rotation ends.
 # Plugins
 ## AvalonAnimation
 Provides a collection of preset animations.
-### dependencies
+
+### Balance
+Adds a balancing movement between two rotation angles.
+
+###### *Dependencies*
+
 - [GSAP 1.9.2+](http://www.greensock.com) *(GreenSock Animation Platform)* **TweenMax** module
 
 Note that the **TweenMax** module includes the **TweenLite** one *– see [GSAP](http://www.greensock.com) documentation for details*.
 
-### Animations collection
-##### *Balance*
-Adds a balancing movement between two rotation angles.
-
-*example 1*
+###### *Examples*
+*Example 1*
 
 	animation: AvalonAnimation.Balance()
 	
-*example 2*
+*Example 2*
 
 	animation: AvalonAnimation.Balance({
       duration: 0.75,
@@ -189,11 +191,40 @@ Adds a balancing movement between two rotation angles.
       }
     })
 
-*options*
+###### *Options*
 
 - duration *(seconds)* – ***default value is 2.75***
 - from: { rx: *< rotation on X axis >*, ry: *< rotation on Y axis >* } – ***default value is { rx: 0 , ry: -20 }***
 - to: { rx: *< rotation on X axis >*, ry: *< rotation on Y axis >* } – ***default value is the negative version of `from`***
+
+### Spotlight
+Rotates like a spotlight.
+
+###### *Dependencies*
+
+- [GSAP 1.9.2+](http://www.greensock.com) *(GreenSock Animation Platform)* **TweenMax** and **BezierPlugin** modules
+
+Note that the **TweenMax** module includes the **TweenLite** one *– see [GSAP](http://www.greensock.com) documentation for details*.
+
+###### *Examples*
+*Example 1*
+
+	animation: AvalonAnimation.Spotlight()
+	
+*Example 2*
+
+	animation: AvalonAnimation.Spotlight({
+      duration: 5,
+      direction: 'ccw',
+      angle: 10
+    })
+
+###### *Options*
+
+- duration *(seconds)* – ***default value is 8***
+- direction `'cw'` *(clockwise)* or `'ccw'` *(counter-clockwise)* – ***default value is 'cw'***
+- angle – ***default value is 20***
+
 
 # Browser compatibility
 - Safari

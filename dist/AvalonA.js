@@ -1,5 +1,5 @@
 
-/* AvalonA 0.7
+/* AvalonA 0.7.1
 */
 
 
@@ -314,16 +314,14 @@
     };
 
     Frame3d.prototype.trackMouseMovements = function() {
-      var activeAreaPlaceholder, debugCode, mouseMoveCount, self,
-        _this = this;
+      var activeAreaPlaceholder;
       if (this.debug === true) {
         $('body').append("<div id='avalona-active-area' style='background-color:hotpink;opacity:0.75;pointer-events:none;position:absolute;visibility:hidden;z-index:10000;'>AvalonA Active Area</div>");
         activeAreaPlaceholder = $('#avalona-active-area');
-        self = this;
-        debugCode = function(rotationX, rotationY) {
+        this.debugMouseMove = function() {
           var bounds;
-          console.log("rotationX: " + rotationX + ", rotationY: " + rotationY);
-          bounds = self.activeArea.bounds();
+          console.log("rotationX: " + this.rotationX + ", rotationY: " + this.rotationY);
+          bounds = this.activeArea.bounds();
           return activeAreaPlaceholder.css({
             visibility: 'visible',
             left: "" + bounds.xMin + "px",
@@ -333,37 +331,42 @@
           });
         };
       } else {
-        debugCode = function() {};
+        this.debugMouseMove = function() {};
       }
       if (this.activeArea) {
         this.activeArea.init(this.frame);
       } else {
-        this.frame.on("mouseout", "#" + this.id, function() {
-          return _this.cancelRotation();
-        });
+        this.frame.on("mouseout", "#" + this.id, this.mouseout);
       }
-      mouseMoveCount = 0;
-      return this.frame.mousemove(function(event) {
-        if (++mouseMoveCount % 5 > 0) {
-          return;
-        }
-        if (!_this.activeArea || _this.activeArea.mouseover(event)) {
-          _this.onrotation();
-          _this.rotationY = (event.pageX - $(window).prop('innerWidth') / 2) / 25;
-          _this.rotationX = -1 * (event.pageY - $(window).prop('innerHeight') / 2) / 15;
-          debugCode(_this.rotationX, _this.rotationY);
-          return TweenLite.to(_this.transformedLayer[0], 0.1, {
-            css: {
-              rotationX: _this.fy(_this.rotationX),
-              rotationY: _this.fx(_this.rotationY)
-            }
-          });
-        } else {
-          if (_this.rotationX || _this.rotationY) {
-            return _this.cancelRotation();
+      return this.frame.mousemove(this.mousemove);
+    };
+
+    Frame3d.prototype.mouseout = function() {
+      return this.cancelRotation();
+    };
+
+    Frame3d.prototype.mouseMoveCount = 0;
+
+    Frame3d.prototype.mousemove = function(event) {
+      if (++this.mouseMoveCount % 5 > 0) {
+        return;
+      }
+      if (!this.activeArea || this.activeArea.mouseover(event)) {
+        this.onrotation();
+        this.rotationY = (event.pageX - $(window).prop('innerWidth') / 2) / 25;
+        this.rotationX = -1 * (event.pageY - $(window).prop('innerHeight') / 2) / 15;
+        this.debugMouseMove();
+        return TweenLite.to(this.transformedLayer[0], 0.1, {
+          css: {
+            rotationX: this.fy(this.rotationX),
+            rotationY: this.fx(this.rotationY)
           }
+        });
+      } else {
+        if (this.rotationX || this.rotationY) {
+          return this.cancelRotation();
         }
-      });
+      }
     };
 
     Frame3d.prototype.onrotation = function() {
@@ -404,9 +407,9 @@
     Frame3d.prototype.untrackMouseMovements = function() {
       var _ref, _ref1;
       if ((_ref = this.frame) != null) {
-        _ref.off("mousemove");
+        _ref.off("mousemove", this.mousemove);
       }
-      return (_ref1 = this.frame) != null ? _ref1.off("mouseout") : void 0;
+      return (_ref1 = this.frame) != null ? _ref1.off("mouseout", this.mouseout) : void 0;
     };
 
     Frame3d.prototype.zRefresh = function(node) {
@@ -523,6 +526,8 @@
         options = {};
       }
       this.zRefreshChild = __bind(this.zRefreshChild, this);
+      this.mousemove = __bind(this.mousemove, this);
+      this.mouseout = __bind(this.mouseout, this);
       this.debug = options.debug;
       detectTransformStyleSupport();
       if (this.debug === true) {
