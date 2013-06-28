@@ -1,6 +1,6 @@
 # Avalon(A) — Bring deepness to your web apps
 
-*version: 0.6.4*
+*version: 0.7*
 
 
 **Avalon(A)** allows you to easily add 3d to a set of html elements to simulate a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/2))*. To make this 3d effect noticeable, all html elements pertaining to the `transformed layer` *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
@@ -102,6 +102,23 @@ Act like css `position: absolute|fixed`. Possible values:
 - `'fixed'` same as css `position: fixed`. ***(default)***
 - `'scroll'` like css `position: absolute`, the area will scroll along with the `transformed layer`
 
+##### *animation*
+Animates the `transformed layer` when mouse is outside the active area *– meaning the actual `activeArea` or simply the `3d Frame` when no `activeArea` is provided*. The animation plays as well when the mouse is iddle.
+
+The `animation` object must have the following api:
+
+	animation: {
+	
+		play: function(transformedLayer){
+			// animation code goes here
+		},
+		
+		pause: function(){
+			// pause code goes here
+		}
+	}
+	
+As the example shows, the `play()` method received as first argument the `transformed layer`, thus one can animate any attribute of this element *– not just the rotation*.
 
 ##### *debug*
 Enable debug logs and display when set to `true`.
@@ -139,6 +156,44 @@ Triggered when `transformed layer` rotation starts.
 
 ##### *endrotation*
 Triggered when `transformed layer` rotation ends.
+
+# Plugins
+## AvalonAnimation
+Provides a collection of preset animations.
+### dependencies
+- [GSAP 1.9.2+](http://www.greensock.com) *(GreenSock Animation Platform)* **TweenMax** module
+
+Note that the **TweenMax** module includes the **TweenLite** one *– see [GSAP](http://www.greensock.com) documentation for details*.
+
+### Animations collection
+##### *Balance*
+Adds a balancing movement between two rotation angles.
+
+*example 1*
+
+	animation: AvalonAnimation.Balance()
+	
+*example 2*
+
+	animation: AvalonAnimation.Balance({
+      duration: 0.75,
+      
+      from:{
+        rx: 30,
+        ry: -30
+      },
+      
+      to:{
+        rx: -90,
+        ry: 30
+      }
+    })
+
+*options*
+
+- duration *(seconds) – **default value is 2.75***
+- from: { rx: *< rotation on X axis >*, ry: *< rotation on Y axis >* } – ***default value is { rx: 0 , ry: -20 }***
+- to: { rx: *< rotation on X axis >*, ry: *< rotation on Y axis >* } – ***default value is the negative version of `from`***
 
 # Browser compatibility
 - Safari

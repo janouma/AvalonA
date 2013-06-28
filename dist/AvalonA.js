@@ -1,5 +1,5 @@
 
-/* AvalonA 0.6.4
+/* AvalonA 0.7
 */
 
 
@@ -291,23 +291,25 @@
     };
 
     Frame3d.prototype.find3dFrames = function() {
-      this.outerFrameJQueryNode = $("#" + this.id);
-      this.innerFrameJQueryNode = $("." + this.cssClass, this.outerFrameJQueryNode).eq(0);
+      this.frame = $("#" + this.id);
+      this.transformedLayer = $("." + this.cssClass, this.frame).eq(0);
       if (this.debug === true) {
         console.log("@deepnessAttribute: " + this.deepnessAttribute);
         console.log("@cssClass: " + this.cssClass);
       }
-      if (!this.outerFrameJQueryNode.size()) {
+      if (!this.frame.size()) {
         throw new Error("Cannot find 3d frame '#" + this.id + "' in dom");
       }
-      if (!this.innerFrameJQueryNode.size()) {
+      if (!this.transformedLayer.size()) {
         throw new Error("Cannot find 3d inner frame '#" + this.id + " ." + this.cssClass + "' in dom");
       }
     };
 
     Frame3d.prototype.setPerspective = function() {
-      return TweenLite.set(this.innerFrameJQueryNode[0], {
-        transformPerspective: 1000
+      return TweenLite.set(this.transformedLayer[0], {
+        css: {
+          transformPerspective: 1000
+        }
       });
     };
 
@@ -334,14 +336,14 @@
         debugCode = function() {};
       }
       if (this.activeArea) {
-        this.activeArea.init(this.outerFrameJQueryNode);
+        this.activeArea.init(this.frame);
       } else {
-        this.outerFrameJQueryNode.on("mouseout", "#" + this.id, function() {
+        this.frame.on("mouseout", "#" + this.id, function() {
           return _this.cancelRotation();
         });
       }
       mouseMoveCount = 0;
-      return this.outerFrameJQueryNode.mousemove(function(event) {
+      return this.frame.mousemove(function(event) {
         if (++mouseMoveCount % 5 > 0) {
           return;
         }
@@ -350,9 +352,11 @@
           _this.rotationY = (event.pageX - $(window).prop('innerWidth') / 2) / 25;
           _this.rotationX = -1 * (event.pageY - $(window).prop('innerHeight') / 2) / 15;
           debugCode(_this.rotationX, _this.rotationY);
-          return TweenLite.to(_this.innerFrameJQueryNode[0], 0.1, {
-            rotationX: _this.fy(_this.rotationX),
-            rotationY: _this.fx(_this.rotationY)
+          return TweenLite.to(_this.transformedLayer[0], 0.1, {
+            css: {
+              rotationX: _this.fy(_this.rotationX),
+              rotationY: _this.fx(_this.rotationY)
+            }
           });
         } else {
           if (_this.rotationX || _this.rotationY) {
@@ -363,36 +367,46 @@
     };
 
     Frame3d.prototype.onrotation = function() {
-      var _this = this;
+      var _ref,
+        _this = this;
       clearTimeout(this.timeoutId);
       if (!this.rotating) {
+        if ((_ref = this.animation) != null) {
+          _ref.pause();
+        }
         if (typeof this.onstartrotation === "function") {
           this.onstartrotation();
         }
         this.rotating = true;
       }
-      if (this.onendrotation) {
+      if (this.onendrotation || this.animation) {
         return this.timeoutId = setTimeout(function() {
+          var _ref1;
           _this.rotating = false;
-          return _this.onendrotation();
+          if (typeof _this.onendrotation === "function") {
+            _this.onendrotation();
+          }
+          return (_ref1 = _this.animation) != null ? _ref1.play() : void 0;
         }, 1000);
       }
     };
 
     Frame3d.prototype.cancelRotation = function() {
       this.rotationX = this.rotationY = 0;
-      return TweenLite.to(this.innerFrameJQueryNode[0], 1, {
-        rotationX: 0,
-        rotationY: 0
+      return TweenLite.to(this.transformedLayer[0], 1, {
+        css: {
+          rotationX: 0,
+          rotationY: 0
+        }
       });
     };
 
     Frame3d.prototype.untrackMouseMovements = function() {
       var _ref, _ref1;
-      if ((_ref = this.outerFrameJQueryNode) != null) {
+      if ((_ref = this.frame) != null) {
         _ref.off("mousemove");
       }
-      return (_ref1 = this.outerFrameJQueryNode) != null ? _ref1.off("mouseout") : void 0;
+      return (_ref1 = this.frame) != null ? _ref1.off("mouseout") : void 0;
     };
 
     Frame3d.prototype.zRefresh = function(node) {
@@ -402,9 +416,9 @@
       }
       self = this;
       if (node == null) {
-        node = this.innerFrameJQueryNode;
+        node = this.transformedLayer;
       }
-      target = typeof node === 'string' ? $(target, this.innerFrameJQueryNode) : $(node);
+      target = typeof node === 'string' ? $(target, this.transformedLayer) : $(node);
       if (this.debug === true) {
         console.log("target: " + (debugName(target)));
       }
@@ -442,23 +456,32 @@
         throw new Error("setZOf target argument cannot be null");
       }
       TweenLite.set(target[0], {
-        transformStyle: 'preserve-3d',
-        overflow: 'visible'
+        css: {
+          transformStyle: 'preserve-3d',
+          overflow: 'visible'
+        }
       });
       z = target.attr(this.deepnessAttribute);
       if (z) {
         return TweenLite.to(target[0], transitionDuration, {
-          z: z
+          css: {
+            z: z
+          }
         });
       }
     };
 
     Frame3d.prototype.refresh = function() {
+      var _ref, _ref1;
+      if ((_ref = this.animation) != null) {
+        _ref.pause();
+      }
       this.untrackMouseMovements();
       this.find3dFrames();
       this.setPerspective();
       this.zRefresh();
-      return this.trackMouseMovements();
+      this.trackMouseMovements();
+      return (_ref1 = this.animation) != null ? _ref1.play(this.transformedLayer[0]) : void 0;
     };
 
     Frame3d.prototype.start = function() {
@@ -478,7 +501,20 @@
         _ref.debug = this.debug;
       }
       this.onstartrotation = (_ref1 = options.on) != null ? _ref1.startrotation : void 0;
-      return this.onendrotation = (_ref2 = options.on) != null ? _ref2.endrotation : void 0;
+      this.onendrotation = (_ref2 = options.on) != null ? _ref2.endrotation : void 0;
+      this.animation = options.animation;
+      if (this.animation) {
+        return this.assertAnimatorValid();
+      }
+    };
+
+    Frame3d.prototype.assertAnimatorValid = function() {
+      if (!this.animation.play || typeof this.animation.play !== 'function') {
+        throw new Error("animation.play must be a function");
+      }
+      if (!this.animation.pause || typeof this.animation.pause !== 'function') {
+        throw new Error("animation.pause must be a function");
+      }
     };
 
     function Frame3d(id, options) {
