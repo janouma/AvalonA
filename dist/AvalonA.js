@@ -1,5 +1,5 @@
 
-/* AvalonA 0.7.1
+/* AvalonA 0.7.2
 */
 
 
@@ -250,7 +250,7 @@
   })();
 
   Frame3d = (function() {
-    var debugName, detectTransformStyleSupport, noeffect, transformStyleIsSupported, transitionDuration;
+    var cssBackUpAttribute, debugName, detectTransformStyleSupport, getTransformStyle, noeffect, transformStyleIsSupported, transitionDuration;
 
     transitionDuration = 0.75;
 
@@ -260,8 +260,10 @@
 
     transformStyleIsSupported = null;
 
+    cssBackUpAttribute = 'data-css-backup';
+
     detectTransformStyleSupport = function() {
-      var body, computedStyle, element, id, style, _ref, _ref1, _ref2, _ref3;
+      var body, element, id, _ref, _ref1, _ref2, _ref3;
       if (transformStyleIsSupported === null) {
         id = 'avalona-detection-element';
         body = $('body').prepend("<b id='" + id + "' style='position:absolute; top:0; left:0;'></b>");
@@ -278,12 +280,16 @@
         if ((_ref3 = element[0].style) != null) {
           _ref3.transformStyle = 'preserve-3d';
         }
-        computedStyle = getComputedStyle(element[0], null);
-        style = computedStyle.getPropertyValue('-webkit-transform-style') || computedStyle.getPropertyValue('-moz-transform-style') || computedStyle.getPropertyValue('-ms-transform-style') || computedStyle.getPropertyValue('transform-style');
-        transformStyleIsSupported = style === 'preserve-3d';
+        transformStyleIsSupported = getTransformStyle(element[0]) === 'preserve-3d';
         element.remove();
       }
       return transformStyleIsSupported;
+    };
+
+    getTransformStyle = function(element) {
+      var computedStyle;
+      computedStyle = getComputedStyle(element, null);
+      return computedStyle.getPropertyValue('-webkit-transform-style') || computedStyle.getPropertyValue('-moz-transform-style') || computedStyle.getPropertyValue('-ms-transform-style') || computedStyle.getPropertyValue('transform-style');
     };
 
     debugName = function(node) {
@@ -305,10 +311,18 @@
       }
     };
 
-    Frame3d.prototype.setPerspective = function() {
+    Frame3d.prototype.addPerspective = function() {
       return TweenLite.set(this.transformedLayer[0], {
         css: {
           transformPerspective: 1000
+        }
+      });
+    };
+
+    Frame3d.prototype.removePerspective = function() {
+      return TweenLite.set(this.transformedLayer[0], {
+        css: {
+          transformPerspective: 'none'
         }
       });
     };
@@ -372,7 +386,7 @@
     Frame3d.prototype.onrotation = function() {
       var _ref,
         _this = this;
-      clearTimeout(this.timeoutId);
+      clearTimeout(this.rotationTimeoutId);
       if (!this.rotating) {
         if ((_ref = this.animation) != null) {
           _ref.pause();
@@ -383,7 +397,7 @@
         this.rotating = true;
       }
       if (this.onendrotation || this.animation) {
-        return this.timeoutId = setTimeout(function() {
+        return this.rotationTimeoutId = setTimeout(function() {
           var _ref1;
           _this.rotating = false;
           if (typeof _this.onendrotation === "function") {
@@ -394,9 +408,12 @@
       }
     };
 
-    Frame3d.prototype.cancelRotation = function() {
+    Frame3d.prototype.cancelRotation = function(duration) {
+      if (duration == null) {
+        duration = 1;
+      }
       this.rotationX = this.rotationY = 0;
-      return TweenLite.to(this.transformedLayer[0], 1, {
+      return TweenLite.to(this.transformedLayer[0], duration, {
         css: {
           rotationX: 0,
           rotationY: 0
@@ -454,9 +471,16 @@
     };
 
     Frame3d.prototype.setZOf = function(target) {
-      var z;
+      var backup, z;
       if (!target) {
         throw new Error("setZOf target argument cannot be null");
+      }
+      if (!target.attr(cssBackUpAttribute)) {
+        backup = {
+          transformStyle: getTransformStyle(target[0]) || 'flat',
+          overflow: target.css('overflow') || 'inherit'
+        };
+        target.attr(cssBackUpAttribute, JSON.stringify(backup));
       }
       TweenLite.set(target[0], {
         css: {
@@ -476,12 +500,14 @@
 
     Frame3d.prototype.refresh = function() {
       var _ref, _ref1;
-      if ((_ref = this.animation) != null) {
-        _ref.pause();
+      if (this.frame) {
+        this.untrackMouseMovements();
+        if ((_ref = this.animation) != null) {
+          _ref.pause();
+        }
       }
-      this.untrackMouseMovements();
       this.find3dFrames();
-      this.setPerspective();
+      this.addPerspective();
       this.zRefresh();
       this.trackMouseMovements();
       return (_ref1 = this.animation) != null ? _ref1.play(this.transformedLayer[0]) : void 0;
@@ -489,6 +515,48 @@
 
     Frame3d.prototype.start = function() {
       return this.refresh();
+    };
+
+    Frame3d.prototype.enable = function() {
+      return this.refresh();
+    };
+
+    Frame3d.prototype.disable = function() {
+      var _ref;
+      if (this.frame) {
+        this.untrackMouseMovements();
+        this.cancelRotationEvent();
+        if ((_ref = this.animation) != null) {
+          _ref.pause();
+        }
+        this.flatten();
+        return this.removePerspective();
+      }
+    };
+
+    Frame3d.prototype.cancelRotationEvent = function() {
+      clearTimeout(this.rotationTimeoutId);
+      this.rotating = false;
+      return typeof this.onendrotation === "function" ? this.onendrotation() : void 0;
+    };
+
+    Frame3d.prototype.flatten = function() {
+      var self;
+      this.cancelRotation(0);
+      self = this;
+      return $("[" + cssBackUpAttribute + "]").each(function() {
+        var css;
+        if (self.debug === true) {
+          console.log("flattening layer '" + (debugName($(this))) + "'");
+        }
+        css = JSON.parse($(this).attr(cssBackUpAttribute));
+        if ($(this).attr(self.deepnessAttribute)) {
+          css.z = 0;
+        }
+        return TweenLite.set(this, {
+          css: css
+        });
+      });
     };
 
     Frame3d.prototype.init = function(options) {
@@ -536,7 +604,7 @@
       if (transformStyleIsSupported) {
         this.init(options);
       } else {
-        this.refresh = this.setZOf = this.zRefreshChild = this.zRefresh = this.untrackMouseMovements = this.trackMouseMovements = this.setPerspective = function() {};
+        this.flatten = this.cancelRotationEvent = this.disable = this.start = this.enable = this.refresh = this.setZOf = this.zRefreshChild = this.zRefresh = this.untrackMouseMovements = this.trackMouseMovements = this.addPerspective = this.removePerspective = function() {};
       }
     }
 

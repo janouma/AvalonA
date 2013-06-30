@@ -1,6 +1,6 @@
 # Avalon(A) — Bring deepness to your web apps
 
-*version: 0.7.1*
+*version: 0.7.2*
 
 
 **Avalon(A)** allows you to easily add 3d to a set of html elements to simulate a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/3))*. To make this 3d effect noticeable, all html elements pertaining to the `transformed layer` *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
@@ -124,11 +124,17 @@ As the example shows, the `play()` method received as first argument the `transf
 Enable debug logs and display when set to `true`.
 
 ## Methods
-##### *start()*
+##### *refresh()*
 Fetch `3d Frame` and `transformed layer` from the DOM and apply initial setup.
 
-##### *refresh()*
-Alias for ***start()***.
+##### *start()*
+Alias for ***refresh()***.
+
+##### *enable()*
+Alias for ***refresh()***.
+
+##### *disable()*
+Flatten `transformed layer`, remove mouse movement tracking, unable events and pause animation.
 
 ##### *zRefresh( [target : selector OR html node] )*
 Update **z translation** according to new values of `data-avalonA-deepness`.
