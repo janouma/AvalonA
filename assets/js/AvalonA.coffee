@@ -313,6 +313,8 @@ class Frame3d
 
 
   zRefresh: (node = null)->
+    return if @disabled is on
+
     self = @
     node ?= @transformedLayer
     target = if typeof node is 'string' then $(target, @transformedLayer) else $(node)
@@ -369,6 +371,8 @@ class Frame3d
 
 
   refresh: ->
+    @disabled = off
+
     if @frame
       @untrackMouseMovements()
       @animation?.pause()
@@ -391,6 +395,8 @@ class Frame3d
       @animation?.pause()
       @flatten()
       @removePerspective()
+
+    @disabled = on
 
 
   cancelRotationEvent: ->

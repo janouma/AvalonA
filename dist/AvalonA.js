@@ -434,6 +434,9 @@
       if (node == null) {
         node = null;
       }
+      if (this.disabled === true) {
+        return;
+      }
       self = this;
       if (node == null) {
         node = this.transformedLayer;
@@ -500,6 +503,7 @@
 
     Frame3d.prototype.refresh = function() {
       var _ref, _ref1;
+      this.disabled = false;
       if (this.frame) {
         this.untrackMouseMovements();
         if ((_ref = this.animation) != null) {
@@ -530,8 +534,9 @@
           _ref.pause();
         }
         this.flatten();
-        return this.removePerspective();
+        this.removePerspective();
       }
+      return this.disabled = true;
     };
 
     Frame3d.prototype.cancelRotationEvent = function() {
