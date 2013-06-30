@@ -26,14 +26,23 @@ $ ->
 
   layerCursor = 0
 
-  $('#start').click ->
-    outer = $('[data-outter]')
-    outer.attr('id', outer.attr('data-outter'))
-    inner = $('[data-inner]')
-    inner.addClass 'aa3d'
-    frame3d.start()
+  $('#enable').click ->
+    if not outer?
+      outer = $('[data-outter]')
+      outer.attr('id', outer.attr('data-outter'))
+      inner = $('[data-inner]')
+      inner.addClass 'aa3d'
+
+    frame3d.enable()
     $(@).css display: 'none'
+    $('#disable').css display: 'block'
     $('#shuffle-all,#shuffle-one').css display: 'inline'
+
+  $('#disable').click ->
+    $('#shuffle-all,#shuffle-one').css display: 'none'
+    $(@).css display: 'none'
+    $('#enable').css display: 'block'
+    frame3d.disable()
 
   $('#shuffle-all').click ->
     $('[data-aaz]').each ->

@@ -1,4 +1,4 @@
-### AvalonA 0.7.1 ###
+### AvalonA 0.7.2 ###
 
 class ActiveArea
   dimensionPattern = /^\d+(%|px)?$/gi
@@ -170,6 +170,7 @@ class Frame3d
   transitionDuration = 0.75
   noeffect = (rotation)-> rotation
   transformStyleIsSupported = null
+  cssBackUpAttribute = 'data-css-backup'
 
   detectTransformStyleSupport = ->
     if transformStyleIsSupported is null
@@ -182,14 +183,15 @@ class Frame3d
       element[0].style?.msTransformStyle = 'preserve-3d'
       element[0].style?.transformStyle = 'preserve-3d'
 
-      computedStyle = getComputedStyle(element[0], null)
-      style = computedStyle.getPropertyValue('-webkit-transform-style') or computedStyle.getPropertyValue('-moz-transform-style') or computedStyle.getPropertyValue('-ms-transform-style') or computedStyle.getPropertyValue('transform-style')
-
-      transformStyleIsSupported = style is 'preserve-3d'
+      transformStyleIsSupported = getTransformStyle(element[0]) is 'preserve-3d'
       element.remove()
 
     transformStyleIsSupported
 
+
+  getTransformStyle = (element)->
+    computedStyle = getComputedStyle(element, null)
+    computedStyle.getPropertyValue('-webkit-transform-style') or computedStyle.getPropertyValue('-moz-transform-style') or computedStyle.getPropertyValue('-ms-transform-style') or computedStyle.getPropertyValue('transform-style')
 
 
   debugName = (node)->
@@ -208,11 +210,19 @@ class Frame3d
     throw new Error "Cannot find 3d inner frame '##{@id} .#{@cssClass}' in dom" if not @transformedLayer.size()
 
 
-  setPerspective: ->
+  addPerspective: ->
     TweenLite.set(
       @transformedLayer[0]
       css:
         transformPerspective: 1000
+    )
+
+
+  removePerspective: ->
+    TweenLite.set(
+      @transformedLayer[0]
+      css:
+        transformPerspective: 'none'
     )
 
 
@@ -269,7 +279,7 @@ class Frame3d
 
 
   onrotation: ->
-    clearTimeout @timeoutId
+    clearTimeout @rotationTimeoutId
 
     if not @rotating
       @animation?.pause()
@@ -277,7 +287,7 @@ class Frame3d
       @rotating = on
 
     if @onendrotation or @animation
-      @timeoutId = setTimeout(
+      @rotationTimeoutId = setTimeout(
         =>
           @rotating = off
           @onendrotation?()
@@ -286,11 +296,11 @@ class Frame3d
       )
 
 
-  cancelRotation: ->
+  cancelRotation: (duration = 1)->
     @rotationX = @rotationY = 0
     TweenLite.to(
       @transformedLayer[0]
-      1
+      duration
       css:
         rotationX: 0
         rotationY: 0
@@ -334,6 +344,13 @@ class Frame3d
   setZOf: (target)->
     throw new Error "setZOf target argument cannot be null" if not target
 
+    if not target.attr(cssBackUpAttribute)
+      backup =
+        transformStyle: getTransformStyle(target[0]) or 'flat'
+        overflow: target.css('overflow') or 'inherit'
+
+      target.attr(cssBackUpAttribute, JSON.stringify(backup))
+
     TweenLite.set(
       target[0]
       css:
@@ -352,16 +369,47 @@ class Frame3d
 
 
   refresh: ->
-    @animation?.pause()
-    @untrackMouseMovements()
+    if @frame
+      @untrackMouseMovements()
+      @animation?.pause()
+
     @find3dFrames()
-    @setPerspective()
+    @addPerspective()
     @zRefresh()
     @trackMouseMovements()
     @animation?.play @transformedLayer[0]
 
 
   start: -> @refresh()
+
+  enable: -> @refresh()
+
+  disable: ->
+    if @frame
+      @untrackMouseMovements()
+      @cancelRotationEvent()
+      @animation?.pause()
+      @flatten()
+      @removePerspective()
+
+
+  cancelRotationEvent: ->
+    clearTimeout @rotationTimeoutId
+    @rotating = off
+    @onendrotation?()
+
+
+  flatten: ->
+    @cancelRotation 0
+    self = @
+
+    $("[#{cssBackUpAttribute}]").each ->
+      console.log "flattening layer '#{debugName $(@)}'" if self.debug is on
+
+      css = JSON.parse $(@).attr(cssBackUpAttribute)
+      css.z = 0 if $(@).attr self.deepnessAttribute
+      TweenLite.set @, css: css
+
 
   init: (options)->
     @deepnessAttribute = options.zAttr or 'data-avalonA-deepness'
@@ -389,7 +437,19 @@ class Frame3d
     if transformStyleIsSupported
       @init options
     else
-      @refresh = @setZOf = @zRefreshChild = @zRefresh = @untrackMouseMovements = @trackMouseMovements = @setPerspective = ->
+      @flatten =
+        @cancelRotationEvent =
+        @disable =
+        @start =
+        @enable =
+        @refresh =
+        @setZOf =
+        @zRefreshChild =
+        @zRefresh =
+        @untrackMouseMovements =
+        @trackMouseMovements =
+        @addPerspective =
+        @removePerspective = ->
 
 
 
