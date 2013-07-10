@@ -1,5 +1,5 @@
 
-/* AvalonA 0.7.2
+/* AvalonA 0.7.3
 */
 
 
@@ -396,16 +396,14 @@
         }
         this.rotating = true;
       }
-      if (this.onendrotation || this.animation) {
-        return this.rotationTimeoutId = setTimeout(function() {
-          var _ref1;
-          _this.rotating = false;
-          if (typeof _this.onendrotation === "function") {
-            _this.onendrotation();
-          }
-          return (_ref1 = _this.animation) != null ? _ref1.play() : void 0;
-        }, 1000);
-      }
+      return this.rotationTimeoutId = setTimeout(function() {
+        var _ref1;
+        _this.rotating = false;
+        if (typeof _this.onendrotation === "function") {
+          _this.onendrotation();
+        }
+        return (_ref1 = _this.animation) != null ? _ref1.play() : void 0;
+      }, 1000);
     };
 
     Frame3d.prototype.cancelRotation = function(duration) {

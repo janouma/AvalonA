@@ -1,4 +1,4 @@
-### AvalonA 0.7.2 ###
+### AvalonA 0.7.3 ###
 
 class ActiveArea
   dimensionPattern = /^\d+(%|px)?$/gi
@@ -286,14 +286,13 @@ class Frame3d
       @onstartrotation?()
       @rotating = on
 
-    if @onendrotation or @animation
-      @rotationTimeoutId = setTimeout(
-        =>
-          @rotating = off
-          @onendrotation?()
-          @animation?.play()
-        1000
-      )
+    @rotationTimeoutId = setTimeout(
+      =>
+        @rotating = off
+        @onendrotation?()
+        @animation?.play()
+      1000
+    )
 
 
   cancelRotation: (duration = 1)->
