@@ -300,9 +300,8 @@ class Frame3d
 
 
   disableRotation: (duration = 1)->
-    switch
-      when @animation? then @stopRotation()
-      when @rotationX or @rotationY then @resetRotation(duration)
+    @resetRotation(duration) if (@rotationX or @rotationY) and not @animation?
+    @stopRotation()
 
 
   resetRotation: (duration = 1)->

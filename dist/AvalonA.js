@@ -412,12 +412,10 @@
       if (duration == null) {
         duration = 1;
       }
-      switch (false) {
-        case this.animation == null:
-          return this.stopRotation();
-        case !(this.rotationX || this.rotationY):
-          return this.resetRotation(duration);
+      if ((this.rotationX || this.rotationY) && (this.animation == null)) {
+        this.resetRotation(duration);
       }
+      return this.stopRotation();
     };
 
     Frame3d.prototype.resetRotation = function(duration) {

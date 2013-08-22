@@ -127,6 +127,9 @@ The delay, in milliseconds, after which the user is considered idle when there i
 - **0** is equivalent to default
 - Any negative value means ***infinite***
 
+When the user is idle, the animation resumes *– if any –* and `endrotation` event is triggered.
+
+
 ##### *debug*
 Enable debug logs and display when set to `true`.
 
