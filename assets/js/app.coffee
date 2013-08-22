@@ -21,6 +21,8 @@ $ ->
     animation: AvalonAnimation.Balance()
     #animation: AvalonAnimation.Spotlight()
 
+    idleTimeout: -1
+
     #debug: on
   )
 

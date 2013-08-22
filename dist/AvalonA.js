@@ -1,4 +1,4 @@
-/* AvalonA 0.7.5*/
+/* AvalonA 0.8*/
 
 
 (function() {
@@ -391,7 +391,9 @@
         }
         this.rotating = true;
       }
-      return this.rotationTimeoutId = setTimeout(this.stopRotation, 1000);
+      if (this.idleTimeout > 0) {
+        return this.rotationTimeoutId = setTimeout(this.stopRotation, this.idleTimeout);
+      }
     };
 
     Frame3d.prototype.stopRotation = function() {
@@ -590,6 +592,7 @@
       this.onstartrotation = (_ref1 = options.on) != null ? _ref1.startrotation : void 0;
       this.onendrotation = (_ref2 = options.on) != null ? _ref2.endrotation : void 0;
       this.animation = options.animation;
+      this.idleTimeout = parseInt(options.idleTimeout || 1000, 10);
       if (this.animation) {
         return this.assertAnimatorValid();
       }

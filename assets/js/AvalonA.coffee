@@ -1,4 +1,4 @@
-### AvalonA 0.7.5 ###
+### AvalonA 0.8 ###
 
 class ActiveArea
   dimensionPattern = /^\d+(%|px)?$/gi
@@ -287,8 +287,8 @@ class Frame3d
 
     @rotationTimeoutId = setTimeout(
       @stopRotation
-      1000
-    )
+      @idleTimeout
+    ) if @idleTimeout > 0
 
 
   stopRotation: =>
@@ -437,6 +437,7 @@ class Frame3d
     @onstartrotation = options.on?.startrotation
     @onendrotation = options.on?.endrotation
     @animation = options.animation
+    @idleTimeout = parseInt(options.idleTimeout or 1000, 10)
     @assertAnimatorValid() if @animation
 
 
