@@ -1,4 +1,4 @@
-/* AvalonA 0.7.4*/
+/* AvalonA 0.7.5*/
 
 
 (function() {
@@ -354,7 +354,7 @@
     };
 
     Frame3d.prototype.mouseout = function() {
-      return this.cancelRotation();
+      return this.disableRotation();
     };
 
     Frame3d.prototype.mouseMoveCount = 0;
@@ -375,7 +375,7 @@
           }
         });
       } else {
-        return this.cancelRotation();
+        return this.disableRotation();
       }
     };
 
@@ -396,6 +396,7 @@
 
     Frame3d.prototype.stopRotation = function() {
       var _ref;
+      clearTimeout(this.rotationTimeoutId);
       if (this.rotating) {
         this.rotating = false;
         if (typeof this.onendrotation === "function") {
@@ -405,23 +406,30 @@
       }
     };
 
-    Frame3d.prototype.cancelRotation = function(duration) {
+    Frame3d.prototype.disableRotation = function(duration) {
       if (duration == null) {
         duration = 1;
       }
       switch (false) {
         case this.animation == null:
-          clearTimeout(this.rotationTimeoutId);
           return this.stopRotation();
         case !(this.rotationX || this.rotationY):
-          this.rotationX = this.rotationY = 0;
-          return TweenLite.to(this.transformedLayer[0], duration, {
-            css: {
-              rotationX: 0,
-              rotationY: 0
-            }
-          });
+          return this.resetRotation(duration);
       }
+    };
+
+    Frame3d.prototype.resetRotation = function(duration) {
+      if (duration == null) {
+        duration = 1;
+      }
+      clearTimeout(this.rotationTimeoutId);
+      this.rotationX = this.rotationY = 0;
+      return TweenLite.to(this.transformedLayer[0], duration, {
+        css: {
+          rotationX: 0,
+          rotationY: 0
+        }
+      });
     };
 
     Frame3d.prototype.untrackMouseMovements = function() {
@@ -532,7 +540,7 @@
       var _ref;
       if (this.frame) {
         this.untrackMouseMovements();
-        this.cancelRotationEvent();
+        this.disableRotationEvent();
         if ((_ref = this.animation) != null) {
           _ref.pause();
         }
@@ -542,7 +550,7 @@
       return this.disabled = true;
     };
 
-    Frame3d.prototype.cancelRotationEvent = function() {
+    Frame3d.prototype.disableRotationEvent = function() {
       clearTimeout(this.rotationTimeoutId);
       this.rotating = false;
       return typeof this.onendrotation === "function" ? this.onendrotation() : void 0;
@@ -550,7 +558,7 @@
 
     Frame3d.prototype.flatten = function() {
       var self;
-      this.cancelRotation(0);
+      this.resetRotation(0);
       self = this;
       return $("[" + cssBackUpAttribute + "]").each(function() {
         var css;
@@ -613,7 +621,7 @@
       if (transformStyleIsSupported) {
         this.init(options);
       } else {
-        this.flatten = this.cancelRotationEvent = this.disable = this.start = this.enable = this.refresh = this.setZOf = this.zRefreshChild = this.zRefresh = this.untrackMouseMovements = this.trackMouseMovements = this.addPerspective = this.removePerspective = function() {};
+        this.flatten = this.disableRotationEvent = this.disable = this.start = this.enable = this.refresh = this.setZOf = this.zRefreshChild = this.zRefresh = this.untrackMouseMovements = this.trackMouseMovements = this.addPerspective = this.removePerspective = function() {};
       }
     }
 

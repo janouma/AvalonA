@@ -1,4 +1,4 @@
-### AvalonA 0.7.4 ###
+### AvalonA 0.7.5 ###
 
 class ActiveArea
   dimensionPattern = /^\d+(%|px)?$/gi
@@ -254,7 +254,7 @@ class Frame3d
     @frame.mousemove @mousemove
 
 
-  mouseout: => @cancelRotation()
+  mouseout: => @disableRotation()
 
   mouseMoveCount: 0
 
@@ -274,7 +274,7 @@ class Frame3d
           rotationX: @fy(@rotationX)
           rotationY: @fx(@rotationY)
       )
-    else @cancelRotation()
+    else @disableRotation()
 
 
   onrotation: ->
@@ -292,27 +292,29 @@ class Frame3d
 
 
   stopRotation: =>
+    clearTimeout @rotationTimeoutId
     if @rotating
       @rotating = off
       @onendrotation?()
       @animation?.play()
 
 
-  cancelRotation: (duration = 1)->
+  disableRotation: (duration = 1)->
     switch
-      when @animation?
-        clearTimeout @rotationTimeoutId
-        @stopRotation()
+      when @animation? then @stopRotation()
+      when @rotationX or @rotationY then @resetRotation(duration)
 
-      when @rotationX or @rotationY
-        @rotationX = @rotationY = 0
-        TweenLite.to(
-          @transformedLayer[0]
-          duration
-          css:
-            rotationX: 0
-            rotationY: 0
-        )
+
+  resetRotation: (duration = 1)->
+    clearTimeout @rotationTimeoutId
+    @rotationX = @rotationY = 0
+    TweenLite.to(
+      @transformedLayer[0]
+      duration
+      css:
+        rotationX: 0
+        rotationY: 0
+    )
 
 
   untrackMouseMovements: ->
@@ -399,7 +401,7 @@ class Frame3d
   disable: ->
     if @frame
       @untrackMouseMovements()
-      @cancelRotationEvent()
+      @disableRotationEvent()
       @animation?.pause()
       @flatten()
       @removePerspective()
@@ -407,14 +409,14 @@ class Frame3d
     @disabled = on
 
 
-  cancelRotationEvent: ->
+  disableRotationEvent: ->
     clearTimeout @rotationTimeoutId
     @rotating = off
     @onendrotation?()
 
 
   flatten: ->
-    @cancelRotation 0
+    @resetRotation 0
     self = @
 
     $("[#{cssBackUpAttribute}]").each ->
@@ -452,7 +454,7 @@ class Frame3d
       @init options
     else
       @flatten =
-        @cancelRotationEvent =
+        @disableRotationEvent =
         @disable =
         @start =
         @enable =
