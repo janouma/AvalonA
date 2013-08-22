@@ -1,6 +1,4 @@
-
-/* AvalonA 0.7.3
-*/
+/* AvalonA 0.7.4*/
 
 
 (function() {
@@ -223,17 +221,17 @@
     };
 
     function ActiveArea(area) {
-      var _base, _base1, _ref, _ref1;
+      var _base, _base1;
       this.area = area;
       if (!this.area) {
         throw new Error("area argument is missing");
       }
       this.position = this.area.position || 'auto';
       if (typeof this.position === 'object') {
-        if ((_ref = (_base = this.position).x) == null) {
+        if ((_base = this.position).x == null) {
           _base.x = 'auto';
         }
-        if ((_ref1 = (_base1 = this.position).y) == null) {
+        if ((_base1 = this.position).y == null) {
           _base1.y = 'auto';
         }
         if (this.position.x === 'auto' && this.position.y === 'auto') {
@@ -350,7 +348,7 @@
       if (this.activeArea) {
         this.activeArea.init(this.frame);
       } else {
-        this.frame.on("mouseout", "#" + this.id, this.mouseout);
+        this.frame.on("mouseleave", "#" + this.id, this.mouseout);
       }
       return this.frame.mousemove(this.mousemove);
     };
@@ -377,15 +375,12 @@
           }
         });
       } else {
-        if (this.rotationX || this.rotationY) {
-          return this.cancelRotation();
-        }
+        return this.cancelRotation();
       }
     };
 
     Frame3d.prototype.onrotation = function() {
-      var _ref,
-        _this = this;
+      var _ref;
       clearTimeout(this.rotationTimeoutId);
       if (!this.rotating) {
         if ((_ref = this.animation) != null) {
@@ -396,27 +391,37 @@
         }
         this.rotating = true;
       }
-      return this.rotationTimeoutId = setTimeout(function() {
-        var _ref1;
-        _this.rotating = false;
-        if (typeof _this.onendrotation === "function") {
-          _this.onendrotation();
+      return this.rotationTimeoutId = setTimeout(this.stopRotation, 1000);
+    };
+
+    Frame3d.prototype.stopRotation = function() {
+      var _ref;
+      if (this.rotating) {
+        this.rotating = false;
+        if (typeof this.onendrotation === "function") {
+          this.onendrotation();
         }
-        return (_ref1 = _this.animation) != null ? _ref1.play() : void 0;
-      }, 1000);
+        return (_ref = this.animation) != null ? _ref.play() : void 0;
+      }
     };
 
     Frame3d.prototype.cancelRotation = function(duration) {
       if (duration == null) {
         duration = 1;
       }
-      this.rotationX = this.rotationY = 0;
-      return TweenLite.to(this.transformedLayer[0], duration, {
-        css: {
-          rotationX: 0,
-          rotationY: 0
-        }
-      });
+      switch (false) {
+        case this.animation == null:
+          clearTimeout(this.rotationTimeoutId);
+          return this.stopRotation();
+        case !(this.rotationX || this.rotationY):
+          this.rotationX = this.rotationY = 0;
+          return TweenLite.to(this.transformedLayer[0], duration, {
+            css: {
+              rotationX: 0,
+              rotationY: 0
+            }
+          });
+      }
     };
 
     Frame3d.prototype.untrackMouseMovements = function() {
@@ -424,7 +429,7 @@
       if ((_ref = this.frame) != null) {
         _ref.off("mousemove", this.mousemove);
       }
-      return (_ref1 = this.frame) != null ? _ref1.off("mouseout", this.mouseout) : void 0;
+      return (_ref1 = this.frame) != null ? _ref1.off("mouseleave", this.mouseout) : void 0;
     };
 
     Frame3d.prototype.zRefresh = function(node) {
@@ -597,6 +602,7 @@
         options = {};
       }
       this.zRefreshChild = __bind(this.zRefreshChild, this);
+      this.stopRotation = __bind(this.stopRotation, this);
       this.mousemove = __bind(this.mousemove, this);
       this.mouseout = __bind(this.mouseout, this);
       this.debug = options.debug;
@@ -615,8 +621,7 @@
 
   })();
 
-  /* Export
-  */
+  /* Export*/
 
 
   window.AvalonA = function(id, debug) {

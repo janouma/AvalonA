@@ -1,4 +1,4 @@
-### AvalonA 0.7.3 ###
+### AvalonA 0.7.4 ###
 
 class ActiveArea
   dimensionPattern = /^\d+(%|px)?$/gi
@@ -249,7 +249,7 @@ class Frame3d
     if @activeArea
       @activeArea.init @frame
     else
-      @frame.on "mouseout", "##{@id}", @mouseout
+      @frame.on "mouseleave", "##{@id}", @mouseout
 
     @frame.mousemove @mousemove
 
@@ -274,8 +274,7 @@ class Frame3d
           rotationX: @fy(@rotationX)
           rotationY: @fx(@rotationY)
       )
-    else
-      @cancelRotation() if @rotationX or @rotationY
+    else @cancelRotation()
 
 
   onrotation: ->
@@ -287,28 +286,38 @@ class Frame3d
       @rotating = on
 
     @rotationTimeoutId = setTimeout(
-      =>
-        @rotating = off
-        @onendrotation?()
-        @animation?.play()
+      @stopRotation
       1000
     )
 
 
+  stopRotation: =>
+    if @rotating
+      @rotating = off
+      @onendrotation?()
+      @animation?.play()
+
+
   cancelRotation: (duration = 1)->
-    @rotationX = @rotationY = 0
-    TweenLite.to(
-      @transformedLayer[0]
-      duration
-      css:
-        rotationX: 0
-        rotationY: 0
-    )
+    switch
+      when @animation?
+        clearTimeout @rotationTimeoutId
+        @stopRotation()
+
+      when @rotationX or @rotationY
+        @rotationX = @rotationY = 0
+        TweenLite.to(
+          @transformedLayer[0]
+          duration
+          css:
+            rotationX: 0
+            rotationY: 0
+        )
 
 
   untrackMouseMovements: ->
     @frame?.off "mousemove", @mousemove
-    @frame?.off "mouseout", @mouseout
+    @frame?.off "mouseleave", @mouseout
 
 
   zRefresh: (node = null)->
