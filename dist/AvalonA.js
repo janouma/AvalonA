@@ -1,4 +1,4 @@
-/* AvalonA 0.8*/
+/* AvalonA 0.8.1*/
 
 
 (function() {
@@ -295,17 +295,17 @@
     };
 
     Frame3d.prototype.find3dFrames = function() {
-      this.frame = $("#" + this.id);
-      this.transformedLayer = $("." + this.cssClass, this.frame).eq(0);
+      this.frame = $("#" + this.frameId);
+      this.transformedLayer = $("#" + this.layerId, this.frame);
       if (this.debug === true) {
         console.log("@deepnessAttribute: " + this.deepnessAttribute);
-        console.log("@cssClass: " + this.cssClass);
+        console.log("@layerId: " + this.layerId);
       }
       if (!this.frame.size()) {
-        throw new Error("Cannot find 3d frame '#" + this.id + "' in dom");
+        throw new Error("Cannot find 3d frame '#" + this.frameId + "' in dom");
       }
       if (!this.transformedLayer.size()) {
-        throw new Error("Cannot find 3d inner frame '#" + this.id + " ." + this.cssClass + "' in dom");
+        throw new Error("Cannot find 3d inner frame '#" + this.frameId + " > #" + this.layerId + "' in dom");
       }
     };
 
@@ -327,7 +327,7 @@
 
     Frame3d.prototype.trackMouseMovements = function() {
       var activeAreaPlaceholder;
-      if (this.debug === true) {
+      if (this.debug === true && this.activeArea) {
         $('body').append("<div id='avalona-active-area' style='background-color:hotpink;opacity:0.75;pointer-events:none;position:absolute;visibility:hidden;z-index:10000;'>AvalonA Active Area</div>");
         activeAreaPlaceholder = $('#avalona-active-area');
         this.debugMouseMove = function() {
@@ -348,7 +348,7 @@
       if (this.activeArea) {
         this.activeArea.init(this.frame);
       } else {
-        this.frame.on("mouseleave", "#" + this.id, this.mouseout);
+        this.frame.on("mouseleave", "#" + this.frameId, this.mouseout);
       }
       return this.frame.mousemove(this.mousemove);
     };
@@ -560,7 +560,7 @@
       var self;
       this.resetRotation(0);
       self = this;
-      return $("[" + cssBackUpAttribute + "]").each(function() {
+      return $("[" + cssBackUpAttribute + "]", this.transformedLayer[0]).each(function() {
         var css;
         if (self.debug === true) {
           console.log("flattening layer '" + (debugName($(this))) + "'");
@@ -578,7 +578,6 @@
     Frame3d.prototype.init = function(options) {
       var _ref, _ref1, _ref2;
       this.deepnessAttribute = options.zAttr || 'data-avalonA-deepness';
-      this.cssClass = options["class"] || 'avalona-inner-frame';
       this.fx = typeof options.fx === 'function' ? options.fx : noeffect;
       this.fy = typeof options.fy === 'function' ? options.fy : noeffect;
       if (options.activeArea) {
@@ -605,8 +604,9 @@
       }
     };
 
-    function Frame3d(id, options) {
-      this.id = id;
+    function Frame3d(frameId, layerId, options) {
+      this.frameId = frameId;
+      this.layerId = layerId;
       if (options == null) {
         options = {};
       }
@@ -614,6 +614,12 @@
       this.stopRotation = __bind(this.stopRotation, this);
       this.mousemove = __bind(this.mousemove, this);
       this.mouseout = __bind(this.mouseout, this);
+      if (!this.frameId) {
+        throw new Error("frameId argument cannot be null");
+      }
+      if (!this.layerId) {
+        throw new Error("layerId argument cannot be null");
+      }
       this.debug = options.debug;
       detectTransformStyleSupport();
       if (this.debug === true) {
@@ -633,11 +639,11 @@
   /* Export*/
 
 
-  window.AvalonA = function(id, debug) {
+  window.AvalonA = function(frameId, layerId, debug) {
     if (debug == null) {
       debug = false;
     }
-    return new Frame3d(id, debug);
+    return new Frame3d(frameId, layerId, debug);
   };
 
 }).call(this);
