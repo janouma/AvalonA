@@ -1,4 +1,4 @@
-### AvalonA 0.8 ###
+### AvalonA 0.8.1 ###
 
 class ActiveArea
   dimensionPattern = /^\d+(%|px)?$/gi
@@ -227,7 +227,7 @@ class Frame3d
 
 
   trackMouseMovements: ->
-    if @debug is on
+    if @debug is on and @activeArea
       $('body').append "<div id='avalona-active-area' style='background-color:hotpink;opacity:0.75;pointer-events:none;position:absolute;visibility:hidden;z-index:10000;'>AvalonA Active Area</div>"
 
       activeAreaPlaceholder = $('#avalona-active-area')
@@ -418,7 +418,7 @@ class Frame3d
     @resetRotation 0
     self = @
 
-    $("[#{cssBackUpAttribute}]").each ->
+    $("[#{cssBackUpAttribute}]", @transformedLayer[0]).each ->
       console.log "flattening layer '#{debugName $(@)}'" if self.debug is on
 
       css = JSON.parse $(@).attr(cssBackUpAttribute)
