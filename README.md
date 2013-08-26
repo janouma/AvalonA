@@ -3,7 +3,7 @@
 *version: 0.8.1*
 
 
-**Avalon(A)** allows you to easily add 3d to a set of html elements to simulate a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/3))*. To make this 3d effect noticeable, all html elements pertaining to the `transformed layer` *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
+**Avalon(A)** allows you to easily add 3d to a set of html elements to simulate a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/4))*. To make this 3d effect noticeable, all html elements pertaining to the `transformed layer` *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
 
 # Dependencies
 - [Zepto.js 1.0+](http://zeptojs.com) or [jQuery 1.9.1+](http://jquery.com)
@@ -12,7 +12,7 @@
 # Example
 ## Html
 	<div id="frame-3d"> <!-- 3d Frame -->
-    	<div class="avalona-inner-frame"> <!-- transformed layer -->
+    	<div id="avalona-inner-frame"> <!-- transformed layer -->
         	<div id="half-circle" data-avalonA-deepness="-300"></div>
         		<div id="square" data-avalonA-deepness="75">
             		<div id="inner-square" data-avalonA-deepness="150"></div>
@@ -21,11 +21,11 @@
     	</div>
 	</div>
 
-It is mandatory to have at least the `3d Frame` and `transformed layer` defined when **Avalon(A)** initialization occurs. Within the `3d Frame`, the first child div having the class `avalona-inner-frame` becomes the `transformed layer`.
+It is mandatory to have at least the `3d Frame` and `transformed layer` defined when **Avalon(A)** initialization occurs. Within the `3d Frame`, the element div having the id `avalona-inner-frame` becomes the `transformed layer`.
 
 ## Script
     $(function(){
-        AvalonA('frame-3d').start();
+        AvalonA('frame-3d', 'avalona-inner-frame').start();
     });
 
 # API
@@ -33,11 +33,8 @@ It is mandatory to have at least the `3d Frame` and `transformed layer` defined 
 It is possible to pass an object along with the id of the `3d Frame` to set options:
 
     $(function(){
-        AvalonA('frame-3d', {option: value}).start();
+        AvalonA('frame-3d', 'avalona-inner-frame', {option: value}).start();
     });
-
-##### *class*
-Changes the name of the class used to tag an element as the `transformed layer`. Default value is `avalona-inner-frame`.
 
 ##### *zAttr*
 Changes the name of the attribute used to define layer **z translation**. Default value is `data-avalonA-deepness`.
@@ -45,7 +42,7 @@ Changes the name of the attribute used to define layer **z translation**. Defaul
 ##### *fy*
 A function that affects the amount of rotation triggered by the mouse movements on the **y axis**.
 
-	AvalonA('frame-3d',{fy: function(rotation){
+	AvalonA('frame-3d', 'avalona-inner-frame', {fy: function(rotation){
 		return rotation * 2;
 	} }).start();
 
@@ -68,7 +65,7 @@ When available, restrict mouse movements tracking to this area: moving outside t
 			height: 100
 		}
 	};
-	AvalonA('frame-3d', options).start();
+	AvalonA('frame-3d', 'avalona-inner-frame', options).start();
 
 Enable the `debug` option to display the area *( for development purpose only )*.
 
@@ -158,11 +155,11 @@ It is possible to add event listeners like this
     		event: function(){ /* event code goes here */ },
     	}
 	};
-	AvalonA('frame-3d', options).start();
+	AvalonA('frame-3d', 'avalona-inner-frame', options).start();
 	
 or this
 
-	var a = AvalonA('frame-3d', options);
+	var a = AvalonA('frame-3d', 'avalona-inner-frame', options);
 	a.onevent = function(){ /* event code goes here */ };
 	a.start();
 	
@@ -251,4 +248,4 @@ Note that the **TweenMax** module includes the **TweenLite** one *– see [GSAP]
 *Nothing happens on browsers that doesn't support 3d transform.*
 
 # Preview
-**[see jsFiddle preview](http://jsfiddle.net/K3kPx/3)**
+**[see jsFiddle preview](http://jsfiddle.net/K3kPx/4)**

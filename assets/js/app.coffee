@@ -1,7 +1,7 @@
 $ ->
   frame3d = AvalonA(
     'body-3d'
-    class: 'aa3d'
+    'aa3d'
     zAttr: 'data-aaz'
     fy: (rotation)-> 0.75 * rotation
     fx: (rotation)-> 2 * rotation
@@ -28,7 +28,7 @@ $ ->
 
   frame3d2 = AvalonA(
     'body-3d'
-    class: 'a3d2'
+    'a3d2'
     zAttr: 'data-aaz'
     fy: (rotation)-> 0.75 * rotation
     fx: (rotation)-> 2 * rotation
@@ -58,7 +58,7 @@ $ ->
   outer = $('[data-outter]')
   outer.attr('id', outer.attr('data-outter'))
   inner = $('[data-inner]')
-  inner.addClass 'aa3d'
+  inner.attr('id', inner.attr('data-inner'))
 
   $('#enable').click ->
     frame3d.enable()

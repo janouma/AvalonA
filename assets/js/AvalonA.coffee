@@ -198,16 +198,16 @@ class Frame3d
     "#{node.prop('tagName')}(#{node.attr('id') or node.attr('class') or node.attr('href')})"
 
   find3dFrames: ->
-    @frame = $("##{@id}")
-    @transformedLayer = $(".#{@cssClass}", @frame).eq(0)
+    @frame = $("##{@frameId}")
+    @transformedLayer = $("##{@layerId}", @frame)
 
     if @debug is on
       console.log "@deepnessAttribute: #{@deepnessAttribute}"
-      console.log "@cssClass: #{@cssClass}"
+      console.log "@layerId: #{@layerId}"
 
 
-    throw new Error "Cannot find 3d frame '##{@id}' in dom" if not @frame.size()
-    throw new Error "Cannot find 3d inner frame '##{@id} .#{@cssClass}' in dom" if not @transformedLayer.size()
+    throw new Error "Cannot find 3d frame '##{@frameId}' in dom" if not @frame.size()
+    throw new Error "Cannot find 3d inner frame '##{@frameId} > ##{@layerId}' in dom" if not @transformedLayer.size()
 
 
   addPerspective: ->
@@ -249,7 +249,7 @@ class Frame3d
     if @activeArea
       @activeArea.init @frame
     else
-      @frame.on "mouseleave", "##{@id}", @mouseout
+      @frame.on "mouseleave", "##{@frameId}", @mouseout
 
     @frame.mousemove @mousemove
 
@@ -428,7 +428,6 @@ class Frame3d
 
   init: (options)->
     @deepnessAttribute = options.zAttr or 'data-avalonA-deepness'
-    @cssClass = options.class or 'avalona-inner-frame'
     @fx = if typeof options.fx is 'function' then options.fx else noeffect
     @fy = if typeof options.fy is 'function' then options.fy else noeffect
     @activeArea = new ActiveArea(options.activeArea) if options.activeArea
@@ -445,7 +444,9 @@ class Frame3d
     throw new Error "animation.pause must be a function" if not @animation.pause or typeof @animation.pause isnt 'function'
 
 
-  constructor: (@id, options = {})->
+  constructor: (@frameId, @layerId, options = {})->
+    throw new Error "frameId argument cannot be null" if not @frameId
+    throw new Error "layerId argument cannot be null" if not @layerId
     @debug = options.debug
     detectTransformStyleSupport()
     console.log "transformStyleIsSupported: #{transformStyleIsSupported}" if @debug is on
@@ -472,5 +473,5 @@ class Frame3d
 
 ### Export ###
 
-window.AvalonA = (id, debug = false)-> new Frame3d(id, debug)
+window.AvalonA = (frameId, layerId, debug = false)-> new Frame3d(frameId, layerId, debug)
 
