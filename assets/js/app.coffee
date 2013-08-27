@@ -107,3 +107,13 @@ $ ->
     frame3d.disable()
     $(@).css display: 'none'
     $('#enable3').css display: 'block'
+
+  $('#hide').click ->
+    $('#aa3d,#a3d2').css display: 'none'
+    $(@).css display: 'none'
+    $('#show').css display: 'block'
+
+  $('#show').click ->
+    $('#aa3d,#a3d2').css display: 'block'
+    $(@).css display: 'none'
+    $('#hide').css display: 'block'

@@ -1,4 +1,4 @@
-### AvalonA 0.8.1 ###
+### AvalonA 0.8.2 ###
 
 class ActiveArea
   dimensionPattern = /^\d+(%|px)?$/gi
@@ -315,6 +315,16 @@ class Frame3d
         rotationY: 0
     )
 
+  resetTransform: ->
+    clearTimeout @rotationTimeoutId
+    @rotationX = @rotationY = 0
+    @transformedLayer.css
+      '-webkit-transform': 'none'
+      '-moz-transform': 'none'
+      '-o-transform': 'none'
+      '-ms-transform': 'none'
+      transform: 'none'
+
 
   untrackMouseMovements: ->
     @frame?.off "mousemove", @mousemove
@@ -415,7 +425,7 @@ class Frame3d
 
 
   flatten: ->
-    @resetRotation 0
+    @resetTransform()
     self = @
 
     $("[#{cssBackUpAttribute}]", @transformedLayer[0]).each ->

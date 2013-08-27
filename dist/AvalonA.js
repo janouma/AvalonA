@@ -1,4 +1,4 @@
-/* AvalonA 0.8.1*/
+/* AvalonA 0.8.2*/
 
 
 (function() {
@@ -432,6 +432,18 @@
       });
     };
 
+    Frame3d.prototype.resetTransform = function() {
+      clearTimeout(this.rotationTimeoutId);
+      this.rotationX = this.rotationY = 0;
+      return this.transformedLayer.css({
+        '-webkit-transform': 'none',
+        '-moz-transform': 'none',
+        '-o-transform': 'none',
+        '-ms-transform': 'none',
+        transform: 'none'
+      });
+    };
+
     Frame3d.prototype.untrackMouseMovements = function() {
       var _ref, _ref1;
       if ((_ref = this.frame) != null) {
@@ -558,7 +570,7 @@
 
     Frame3d.prototype.flatten = function() {
       var self;
-      this.resetRotation(0);
+      this.resetTransform();
       self = this;
       return $("[" + cssBackUpAttribute + "]", this.transformedLayer[0]).each(function() {
         var css;
