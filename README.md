@@ -239,6 +239,23 @@ Note that the **TweenMax** module includes the **TweenLite** one *– see [GSAP]
 - direction `'cw'` *(clockwise)* or `'ccw'` *(counter-clockwise)* – ***default value is 'cw'***
 - angle – ***default value is 20***
 
+# SpeedTester utility
+The **SpeedTester** *(SpeedTester.min.js)* allows you to check system performance before activating **Avalon(A)**, thus preventing to undermine the usability of your website. It is meant to be used with the file `speed-benchmark.min.js` like this:
+
+*Main html document – preferably before loading any other scripts*
+
+	<script>
+    	var speedTester = new SpeedTester(< path/to/speed-benchmark.min.js >);
+    	speedTester.run();
+	</script>
+
+*Main script – after document as been loaded*
+
+	speedTester.oncomplete(function(message){
+		if(message.speed === 'high'){
+			AvalonA('frame-3d', 'avalona-inner-frame').start();
+		}
+	});
 
 # Browser compatibility
 - Safari

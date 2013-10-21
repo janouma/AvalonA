@@ -18,6 +18,7 @@ class window.SpeedTester
     @
 
   oncomplete: (handler)->
+    return if not Worker?
     throw new Error 'You must provide a valid handler' if not handler or typeof handler isnt 'function'
 
     if @message?
