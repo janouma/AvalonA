@@ -1,4 +1,12 @@
 $ ->
+  enableAll = ->
+    frame3d.enable()
+    frame3d2.enable()
+    $('#enable').css display: 'none'
+    $('#enable2,#enable3').css display: 'none'
+    $('#disable,#disable2,#disable3').css display: 'block'
+    $('#shuffle-all,#shuffle-one').css display: 'inline'
+
   frame3d = AvalonA(
     'body-3d'
     'aa3d'
@@ -60,13 +68,7 @@ $ ->
   inner = $('[data-inner]')
   inner.attr('id', inner.attr('data-inner'))
 
-  $('#enable').click ->
-    frame3d.enable()
-    frame3d2.enable()
-    $(@).css display: 'none'
-    $('#enable2,#enable3').css display: 'none'
-    $('#disable,#disable2,#disable3').css display: 'block'
-    $('#shuffle-all,#shuffle-one').css display: 'inline'
+  $('#enable').click enableAll
 
   $('#disable').click ->
     $('#shuffle-all,#shuffle-one').css display: 'none'
@@ -117,3 +119,13 @@ $ ->
     $('#aa3d,#a3d2').css display: 'block'
     $(@).css display: 'none'
     $('#hide').css display: 'block'
+
+  console.log "Stalling speed tester"
+
+  setTimeout(
+    ->
+      speedTester.oncomplete (message)->
+        console.log("speed: #{message.speed}")
+        enableAll()
+    10000
+  )

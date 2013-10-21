@@ -9,12 +9,6 @@
     <!-- @reload -->
     <!-- @stylesheet normalize style -->
 
-    <!-- @javascript zepto.min CSSPlugin.min TweenMax.min BezierPlugin.min -->
-
-    <!-- @javascript AvalonA -->
-    <!-- @javascript AvalonAnimation -->
-    <!-- @javascript app -->
-
     <link href="<!-- @path favicon.ico -->" rel="shortcut icon">
     <link href="<!-- @path apple-touch-icon.png -->" rel="apple-touch-icon">
 
@@ -77,6 +71,18 @@
         </div>
     </div>
 </div>
+
+<!-- @javascript SpeedTester -->
+
+<script>
+    var speedTester = new SpeedTester('<!-- @path speed-benchmark -->').run();
+</script>
+
+<!-- @javascript zepto.min CSSPlugin.min TweenMax.min BezierPlugin.min -->
+
+<!-- @javascript AvalonA -->
+<!-- @javascript AvalonAnimation -->
+<!-- @javascript app -->
 
 </body>
 

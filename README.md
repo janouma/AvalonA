@@ -3,7 +3,7 @@
 *version: 0.8.2*
 
 
-**Avalon(A)** allows you to easily add 3d to a set of html elements to simulate a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/4))*. To make this 3d effect noticeable, all html elements pertaining to the `transformed layer` *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
+**Avalon(A)** allows you to easily add 3d to a set of html elements to simulate a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/4/show))*. To make this 3d effect noticeable, all html elements pertaining to the `transformed layer` *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
 
 # Dependencies
 - [Zepto.js 1.0+](http://zeptojs.com) or [jQuery 1.9.1+](http://jquery.com)
@@ -248,4 +248,4 @@ Note that the **TweenMax** module includes the **TweenLite** one *– see [GSAP]
 *Nothing happens on browsers that doesn't support 3d transform.*
 
 # Preview
-**[see jsFiddle preview](http://jsfiddle.net/K3kPx/4)**
+**[see jsFiddle preview](http://jsfiddle.net/K3kPx/4/show)**
