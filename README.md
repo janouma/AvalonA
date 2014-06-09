@@ -1,16 +1,34 @@
 # Avalon(A) — Bring deepness to your web apps
 
-*version: 0.8.2*
+*version: 0.8.3*
 
 
 **Avalon(A)** allows you to easily add 3d to a set of html elements to simulate a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/4/show))*. To make this 3d effect noticeable, all html elements pertaining to the `transformed layer` *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
 
-# Dependencies
+# Summary
+- [Dependencies](#dependencies)
+- [Example](#example)
+	- [Html](#html)
+	- [Script](#script)
+- [API](#api)
+	- [Constructor options](#constructorOptions)
+	- [Methods](#methods)
+	- [Events](#events)
+- [Plugins](#plugins)
+	- [AvalonAnimation](#avalonAnimation)
+		- [Balance](#balance)
+		- [Spotlight](#spotlight)
+- [SpeedTester utility](#speedTesterUtility)
+- [Browser compatibility](#browserCompatibility)
+- [Using it with require.js](#usingRequireJS)
+- [Preview](#preview)
+
+# <a name="dependencies"></a> Dependencies
 - [Zepto.js 1.0+](http://zeptojs.com) or [jQuery 1.9.1+](http://jquery.com)
 - [GSAP 1.9.2+](http://www.greensock.com) *(GreenSock Animation Platform)* **TweenLite** and **CSSPlugin** modules
 
-# Example
-## Html
+# <a name="example"></a> Example
+## <a name="html"></a> Html
 	<div id="frame-3d"> <!-- 3d Frame -->
     	<div id="avalona-inner-frame"> <!-- transformed layer -->
         	<div id="half-circle" data-avalonA-deepness="-300"></div>
@@ -23,13 +41,13 @@
 
 It is mandatory to have at least the `3d Frame` and `transformed layer` defined when **Avalon(A)** initialization occurs. Within the `3d Frame`, the element div having the id `avalona-inner-frame` becomes the `transformed layer`.
 
-## Script
+## <a name="script"></a> Script
     $(function(){
         AvalonA('frame-3d', 'avalona-inner-frame').start();
     });
 
-# API
-## Constructor options
+# <a name="api"></a> API
+## <a name="constructorOptions"></a> Constructor options
 It is possible to pass an object along with the id of the `3d Frame` to set options:
 
     $(function(){
@@ -130,7 +148,7 @@ When the user is idle, the animation resumes *– if any –* and `endrotation` 
 ##### *debug*
 Enable debug logs and display when set to `true`.
 
-## Methods
+## <a name="methods"></a> Methods
 ##### *refresh()*
 Fetch `3d Frame` and `transformed layer` from the DOM and apply initial setup.
 
@@ -147,7 +165,7 @@ Flatten `transformed layer`, remove mouse movement tracking, unable events and p
 Update **z translation** according to new values of `data-avalonA-deepness`.
 When **target** is provided, only matching html nodes get updated.
 
-##  Events
+## <a name="events"></a> Events
 It is possible to add event listeners like this
 
 	var options = {
@@ -171,11 +189,11 @@ Triggered when `transformed layer` rotation starts.
 ##### *endrotation*
 Triggered when `transformed layer` rotation ends.
 
-# Plugins
-## AvalonAnimation
+# <a name="plugins"></a> Plugins
+## <a name="avalonAnimation"></a> AvalonAnimation
 Provides a collection of preset animations.
 
-### Balance
+### <a name="balance"></a> Balance
 Adds a balancing movement between two rotation angles.
 
 ###### *Dependencies*
@@ -211,14 +229,14 @@ Note that the **TweenMax** module includes the **TweenLite** one *– see [GSAP]
 - from: { rx: *< rotation on X axis >*, ry: *< rotation on Y axis >* } – ***default value is { rx: 0 , ry: -20 }***
 - to: { rx: *< rotation on X axis >*, ry: *< rotation on Y axis >* } – ***default value is the negative version of `from`***
 
-### Spotlight
+### <a name="spotlight"></a> Spotlight
 Rotates like a spotlight.
 
 ###### *Dependencies*
 
 - [GSAP 1.9.2+](http://www.greensock.com) *(GreenSock Animation Platform)* **TweenMax** and **BezierPlugin** modules
 
-Note that the **TweenMax** module includes the **TweenLite** one *– see [GSAP](http://www.greensock.com) documentation for details*.
+Note that the **TweenMax** module includes the **TweenLite** and **BezierPlugin** ones *– see [GSAP](http://www.greensock.com) documentation for details*.
 
 ###### *Examples*
 *Example 1*
@@ -239,7 +257,7 @@ Note that the **TweenMax** module includes the **TweenLite** one *– see [GSAP]
 - direction `'cw'` *(clockwise)* or `'ccw'` *(counter-clockwise)* – ***default value is 'cw'***
 - angle – ***default value is 20***
 
-# SpeedTester utility
+# <a name="speedTesterUtility"></a> SpeedTester utility
 The **SpeedTester** *(SpeedTester.min.js)* allows you to check system performance before activating **Avalon(A)**, thus preventing to undermine the usability of your website. It is meant to be used with the file `speed-benchmark.min.js` like this:
 
 *Main html document – preferably before loading any other scripts*
@@ -257,12 +275,24 @@ The **SpeedTester** *(SpeedTester.min.js)* allows you to check system performanc
 		}
 	});
 
-# Browser compatibility
+# <a name="browserCompatibility"></a> Browser compatibility
 - Safari
 - Chrome
 - Firefox
 
 *Nothing happens on browsers that doesn't support 3d transform.*
 
-# Preview
+# <a name="usingRequireJS"></a> Using it with require.js
+**Avalon(A)** is AMD compliant: if **require.js** is present, `AvalonA` function won't be exposed as a global variable but as a module having the same name.
+The same goes for `AvalonAnimation` plugin and `SpeedTester` utility.
+
+As an AMD module, `AvalonA` requires `jquery` and `tweenlite` modules. `AvalonAnimation` requires `tweenmax`,`tweenlite` and `GSEases`modules, where `GSEases` contains key/value pairs of standard greensock easing functions — *the ones bundled with TweenMax*.
+
+#### GreenSock specifics
+Keep in mind that since GreenSock bundles several modules within one file — *indeed TweenMax file contains TweenMax as well as TweenLite, CSSPlugin, BezierPlugin, Eeasin, etc* — it needs special care to be used with **require.js**.
+
+Check out this [code sample](https://raw.github.com/janouma/AvalonA/master/dist/avalona-amd-test.zip) to understand how to use **Avalon(A)** and **GreenSock** with **require.js**.
+
+
+# <a name="preview"></a> Preview
 **[see jsFiddle preview](http://jsfiddle.net/K3kPx/4/show)**

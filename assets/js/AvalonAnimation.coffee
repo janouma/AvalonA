@@ -1,6 +1,12 @@
 ### AvalonAnimation ###
 
-window.AvalonAnimation =
+defineAvalonAnimation = (TweenMax, TweenLite, GSEases)->
+
+  #GSEases
+  #Linear, Quad, Cubic, Quart, Quint, Strong, Power0, Power1, Power2, Power3, and Power4 (each with easeIn, easeOut, and easeInOut)
+
+  Power1 = GSEases.Power1
+  Linear = GSEases.Linear
 
   ### Balance ###
 
@@ -103,3 +109,17 @@ window.AvalonAnimation =
         )
 
     pause: -> @timeline?.pause()
+
+
+
+### Export ###
+
+if typeof define is 'function' and define.amd
+	define 'AvalonAnimation', ['tweenmax','tweenlite','GSEases'], (tweenmax, tweenlite, GSEases)-> defineAvalonAnimation(tweenmax, tweenlite, GSEases)
+else
+	window.AvalonAnimation = defineAvalonAnimation(
+		window.GreenSockGlobals?.TweenMax or TweenMax
+		window.GreenSockGlobals?.TweenLite or TweenLite
+		Power1: window.GreenSockGlobals?.Power1 or Power1
+		Linear: window.GreenSockGlobals?.Linear or Linear
+	)
