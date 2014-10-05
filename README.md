@@ -258,20 +258,22 @@ Note that the **TweenMax** module includes the **TweenLite** and **BezierPlugin*
 - angle – ***default value is 20***
 
 # <a name="speedTesterUtility"></a> SpeedTester utility
-The **SpeedTester** *(SpeedTester.min.js)* allows you to check system performance before activating **Avalon(A)**, thus preventing to undermine the usability of your website. It is meant to be used with the file `speed-benchmark.min.js` like this:
+The **SpeedTester** *(SpeedTester.min.js)* allows you to check system performance before activating **Avalon(A)**, thus preventing to undermine the usability of your website. It is meant to be used like this:
 
 *Main html document – preferably before loading any other scripts*
 
 	<script>
-    	var speedTester = new SpeedTester(< path/to/speed-benchmark.min.js >);
+    	var speedTester = new SpeedTester(< how many times the test must be run (default 1) >);
     	speedTester.run();
 	</script>
 
 *Main script – after document as been loaded*
 
-	speedTester.oncomplete(function(message){
-		if(message.speed === 'high'){
+	speedTester.oncomplete(function(results){
+		if(results.fps > 30){
 			AvalonA('frame-3d', 'avalona-inner-frame').start();
+		}else{
+			console.warn('Your frame rate is too low, recommended: 30');
 		}
 	});
 
