@@ -128,6 +128,13 @@ $ ->
 		$(@).css display: 'none'
 		$('#hide').css display: 'block'
 
+	###
+	speedTester.oncomplete (message)->
+		console.log("fps: #{message.fps}")
+		enableAll()
+
+	###
+    
 	console.log "Stalling speed tester"
 
 	setTimeout(
