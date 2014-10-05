@@ -134,7 +134,7 @@ $ ->
 		enableAll()
 
 	###
-    
+
 	console.log "Stalling speed tester"
 
 	setTimeout(

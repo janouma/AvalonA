@@ -8,26 +8,30 @@ defineSpeedTester = (global)->
 			@frameCount = 0
 			@times = times and Math.abs(Math.ceil(times)) or 1
 
+
 		run: ->
 			requestAnimationFrame = global.requestAnimationFrame or global.mozRequestAnimationFrame or global.webkitRequestAnimationFrame or global.oRequestAnimationFrame
 
 			if requestAnimationFrame?
-				requestAnimationFrame @frame
+				requestAnimationFrame @_frame
 			else console.warn "Your browser doesn't support \"requestAnimationFrame\"" if console?
 			@
 
 
-		frame: (tick)=>
+		_frame: (tick)=>
 			@frameCount++
 			@start = tick if not @start
-			if tick - @start < (second * @times) then requestAnimationFrame @frame else @_complete = yes
 
-
-		oncomplete: (listener)->
-			if @_complete?
-				listener.call Ø, fps: @frameCount / @times
+			if tick - @start < (second * @times)
+				requestAnimationFrame @_frame
 			else
-				setTimeout(=> @oncomplete listener, 100)
+				@_testResults = fps: @frameCount / @times
+				@_complete = yes
+				@_oncomplete and @_oncomplete.call(Ø, @_testResults)
+
+
+		oncomplete: (@_oncomplete)-> @_complete and @_oncomplete.call(Ø, @_testResults)
+
 
 	#======================================== Public API =============================================
 	SpeedTester
