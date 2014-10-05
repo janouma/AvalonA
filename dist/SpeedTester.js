@@ -1,51 +1,58 @@
 (function() {
-  var defineSpeedTester;
+  var defineSpeedTester,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
+    _this = this;
 
-  defineSpeedTester = function() {
-    var SpeedTester;
+  defineSpeedTester = function(global) {
+    var SpeedTester, second, Ø;
+    Ø = Object.create && Object.create(null) || {};
+    second = 1000;
     SpeedTester = (function() {
-      function SpeedTester(benchmarkUrl) {
-        this.benchmarkUrl = benchmarkUrl;
-        if (!this.benchmarkUrl) {
-          throw new Error('You must specify the benchmark url');
-        }
+      function SpeedTester(times) {
+        this._frame = __bind(this._frame, this);
+        this.frameCount = 0;
+        this.times = times && Math.abs(Math.ceil(times)) || 1;
       }
 
       SpeedTester.prototype.run = function() {
-        var _this = this;
-        if (typeof Worker !== "undefined" && Worker !== null) {
-          window.addEventListener('unload', function() {
-            var _ref;
-            return (_ref = _this.worker) != null ? _ref.terminate() : void 0;
-          });
-          this.worker = new Worker(this.benchmarkUrl);
-          this.worker.onmessage = function(event) {
-            return _this.message = JSON.parse(event.data);
-          };
-          this.worker.postMessage("start");
+        var requestAnimationFrame;
+        requestAnimationFrame = global.requestAnimationFrame || global.mozRequestAnimationFrame || global.webkitRequestAnimationFrame || global.oRequestAnimationFrame;
+        this._testResults = {};
+        this._complete = false;
+        if (requestAnimationFrame) {
+          requestAnimationFrame(this._frame);
         } else {
           if (typeof console !== "undefined" && console !== null) {
-            console.warn("Your browser doesn't support the worker api");
+            console.warn("Your browser doesn't support \"requestAnimationFrame\"");
           }
+          this._triggerComplete();
         }
         return this;
       };
 
-      SpeedTester.prototype.oncomplete = function(handler) {
-        var _this = this;
-        if (typeof Worker === "undefined" || Worker === null) {
-          return;
+      SpeedTester.prototype._triggerComplete = function() {
+        this._testResults = {
+          fps: this.frameCount / this.times
+        };
+        this._complete = true;
+        return this._oncomplete && this._oncomplete.call(Ø, this._testResults);
+      };
+
+      SpeedTester.prototype._frame = function(tick) {
+        this.frameCount++;
+        if (!this.start) {
+          this.start = tick;
         }
-        if (!handler || typeof handler !== 'function') {
-          throw new Error('You must provide a valid handler');
-        }
-        if (this.message != null) {
-          return handler(this.message);
+        if (tick - this.start < (second * this.times)) {
+          return requestAnimationFrame(this._frame);
         } else {
-          return setTimeout(function() {
-            return _this.oncomplete(handler);
-          }, 100);
+          return this._triggerComplete();
         }
+      };
+
+      SpeedTester.prototype.oncomplete = function(_oncomplete) {
+        this._oncomplete = _oncomplete;
+        return this._complete && this._oncomplete.call(Ø, this._testResults);
       };
 
       return SpeedTester;
@@ -59,10 +66,10 @@
 
   if (typeof define === 'function' && define.amd) {
     define('SpeedTester', [], function() {
-      return defineSpeedTester();
+      return defineSpeedTester(_this);
     });
   } else {
-    window.SpeedTester = defineSpeedTester();
+    window.SpeedTester = defineSpeedTester(this);
   }
 
 }).call(this);
