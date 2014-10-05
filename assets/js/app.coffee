@@ -129,9 +129,14 @@ $ ->
 		$('#hide').css display: 'block'
 
 	###
-	speedTester.oncomplete (message)->
-		console.log("fps: #{message.fps}")
-		enableAll()
+	speedTester.oncomplete (results)->
+		recommendedFps = 30
+		console.log "fps: #{results.fps}"
+
+		if results.fps >= recommendedFps
+			enableAll()
+		else
+			console.log("Your frame rate is too low (recommended: #{recommendedFps}fps)")
 
 	###
 
@@ -141,8 +146,13 @@ $ ->
 		->
 			console.log "Listening to speed tester complete event"
 
-			speedTester.oncomplete (message)->
-				console.log("fps: #{message.fps}")
-				enableAll()
+			speedTester.oncomplete (results)->
+				recommendedFps = 30
+				console.log "fps: #{results.fps}"
+
+				if results.fps >= recommendedFps
+					enableAll()
+				else
+					console.log("Your frame rate is too low (recommended: #{recommendedFps}fps)")
 		5000
 	)

@@ -12,10 +12,21 @@ defineSpeedTester = (global)->
 		run: ->
 			requestAnimationFrame = global.requestAnimationFrame or global.mozRequestAnimationFrame or global.webkitRequestAnimationFrame or global.oRequestAnimationFrame
 
-			if requestAnimationFrame?
+			@_testResults = {}
+			@_complete = no
+
+			if requestAnimationFrame
 				requestAnimationFrame @_frame
-			else console.warn "Your browser doesn't support \"requestAnimationFrame\"" if console?
+			else
+				console.warn "Your browser doesn't support \"requestAnimationFrame\"" if console?
+				do @_triggerComplete
 			@
+
+
+		_triggerComplete: ->
+			@_testResults = fps: @frameCount / @times
+			@_complete = yes
+			@_oncomplete and @_oncomplete.call(Ø, @_testResults)
 
 
 		_frame: (tick)=>
@@ -24,10 +35,7 @@ defineSpeedTester = (global)->
 
 			if tick - @start < (second * @times)
 				requestAnimationFrame @_frame
-			else
-				@_testResults = fps: @frameCount / @times
-				@_complete = yes
-				@_oncomplete and @_oncomplete.call(Ø, @_testResults)
+			else do @_triggerComplete
 
 
 		oncomplete: (@_oncomplete)-> @_complete and @_oncomplete.call(Ø, @_testResults)
