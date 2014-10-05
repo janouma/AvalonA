@@ -135,7 +135,7 @@ $ ->
 			console.log "Listening to speed tester complete event"
 
 			speedTester.oncomplete (message)->
-				console.log("speed: #{message.speed}")
+				console.log("fps: #{message.fps}")
 				enableAll()
-		10000
+		5000
 	)

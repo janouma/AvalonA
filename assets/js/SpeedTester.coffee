@@ -1,36 +1,30 @@
-defineSpeedTester = ()->
+defineSpeedTester = (global)->
+	Ø = Object.create and Object.create(null) or {}
+
 	class SpeedTester
 
-		constructor: (@benchmarkUrl)->
-			throw new Error 'You must specify the benchmark url' if not @benchmarkUrl
+		constructor: -> @frameCount = 0
 
 		run: ->
-			if Worker?
-				window.addEventListener(
-						'unload'
-					=>
-						@worker?.terminate()
-				)
+			requestAnimationFrame = global.requestAnimationFrame or global.mozRequestAnimationFrame or global.webkitRequestAnimationFrame or global.oRequestAnimationFrame
 
-				@worker = new Worker @benchmarkUrl
-				@worker.onmessage = (event)=> @message = JSON.parse(event.data)
-				@worker.postMessage "start"
-
-			else console.warn "Your browser doesn't support the worker api" if console?
+			if requestAnimationFrame?
+				requestAnimationFrame @frame
+			else console.warn "Your browser doesn't support \"requestAnimationFrame\"" if console?
 			@
 
-		oncomplete: (handler)->
-			return if not Worker?
-			throw new Error 'You must provide a valid handler' if not handler or typeof handler isnt 'function'
 
-			if @message?
-				handler @message
+		frame: (tick)=>
+			@frameCount++
+			@start = tick if not @start
+			if tick - @start < 1000 then requestAnimationFrame @frame else @_complete = yes
+
+
+		oncomplete: (listener)->
+			if @_complete?
+				listener.call Ø, fps: @frameCount
 			else
-				setTimeout(
-					=>
-						@oncomplete handler
-					100
-				)
+				setTimeout(=> @oncomplete listener, 100)
 
 	#======================================== Public API =============================================
 	SpeedTester
@@ -39,6 +33,6 @@ defineSpeedTester = ()->
 ### Export ###
 
 if typeof define is 'function' and define.amd
-	define 'SpeedTester', [], ()-> defineSpeedTester()
+	define 'SpeedTester', [], => defineSpeedTester(this)
 else
-	window.SpeedTester = defineSpeedTester()
+	window.SpeedTester = defineSpeedTester(this)
