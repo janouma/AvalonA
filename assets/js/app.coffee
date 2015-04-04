@@ -30,8 +30,8 @@ $ ->
 			endrotation: ->
 				console.log "3d rotation off"
 
-		animation: AvalonAnimation.Balance()
-		#animation: AvalonAnimation.Spotlight()
+		#animation: AvalonAnimation.Balance()
+		animation: AvalonAnimation.Spotlight()
 
 		#idleTimeout: -1
 
