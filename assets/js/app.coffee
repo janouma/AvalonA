@@ -87,16 +87,15 @@ $ ->
 		frame3d2.disable()
 
 	$('#shuffle-all').click ->
-		$('[data-aaz]').each ->
-			$(@).attr 'data-aaz': Math.round(Math.random() * 400 - 200)
-		frame3d.zRefresh()
+		$('[data-at]').each -> $(@).attr 'data-at': [Math.round(Math.random() * 400 - 200), Math.random() * 360, Math.random() * 360, Math.random() * 360].join ','
+		do frame3d.transformRefresh
 
 
 	$('#shuffle-one').click ->
-		node = $('[data-aaz]').eq(layerCursor)
-		node.attr 'data-aaz': Math.round(Math.random() * 400 - 200)
-		frame3d.zRefresh(node)
-		layerCursor = (layerCursor + 1) % $('[data-aaz]').size()
+		node = $('[data-at]').eq(layerCursor)
+		node.attr 'data-at': [Math.round(Math.random() * 400 - 200), Math.random() * 360, Math.random() * 360, Math.random() * 360].join ','
+		frame3d.transformRefresh node
+		layerCursor = (layerCursor + 1) % $('[data-at]').size()
 
 	$('#enable2').click ->
 		frame3d2.enable()
