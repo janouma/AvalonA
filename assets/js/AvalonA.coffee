@@ -1,4 +1,4 @@
-### AvalonA 0.8.3 ###
+### AvalonA 0.9.0 ###
 
 defineAvalonA = ($,TweenLite)->
 
@@ -220,7 +220,7 @@ defineAvalonA = ($,TweenLite)->
 			@transformedLayer = $("##{@layerId}", @frame)
 
 			if @debug is on
-				console.log "@deepnessAttribute: #{@deepnessAttribute}"
+				console.log "@transformAttribute: #{@transformAttribute}"
 				console.log "@layerId: #{@layerId}"
 
 
@@ -230,7 +230,7 @@ defineAvalonA = ($,TweenLite)->
 
 		addPerspective: ->
 			TweenLite.set(
-					@transformedLayer[0]
+				@transformedLayer[0]
 				css:
 					transformPerspective: 1000
 			)
@@ -238,7 +238,7 @@ defineAvalonA = ($,TweenLite)->
 
 		removePerspective: ->
 			TweenLite.set(
-					@transformedLayer[0]
+				@transformedLayer[0]
 				css:
 					transformPerspective: 'none'
 			)
@@ -350,7 +350,7 @@ defineAvalonA = ($,TweenLite)->
 			@frame?.off "mouseleave", @mouseout
 
 
-		zRefresh: (node = null)->
+		transformRefresh: (node = null)->
 			return if @disabled is on
 
 			self = @
@@ -359,30 +359,30 @@ defineAvalonA = ($,TweenLite)->
 
 			console.log "target: #{debugName target}" if @debug is on
 
-			@setZOf target
+			@applyTransformOn target
 			firstChild = target.children().eq(0)
 
-			console.log "zRefresh firstChild: #{debugName firstChild}" if @debug is on
+			console.log "transformRefresh firstChild: #{debugName firstChild}" if @debug is on
 
-			@zRefreshChild(firstChild).siblings().each ->
-				self.zRefreshChild $(@)
+			@transformRefreshChild(firstChild).siblings().each ->
+				self.transformRefreshChild $(@)
 
 
-		zRefreshChild: (child)=>
-			throw new Error "zRefreshChild child argument cannot be null" if not child
+		transformRefreshChild: (child)=>
+			throw new Error "transformRefreshChild child argument cannot be null" if not child
 
-			if $("[#{@deepnessAttribute}]", child).length
-				console.log "zRefresh child #{debugName child} has children" if @debug is on
-				@zRefresh child
-			else if child.attr @deepnessAttribute
-				console.log "zRefresh child #{debugName child} has '#{@deepnessAttribute}'" if @debug is on
-				@setZOf child
+			if $("[#{@transformAttribute}]", child).length
+				console.log "transformRefresh child #{debugName child} has children" if @debug is on
+				@transformRefresh child
+			else if child.attr @transformAttribute
+				console.log "transformRefresh child #{debugName child} has '#{@transformAttribute}'" if @debug is on
+				@applyTransformOn child
 
 			child
 
 
-		setZOf: (target)->
-			throw new Error "setZOf target argument cannot be null" if not target
+		applyTransformOn: (target)->
+			throw new Error "applyTransformOn target argument cannot be null" if not target
 
 			if not target.attr(cssBackUpAttribute)
 				backup =
@@ -392,20 +392,26 @@ defineAvalonA = ($,TweenLite)->
 				target.attr(cssBackUpAttribute, JSON.stringify(backup))
 
 			TweenLite.set(
-					target[0]
+				target[0]
 				css:
 					transformStyle: 'preserve-3d'
 					overflow: 'visible'
 			)
 
-			z = target.attr @deepnessAttribute
-			if z
-				TweenLite.to(
+			if (attrValue = target.attr @transformAttribute)
+				[z, rx, ry, rz] = (parseInt t.trim(), 10 for t in attrValue.split(','))
+
+				if z or rx or ry or rz
+					css = z: z
+					css.rotationX = rx if rx
+					css.rotationY = ry if ry
+					css.rotationZ = rz if rz
+
+					TweenLite.to(
 						target[0]
 						transitionDuration
-					css:
-						z: z
-				)
+						css: css
+					)
 
 
 		refresh: ->
@@ -417,7 +423,7 @@ defineAvalonA = ($,TweenLite)->
 
 			@find3dFrames()
 			@addPerspective()
-			@zRefresh()
+			@transformRefresh()
 			@trackMouseMovements()
 			@animation?.play @transformedLayer[0]
 
@@ -453,12 +459,12 @@ defineAvalonA = ($,TweenLite)->
 				console.log "flattening layer '#{debugName $(@)}'" if self.debug is on
 
 				css = JSON.parse $(@).attr(cssBackUpAttribute)
-				css.z = 0 if $(@).attr self.deepnessAttribute
+				css.z = 0 if $(@).attr self.transformAttribute
 				TweenLite.set @, css: css
 
 
 		init: (options)->
-			@deepnessAttribute = options.zAttr or 'data-avalonA-deepness'
+			@transformAttribute = options.tAttr or 'data-avalonA-transform'
 			@fx = if typeof options.fx is 'function' then options.fx else noeffect
 			@fy = if typeof options.fy is 'function' then options.fy else noeffect
 			@activeArea = new ActiveArea(options.activeArea) if options.activeArea
@@ -491,9 +497,9 @@ defineAvalonA = ($,TweenLite)->
 				@start =
 				@enable =
 				@refresh =
-				@setZOf =
-				@zRefreshChild =
-				@zRefresh =
+				@applyTransformOn =
+				@transformRefreshChild =
+				@transformRefresh =
 				@untrackMouseMovements =
 				@trackMouseMovements =
 				@addPerspective =

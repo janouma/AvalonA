@@ -10,7 +10,7 @@ $ ->
 	frame3d = AvalonA(
 		'body-3d'
 		'aa3d'
-		zAttr: 'data-aaz'
+		tAttr: 'data-at'
 		fy: (rotation)->
 			0.75 * rotation
 		fx: (rotation)->
@@ -41,7 +41,7 @@ $ ->
 	frame3d2 = AvalonA(
 		'body-3d'
 		'a3d2'
-		zAttr: 'data-aaz'
+		tAttr: 'data-at'
 		fy: (rotation)->
 			0.75 * rotation
 		fx: (rotation)->
