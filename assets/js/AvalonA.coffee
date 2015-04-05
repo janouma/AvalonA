@@ -459,7 +459,7 @@ defineAvalonA = ($,TweenLite)->
 				console.log "flattening layer '#{debugName $(@)}'" if self.debug is on
 
 				css = JSON.parse $(@).attr(cssBackUpAttribute)
-				css.z = 0 if $(@).attr self.transformAttribute
+				css.z = css.rotationX = css.rotationY = css.rotationZ = 0 if $(@).attr self.transformAttribute
 				TweenLite.set @, css: css
 
 
