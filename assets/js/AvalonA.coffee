@@ -350,7 +350,7 @@ defineAvalonA = ($,TweenLite)->
 			@frame?.off "mouseleave", @mouseout
 
 
-		transformRefresh: (node = null)->
+		refershTransform: (node = null)->
 			return if @disabled is on
 
 			self = @
@@ -362,20 +362,20 @@ defineAvalonA = ($,TweenLite)->
 			@applyTransformOn target
 			firstChild = target.children().eq(0)
 
-			console.log "transformRefresh firstChild: #{debugName firstChild}" if @debug is on
+			console.log "refershTransform firstChild: #{debugName firstChild}" if @debug is on
 
-			@transformRefreshChild(firstChild).siblings().each ->
-				self.transformRefreshChild $(@)
+			@refershChildTransform(firstChild).siblings().each ->
+				self.refershChildTransform $(@)
 
 
-		transformRefreshChild: (child)=>
-			throw new Error "transformRefreshChild child argument cannot be null" if not child
+		refershChildTransform: (child)=>
+			throw new Error "refershChildTransform child argument cannot be null" if not child
 
 			if $("[#{@transformAttribute}]", child).length
-				console.log "transformRefresh child #{debugName child} has children" if @debug is on
-				@transformRefresh child
+				console.log "refershTransform child #{debugName child} has children" if @debug is on
+				@refershTransform child
 			else if child.attr @transformAttribute
-				console.log "transformRefresh child #{debugName child} has '#{@transformAttribute}'" if @debug is on
+				console.log "refershTransform child #{debugName child} has '#{@transformAttribute}'" if @debug is on
 				@applyTransformOn child
 
 			child
@@ -388,6 +388,15 @@ defineAvalonA = ($,TweenLite)->
 				backup =
 					transformStyle: getTransformStyle(target[0]) or 'flat'
 					overflow: target.css('overflow') or 'inherit'
+
+				transformBackup = target.css('-webkit-transform') or
+					target.css('-moz-transform') or
+					target.css('-o-transform') or
+					target.css('-ms-transform') or
+					target.css('transform')
+
+
+				backup.transform = transformBackup if transformBackup
 
 				target.attr(cssBackUpAttribute, JSON.stringify(backup))
 
@@ -423,7 +432,7 @@ defineAvalonA = ($,TweenLite)->
 
 			@find3dFrames()
 			@addPerspective()
-			@transformRefresh()
+			@refershTransform()
 			@trackMouseMovements()
 			@animation?.play @transformedLayer[0]
 
@@ -457,9 +466,7 @@ defineAvalonA = ($,TweenLite)->
 
 			$("[#{cssBackUpAttribute}]", @transformedLayer[0]).each ->
 				console.log "flattening layer '#{debugName $(@)}'" if self.debug is on
-
 				css = JSON.parse $(@).attr(cssBackUpAttribute)
-				css.z = css.rotationX = css.rotationY = css.rotationZ = 0 if $(@).attr self.transformAttribute
 				TweenLite.set @, css: css
 
 
@@ -498,8 +505,8 @@ defineAvalonA = ($,TweenLite)->
 				@enable =
 				@refresh =
 				@applyTransformOn =
-				@transformRefreshChild =
-				@transformRefresh =
+				@refershChildTransform =
+				@refershTransform =
 				@untrackMouseMovements =
 				@trackMouseMovements =
 				@addPerspective =

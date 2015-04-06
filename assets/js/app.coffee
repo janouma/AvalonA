@@ -88,13 +88,13 @@ $ ->
 
 	$('#shuffle-all').click ->
 		$('[data-at]').each -> $(@).attr 'data-at': [Math.round(Math.random() * 400 - 200), Math.random() * 360, Math.random() * 360, Math.random() * 360].join ','
-		do frame3d.transformRefresh
+		do frame3d.refershTransform
 
 
 	$('#shuffle-one').click ->
 		node = $('[data-at]').eq(layerCursor)
 		node.attr 'data-at': [Math.round(Math.random() * 400 - 200), Math.random() * 360, Math.random() * 360, Math.random() * 360].join ','
-		frame3d.transformRefresh node
+		frame3d.refershTransform node
 		layerCursor = (layerCursor + 1) % $('[data-at]').size()
 
 	$('#enable2').click ->
