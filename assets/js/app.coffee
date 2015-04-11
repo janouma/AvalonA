@@ -95,6 +95,7 @@ $ ->
 		node = $('[data-at]').eq(layerCursor)
 		node.attr 'data-at': [Math.round(Math.random() * 400 - 200), Math.random() * 360, Math.random() * 360, Math.random() * 360].join ','
 		frame3d.refreshTransform node
+		#frame3d.refreshTransform "[data-at]"
 		layerCursor = (layerCursor + 1) % $('[data-at]').size()
 
 	$('#enable2').click ->

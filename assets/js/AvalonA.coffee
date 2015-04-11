@@ -355,7 +355,7 @@ defineAvalonA = ($,TweenLite)->
 
 			self = @
 			node ?= @transformedLayer
-			target = if typeof node is 'string' then $(target, @transformedLayer) else $(node)
+			target = if typeof node is 'string' then $(node, @transformedLayer) else $(node)
 
 			console.log "target: #{debugName target}" if @debug is on
 
