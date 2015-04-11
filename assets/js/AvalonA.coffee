@@ -350,7 +350,7 @@ defineAvalonA = ($,TweenLite)->
 			@frame?.off "mouseleave", @mouseout
 
 
-		refershTransform: (node = null)->
+		refreshTransform: (node = null)->
 			return if @disabled is on
 
 			self = @
@@ -362,20 +362,20 @@ defineAvalonA = ($,TweenLite)->
 			@applyTransformOn target
 			firstChild = target.children().eq(0)
 
-			console.log "refershTransform firstChild: #{debugName firstChild}" if @debug is on
+			console.log "refreshTransform firstChild: #{debugName firstChild}" if @debug is on
 
-			@refershChildTransform(firstChild).siblings().each ->
-				self.refershChildTransform $(@)
+			@refreshChildTransform(firstChild).siblings().each ->
+				self.refreshChildTransform $(@)
 
 
-		refershChildTransform: (child)=>
-			throw new Error "refershChildTransform child argument cannot be null" if not child
+		refreshChildTransform: (child)=>
+			throw new Error "refreshChildTransform child argument cannot be null" if not child
 
 			if $("[#{@transformAttribute}]", child).length
-				console.log "refershTransform child #{debugName child} has children" if @debug is on
-				@refershTransform child
+				console.log "refreshTransform child #{debugName child} has children" if @debug is on
+				@refreshTransform child
 			else if child.attr @transformAttribute
-				console.log "refershTransform child #{debugName child} has '#{@transformAttribute}'" if @debug is on
+				console.log "refreshTransform child #{debugName child} has '#{@transformAttribute}'" if @debug is on
 				@applyTransformOn child
 
 			child
@@ -432,7 +432,7 @@ defineAvalonA = ($,TweenLite)->
 
 			@find3dFrames()
 			@addPerspective()
-			@refershTransform()
+			@refreshTransform()
 			@trackMouseMovements()
 			@animation?.play @transformedLayer[0]
 
@@ -505,8 +505,8 @@ defineAvalonA = ($,TweenLite)->
 				@enable =
 				@refresh =
 				@applyTransformOn =
-				@refershChildTransform =
-				@refershTransform =
+				@refreshChildTransform =
+				@refreshTransform =
 				@untrackMouseMovements =
 				@trackMouseMovements =
 				@addPerspective =
