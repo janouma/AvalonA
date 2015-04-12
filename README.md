@@ -1,6 +1,6 @@
 # Avalon(A) — Bring deepness to your web apps
 
-*version: 0.8.3*
+*version: 0.9.0*
 
 
 **Avalon(A)** allows you to easily add 3d to a set of html elements to simulate a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/4/show))*. To make this 3d effect noticeable, all html elements pertaining to the `transformed layer` *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
@@ -31,15 +31,21 @@
 ## <a name="html"></a> Html
 	<div id="frame-3d"> <!-- 3d Frame -->
     	<div id="avalona-inner-frame"> <!-- transformed layer -->
-        	<div id="half-circle" data-avalonA-deepness="-300"></div>
-        		<div id="square" data-avalonA-deepness="75">
-            		<div id="inner-square" data-avalonA-deepness="150"></div>
+        	<div id="half-circle" data-avalonA-transform="-300"></div>
+        		<div id="square" data-avalonA-transform="75, 20.32, 5, -10.2">
+            		<div id="inner-square" data-avalonA-transform="150"></div>
         		</div>
-        	<div id="circle" data-avalonA-deepness="200"></div>
+        	<div id="circle" data-avalonA-transform="200,45"></div>
     	</div>
 	</div>
 
 It is mandatory to have at least the `3d Frame` and `transformed layer` defined when **Avalon(A)** initialization occurs. Within the `3d Frame`, the element div having the id `avalona-inner-frame` becomes the `transformed layer`.
+
+`data-avalonA-transform` attribute value has the following structure:
+
+**z translation[, rotateX[, rotateY[,rotateZ]]]**
+
+The rotation values are optional.
 
 ## <a name="script"></a> Script
     $(function(){
@@ -54,8 +60,8 @@ It is possible to pass an object along with the id of the `3d Frame` to set opti
         AvalonA('frame-3d', 'avalona-inner-frame', {option: value}).start();
     });
 
-##### *zAttr*
-Changes the name of the attribute used to define layer **z translation**. Default value is `data-avalonA-deepness`.
+##### *tAttr*
+Changes the name of the attribute used to define layer **z translation**. Default value is `data-avalonA-transform`.
 
 ##### *fy*
 A function that affects the amount of rotation triggered by the mouse movements on the **y axis**.
@@ -161,8 +167,8 @@ Alias for ***refresh()***.
 ##### *disable()*
 Flatten `transformed layer`, remove mouse movement tracking, unable events and pause animation.
 
-##### *zRefresh( [target : selector OR html node] )*
-Update **z translation** according to new values of `data-avalonA-deepness`.
+##### *refreshTransform( [target : selector OR html node] )*
+Update **z translation** according to new values of `data-avalonA-transform`.
 When **target** is provided, only matching html nodes get updated.
 
 ## <a name="events"></a> Events
