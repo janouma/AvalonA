@@ -1,4 +1,5 @@
 ### AvalonA 0.9.0 ###
+console.log '%cAvalonA 0.9.0', 'padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
 
 defineAvalonA = ($,TweenLite)->
 
