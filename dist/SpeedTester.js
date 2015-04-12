@@ -1,7 +1,14 @@
+/* SpeedTester 0.9.0*/
+
+
 (function() {
   var defineSpeedTester,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     _this = this;
+
+  if (typeof console !== "undefined" && console !== null) {
+    console.log('%cSpeedTester 0.9.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;');
+  }
 
   defineSpeedTester = function(global) {
     var SpeedTester, second, Ø;

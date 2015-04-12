@@ -1,9 +1,11 @@
-/* AvalonA 0.8.3*/
+/* AvalonA 0.9.0*/
 
 
 (function() {
   var defineAvalonA, _ref,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  console.log('%cAvalonA 0.9.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;');
 
   defineAvalonA = function($, TweenLite) {
     var ActiveArea, Frame3d;
@@ -299,7 +301,7 @@
         this.frame = $("#" + this.frameId);
         this.transformedLayer = $("#" + this.layerId, this.frame);
         if (this.debug === true) {
-          console.log("@deepnessAttribute: " + this.deepnessAttribute);
+          console.log("@transformAttribute: " + this.transformAttribute);
           console.log("@layerId: " + this.layerId);
         }
         if (!this.frame.size()) {
@@ -453,7 +455,7 @@
         return (_ref1 = this.frame) != null ? _ref1.off("mouseleave", this.mouseout) : void 0;
       };
 
-      Frame3d.prototype.zRefresh = function(node) {
+      Frame3d.prototype.refreshTransform = function(node) {
         var firstChild, self, target;
         if (node == null) {
           node = null;
@@ -465,48 +467,52 @@
         if (node == null) {
           node = this.transformedLayer;
         }
-        target = typeof node === 'string' ? $(target, this.transformedLayer) : $(node);
+        target = typeof node === 'string' ? $(node, this.transformedLayer) : $(node);
         if (this.debug === true) {
           console.log("target: " + (debugName(target)));
         }
-        this.setZOf(target);
+        this.applyTransformOn(target);
         firstChild = target.children().eq(0);
         if (this.debug === true) {
-          console.log("zRefresh firstChild: " + (debugName(firstChild)));
+          console.log("refreshTransform firstChild: " + (debugName(firstChild)));
         }
-        return this.zRefreshChild(firstChild).siblings().each(function() {
-          return self.zRefreshChild($(this));
+        return this.refreshChildTransform(firstChild).siblings().each(function() {
+          return self.refreshChildTransform($(this));
         });
       };
 
-      Frame3d.prototype.zRefreshChild = function(child) {
+      Frame3d.prototype.refreshChildTransform = function(child) {
         if (!child) {
-          throw new Error("zRefreshChild child argument cannot be null");
+          throw new Error("refreshChildTransform child argument cannot be null");
         }
-        if ($("[" + this.deepnessAttribute + "]", child).length) {
+        if ($("[" + this.transformAttribute + "]", child).length) {
           if (this.debug === true) {
-            console.log("zRefresh child " + (debugName(child)) + " has children");
+            console.log("refreshTransform child " + (debugName(child)) + " has children");
           }
-          this.zRefresh(child);
-        } else if (child.attr(this.deepnessAttribute)) {
+          this.refreshTransform(child);
+        } else if (child.attr(this.transformAttribute)) {
           if (this.debug === true) {
-            console.log("zRefresh child " + (debugName(child)) + " has '" + this.deepnessAttribute + "'");
+            console.log("refreshTransform child " + (debugName(child)) + " has '" + this.transformAttribute + "'");
           }
-          this.setZOf(child);
+          this.applyTransformOn(child);
         }
         return child;
       };
 
-      Frame3d.prototype.setZOf = function(target) {
-        var backup, z;
+      Frame3d.prototype.applyTransformOn = function(target) {
+        var attrValue, backup, css, rx, ry, rz, t, transformBackup, z, _ref;
         if (!target) {
-          throw new Error("setZOf target argument cannot be null");
+          throw new Error("applyTransformOn target argument cannot be null");
         }
         if (!target.attr(cssBackUpAttribute)) {
           backup = {
             transformStyle: getTransformStyle(target[0]) || 'flat',
             overflow: target.css('overflow') || 'inherit'
           };
+          transformBackup = target.css('-webkit-transform') || target.css('-moz-transform') || target.css('-o-transform') || target.css('-ms-transform') || target.css('transform');
+          if (transformBackup) {
+            backup.transform = transformBackup;
+          }
           target.attr(cssBackUpAttribute, JSON.stringify(backup));
         }
         TweenLite.set(target[0], {
@@ -515,13 +521,34 @@
             overflow: 'visible'
           }
         });
-        z = target.attr(this.deepnessAttribute);
-        if (z) {
-          return TweenLite.to(target[0], transitionDuration, {
-            css: {
-              z: z
+        if ((attrValue = target.attr(this.transformAttribute))) {
+          _ref = (function() {
+            var _i, _len, _ref, _results;
+            _ref = attrValue.split(',');
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              t = _ref[_i];
+              _results.push(parseInt(t.trim(), 10));
             }
-          });
+            return _results;
+          })(), z = _ref[0], rx = _ref[1], ry = _ref[2], rz = _ref[3];
+          if (z || rx || ry || rz) {
+            css = {
+              z: z
+            };
+            if (rx) {
+              css.rotationX = rx;
+            }
+            if (ry) {
+              css.rotationY = ry;
+            }
+            if (rz) {
+              css.rotationZ = rz;
+            }
+            return TweenLite.to(target[0], transitionDuration, {
+              css: css
+            });
+          }
         }
       };
 
@@ -536,7 +563,7 @@
         }
         this.find3dFrames();
         this.addPerspective();
-        this.zRefresh();
+        this.refreshTransform();
         this.trackMouseMovements();
         return (_ref1 = this.animation) != null ? _ref1.play(this.transformedLayer[0]) : void 0;
       };
@@ -579,9 +606,6 @@
             console.log("flattening layer '" + (debugName($(this))) + "'");
           }
           css = JSON.parse($(this).attr(cssBackUpAttribute));
-          if ($(this).attr(self.deepnessAttribute)) {
-            css.z = 0;
-          }
           return TweenLite.set(this, {
             css: css
           });
@@ -590,7 +614,7 @@
 
       Frame3d.prototype.init = function(options) {
         var _ref, _ref1, _ref2;
-        this.deepnessAttribute = options.zAttr || 'data-avalonA-deepness';
+        this.transformAttribute = options.tAttr || 'data-avalonA-transform';
         this.fx = typeof options.fx === 'function' ? options.fx : noeffect;
         this.fy = typeof options.fy === 'function' ? options.fy : noeffect;
         if (options.activeArea) {
@@ -623,7 +647,7 @@
         if (options == null) {
           options = {};
         }
-        this.zRefreshChild = __bind(this.zRefreshChild, this);
+        this.refreshChildTransform = __bind(this.refreshChildTransform, this);
         this.stopRotation = __bind(this.stopRotation, this);
         this.mousemove = __bind(this.mousemove, this);
         this.mouseout = __bind(this.mouseout, this);
@@ -641,7 +665,7 @@
         if (transformStyleIsSupported) {
           this.init(options);
         } else {
-          this.flatten = this.disableRotationEvent = this.disable = this.start = this.enable = this.refresh = this.setZOf = this.zRefreshChild = this.zRefresh = this.untrackMouseMovements = this.trackMouseMovements = this.addPerspective = this.removePerspective = function() {};
+          this.flatten = this.disableRotationEvent = this.disable = this.start = this.enable = this.refresh = this.applyTransformOn = this.refreshChildTransform = this.refreshTransform = this.untrackMouseMovements = this.trackMouseMovements = this.addPerspective = this.removePerspective = function() {};
         }
       }
 

@@ -1,8 +1,10 @@
-/* AvalonAnimation*/
+/* AvalonAnimation 0.9.0*/
 
 
 (function() {
   var defineAvalonAnimation, _ref, _ref1, _ref2, _ref3;
+
+  console.log('%cAvalonAnimation 0.9.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;');
 
   defineAvalonAnimation = function(TweenMax, TweenLite, GSEases) {
     var Linear, Power1;
