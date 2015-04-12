@@ -1,3 +1,6 @@
+### SpeedTester 0.9.0 ###
+console.log '%cSpeedTester 0.9.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;' if console?
+
 defineSpeedTester = (global)->
 	Ø = Object.create and Object.create(null) or {}
 	second = 1000
