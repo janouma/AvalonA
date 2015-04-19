@@ -1,6 +1,6 @@
 # Avalon(A) — Bring deepness to your web apps
 
-*version: 0.9.0*
+*version: 0.10.0*
 
 
 **Avalon(A)** allows you to easily add 3d to a set of html elements to simulate a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/4/show))*. To make this 3d effect noticeable, all html elements pertaining to the `transformed layer` *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
@@ -31,11 +31,11 @@
 ## <a name="html"></a> Html
 	<div id="frame-3d"> <!-- 3d Frame -->
     	<div id="avalona-inner-frame"> <!-- transformed layer -->
-        	<div id="half-circle" data-avalonA-transform="-300"></div>
-        		<div id="square" data-avalonA-transform="75, 20.32, 5, -10.2">
-            		<div id="inner-square" data-avalonA-transform="150"></div>
+        	<div id="half-circle" data-avalonA-transform="z:-300"></div>
+        		<div id="square" data-avalonA-transform="z:75; rx:20.32; ry:5; rz:-10.2">
+            		<div id="inner-square" data-avalonA-transform="z:150"></div>
         		</div>
-        	<div id="circle" data-avalonA-transform="200,45"></div>
+        	<div id="circle" data-avalonA-transform="z:200;rx:45"></div>
     	</div>
 	</div>
 
@@ -43,9 +43,9 @@ It is mandatory to have at least the `3d Frame` and `transformed layer` defined 
 
 `data-avalonA-transform` attribute value has the following structure:
 
-**z translation[, rotateX[, rotateY[,rotateZ]]]**
+**z: z translation; rx: x rotation; ry: y rotation; rz: z rotation**
 
-The rotation values are optional.
+All properties are optional.
 
 ## <a name="script"></a> Script
     $(function(){

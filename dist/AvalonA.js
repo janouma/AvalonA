@@ -1,11 +1,11 @@
-/* AvalonA 0.9.0*/
+/* AvalonA 0.10.0*/
 
 
 (function() {
   var defineAvalonA, _ref,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  console.log('%cAvalonA 0.9.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;');
+  console.log('%cAvalonA 0.10.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;');
 
   defineAvalonA = function($, TweenLite) {
     var ActiveArea, Frame3d;
@@ -500,7 +500,7 @@
       };
 
       Frame3d.prototype.applyTransformOn = function(target) {
-        var attrValue, backup, css, rx, ry, rz, t, transformBackup, z, _ref;
+        var attrValue, backup, css, prop, rx, ry, rz, t, transformBackup, transforms, value, z, _i, _len, _ref, _ref1;
         if (!target) {
           throw new Error("applyTransformOn target argument cannot be null");
         }
@@ -522,16 +522,14 @@
           }
         });
         if ((attrValue = target.attr(this.transformAttribute))) {
-          _ref = (function() {
-            var _i, _len, _ref, _results;
-            _ref = attrValue.split(',');
-            _results = [];
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              t = _ref[_i];
-              _results.push(parseInt(t.trim(), 10));
-            }
-            return _results;
-          })(), z = _ref[0], rx = _ref[1], ry = _ref[2], rz = _ref[3];
+          transforms = {};
+          _ref = attrValue.split(';');
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            t = _ref[_i];
+            _ref1 = t.split(':'), prop = _ref1[0], value = _ref1[1];
+            transforms[prop.trim()] = parseInt(value.trim(), 10);
+          }
+          z = transforms.z, rx = transforms.rx, ry = transforms.ry, rz = transforms.rz;
           if (z || rx || ry || rz) {
             css = {
               z: z
