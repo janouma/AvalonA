@@ -10,7 +10,7 @@ $ ->
 	frame3d = AvalonA(
 		'body-3d'
 		'aa3d'
-		tAttr: 'data-at'
+		tAttr: 'at'
 		fy: (rotation)->
 			0.75 * rotation
 		fx: (rotation)->
@@ -41,7 +41,7 @@ $ ->
 	frame3d2 = AvalonA(
 		'body-3d'
 		'a3d2'
-		tAttr: 'data-at'
+		tAttr: 'at'
 		fy: (rotation)->
 			0.75 * rotation
 		fx: (rotation)->
@@ -87,16 +87,16 @@ $ ->
 		frame3d2.disable()
 
 	$('#shuffle-all').click ->
-		$('[data-at]').each -> $(@).attr 'data-at': [Math.round(Math.random() * 400 - 200), Math.random() * 360, Math.random() * 360, Math.random() * 360].join ','
+		$('[at]').each -> $(@).attr 'at': ['z:', Math.round(Math.random() * 400 - 200), '; rx:', Math.random() * 360, '; ry:', Math.random() * 360, '; rz:', Math.random() * 360].join ''
 		do frame3d.refreshTransform
 
 
 	$('#shuffle-one').click ->
-		node = $('[data-at]').eq(layerCursor)
-		node.attr 'data-at': [Math.round(Math.random() * 400 - 200), Math.random() * 360, Math.random() * 360, Math.random() * 360].join ','
+		node = $('[at]').eq(layerCursor)
+		node.attr 'at': ['z:', Math.round(Math.random() * 400 - 200), '; rx:', Math.random() * 360, '; ry:', Math.random() * 360, '; rz:', Math.random() * 360].join ''
 		frame3d.refreshTransform node
-		#frame3d.refreshTransform "[data-at]"
-		layerCursor = (layerCursor + 1) % $('[data-at]').size()
+		#frame3d.refreshTransform "[at]"
+		layerCursor = (layerCursor + 1) % $('[at]').size()
 
 	$('#enable2').click ->
 		frame3d2.enable()

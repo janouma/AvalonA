@@ -1,5 +1,5 @@
-### AvalonA 0.9.0 ###
-console.log '%cAvalonA 0.9.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
+### AvalonA 0.10.0 ###
+console.log '%cAvalonA 0.10.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
 
 defineAvalonA = ($,TweenLite)->
 
@@ -409,7 +409,13 @@ defineAvalonA = ($,TweenLite)->
 			)
 
 			if (attrValue = target.attr @transformAttribute)
-				[z, rx, ry, rz] = (parseInt t.trim(), 10 for t in attrValue.split(','))
+				transforms = {};
+
+				for t in attrValue.split(';')
+					[prop, value] = t.split(':');
+					transforms[prop.trim()] = parseInt value.trim(), 10
+
+				{z:z, rx:rx, ry:ry, rz:rz} = transforms
 
 				if z or rx or ry or rz
 					css = z: z
