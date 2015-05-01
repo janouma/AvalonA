@@ -1,11 +1,11 @@
-/* AvalonA 0.10.0*/
+/* AvalonA 0.10.1*/
 
 
 (function() {
   var defineAvalonA, _ref,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  console.log('%cAvalonA 0.10.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;');
+  console.log('%cAvalonA 0.10.1', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;');
 
   defineAvalonA = function($, TweenLite) {
     var ActiveArea, Frame3d;
@@ -315,7 +315,7 @@
       Frame3d.prototype.addPerspective = function() {
         return TweenLite.set(this.transformedLayer[0], {
           css: {
-            transformPerspective: 1000
+            perspective: 1000
           }
         });
       };
@@ -323,7 +323,7 @@
       Frame3d.prototype.removePerspective = function() {
         return TweenLite.set(this.transformedLayer[0], {
           css: {
-            transformPerspective: 'none'
+            perspective: 'none'
           }
         });
       };
@@ -531,9 +531,10 @@
           }
           z = transforms.z, rx = transforms.rx, ry = transforms.ry, rz = transforms.rz;
           if (z || rx || ry || rz) {
-            css = {
-              z: z
-            };
+            css = {};
+            if (z) {
+              css.z = z;
+            }
             if (rx) {
               css.rotationX = rx;
             }
