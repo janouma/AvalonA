@@ -31,9 +31,9 @@ $ ->
 				console.log "3d rotation off"
 
 		#animation: AvalonAnimation.Balance()
-		animation: AvalonAnimation.Spotlight()
+		#animation: AvalonAnimation.Spotlight()
 
-		#idleTimeout: -1
+		idleTimeout: -1
 
 		#debug: on
 	)
