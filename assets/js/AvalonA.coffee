@@ -1,5 +1,5 @@
-### AvalonA 0.10.0 ###
-console.log '%cAvalonA 0.10.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
+### AvalonA 0.10.1 ###
+console.log '%cAvalonA 0.10.1', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
 
 defineAvalonA = ($,TweenLite)->
 
@@ -186,8 +186,7 @@ defineAvalonA = ($,TweenLite)->
 	#================================================================================================
 	class Frame3d
 		transitionDuration = 0.75
-		noeffect = (rotation)->
-			rotation
+		noeffect = (rotation)-> rotation
 		transformStyleIsSupported = null
 		cssBackUpAttribute = 'data-css-backup'
 
@@ -232,16 +231,14 @@ defineAvalonA = ($,TweenLite)->
 		addPerspective: ->
 			TweenLite.set(
 				@transformedLayer[0]
-				css:
-					transformPerspective: 1000
+				css: perspective: 1000
 			)
 
 
 		removePerspective: ->
 			TweenLite.set(
 				@transformedLayer[0]
-				css:
-					transformPerspective: 'none'
+				css: perspective: 'none'
 			)
 
 
@@ -273,8 +270,7 @@ defineAvalonA = ($,TweenLite)->
 			@frame.mousemove @mousemove
 
 
-		mouseout: =>
-			@disableRotation()
+		mouseout: => @disableRotation()
 
 		mouseMoveCount: 0
 
@@ -288,8 +284,8 @@ defineAvalonA = ($,TweenLite)->
 				@debugMouseMove()
 
 				TweenLite.to(
-						@transformedLayer[0]
-						0.1
+					@transformedLayer[0]
+					0.1
 					css:
 						rotationX: @fy(@rotationX)
 						rotationY: @fx(@rotationY)
@@ -306,8 +302,8 @@ defineAvalonA = ($,TweenLite)->
 				@rotating = on
 
 			@rotationTimeoutId = setTimeout(
-					@stopRotation
-					@idleTimeout
+				@stopRotation
+				@idleTimeout
 			) if @idleTimeout > 0
 
 
@@ -328,8 +324,8 @@ defineAvalonA = ($,TweenLite)->
 			clearTimeout @rotationTimeoutId
 			@rotationX = @rotationY = 0
 			TweenLite.to(
-					@transformedLayer[0]
-					duration
+				@transformedLayer[0]
+				duration
 				css:
 					rotationX: 0
 					rotationY: 0
@@ -418,7 +414,8 @@ defineAvalonA = ($,TweenLite)->
 				{z:z, rx:rx, ry:ry, rz:rz} = transforms
 
 				if z or rx or ry or rz
-					css = z: z
+					css = {}
+					css.z = z if z
 					css.rotationX = rx if rx
 					css.rotationY = ry if ry
 					css.rotationZ = rz if rz
@@ -444,11 +441,9 @@ defineAvalonA = ($,TweenLite)->
 			@animation?.play @transformedLayer[0]
 
 
-		start: ->
-			@refresh()
+		start: -> @refresh()
 
-		enable: ->
-			@refresh()
+		enable: -> @refresh()
 
 		disable: ->
 			if @frame
