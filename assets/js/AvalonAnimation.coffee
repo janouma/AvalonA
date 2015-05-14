@@ -1,5 +1,5 @@
-### AvalonAnimation 0.9.0 ###
-console.log '%cAvalonAnimation 0.9.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
+### AvalonAnimation 0.9.1 ###
+console.log '%cAvalonAnimation 0.9.1', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
 
 defineAvalonAnimation = (TweenMax, TweenLite, GSEases)->
 
@@ -110,6 +110,60 @@ defineAvalonAnimation = (TweenMax, TweenLite, GSEases)->
         )
 
     pause: -> @timeline?.pause()
+    
+ 
+  ### Revolution ###
+  
+  Revolution: (options={})->
+    {
+      duration: duration
+      selector: selector
+      axis: axis
+    } = options
+    
+    allowedAxis = ['x', 'y', 'z']
+    css = {}
+    axis = allowedAxis if not axis or not axis.length
+      
+    for a in axis
+      if axis isnt allowedAxis
+        throw Error "Revolution.axis is not valid" if not a in allowedAxis
+      css["rotation#{a.toUpperCase()}"] = '+=360'
+      
+    
+    duration = if not duration? then 2.75 else parseFloat(duration)
+    
+    throw Error "Revolution.duration is not valid" if not duration
+    
+    getTimeline: ->
+      @timeline = new TweenMax(
+        @animatedObject
+        duration
+        paused: on
+        css: css
+        repeat: -1
+        ease: Linear.easeNone
+      )
+      
+    play: (target)->
+      if target
+        if selector
+          @animatedObject = target.querySelector selector
+        else
+           @animatedObject = target
+      
+      if @animatedObject
+        @timeline = TweenLite.to(
+          @animatedObject
+          duration
+          overwrite: on
+          css: css
+          ease: Linear.easeNone
+          onComplete: => @getTimeline().play()
+        )
+        
+    pause: -> @timeline?.pause()
+  
 
 
 

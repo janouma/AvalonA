@@ -32,6 +32,11 @@ $ ->
 
 		#animation: AvalonAnimation.Balance()
 		#animation: AvalonAnimation.Spotlight()
+		animation: AvalonAnimation.Revolution({
+			duration: 60
+			selector: '#gravity'
+			axis: ['y']
+		})
 
 		idleTimeout: -1
 

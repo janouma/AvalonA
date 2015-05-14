@@ -53,6 +53,7 @@ body
   border: #666 solid 1px
   +box-shadow(0 0 10px 3px rgba(#000, .5))
   opacity: .85
+  //+backface-visibility(hidden)
 
 #text
   width: 100%
@@ -67,6 +68,7 @@ body
   border-radius: 0 75px 75px 0
   border: #666 solid 1px
   +transform(rotateZ(30deg))
+  //+backface-visibility(hidden)
 
 #square
   position: relative
@@ -77,6 +79,7 @@ body
   border: #666 solid 1px
   +box-shadow(0 0 10px 3px rgba(#000, .5))
   +transform(rotateZ(45deg))
+  //+backface-visibility(hidden)
 
 #inner-square
   position: absolute
@@ -89,6 +92,7 @@ body
   border: #666 solid 1px
   +box-shadow(0 0 10px 3px rgba(#000, .5))
   +transform(rotateZ(-30deg))
+  //+backface-visibility(hidden)
 
 
 #circle
@@ -101,19 +105,23 @@ body
   border-radius: 50%
   border: #666 solid 1px
   +box-shadow(0 0 10px 3px rgba(#000, .5))
+  //+backface-visibility(hidden)
 
 #a3d2
   width: 250px
   height: 250px
   background-color: darkseagreen
   margin: -100px 0 0 100px
+  //+backface-visibility(hidden)
 
   div
     background-color: seagreen
     width: 250px
     height: 250px
+    //+backface-visibility(hidden)
 
     div
       background-color: lightseagreen
       width: 100px
       height: 100px
+      //+backface-visibility(hidden)
