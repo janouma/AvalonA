@@ -112,9 +112,9 @@ defineAvalonAnimation = (TweenMax, TweenLite, GSEases)->
     pause: -> @timeline?.pause()
     
  
-  ### Revolution ###
+  ### Atom ###
   
-  Revolution: (options={})->
+  Atom: (options={})->
     {
       duration: duration
       selector: selector

@@ -32,8 +32,8 @@ $ ->
 
 		#animation: AvalonAnimation.Balance()
 		#animation: AvalonAnimation.Spotlight()
-		animation: AvalonAnimation.Revolution({
-			duration: 60
+		animation: AvalonAnimation.Atom({
+			duration: 20
 			selector: '.gravity'
 			axis: ['y']
 		})
