@@ -43,8 +43,8 @@ defineAvalonAnimation = (TweenMax, TweenLite, GSEases)->
         ease: Power1.easeInOut
       )
 
-    play: (target)->
-      @animatedObject = target if target
+    play: (transformedLayer)->
+      @animatedObject = transformedLayer if transformedLayer
 
       if @animatedObject
         @timeline = TweenLite.to(
@@ -97,8 +97,8 @@ defineAvalonAnimation = (TweenMax, TweenLite, GSEases)->
         bezier: path
       )
 
-    play: (target)->
-      @animatedObject = target if target
+    play: (transformedLayer)->
+      @animatedObject = transformedLayer if transformedLayer
       if @animatedObject
         @timeline = TweenLite.to(
           @animatedObject
@@ -145,12 +145,12 @@ defineAvalonAnimation = (TweenMax, TweenLite, GSEases)->
         ease: Linear.easeNone
       )
       
-    play: (target)->
-      if target
+    play: (transformedLayer, transformAttr)->
+      if transformedLayer
         if selector
-          @animatedObject = target.querySelector selector
+          @animatedObject = transformedLayer.querySelectorAll "#{selector}:not([#{transformAttr}])"
         else
-           @animatedObject = target
+           @animatedObject = transformedLayer
       
       if @animatedObject
         @timeline = TweenLite.to(

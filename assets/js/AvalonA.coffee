@@ -1,5 +1,5 @@
-### AvalonA 0.10.1 ###
-console.log '%cAvalonA 0.10.1', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
+### AvalonA 0.10.2 ###
+console.log '%cAvalonA 0.10.2', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
 
 defineAvalonA = ($,TweenLite)->
 
@@ -438,7 +438,7 @@ defineAvalonA = ($,TweenLite)->
 			@addPerspective()
 			@refreshTransform()
 			@trackMouseMovements()
-			@animation?.play @transformedLayer[0]
+			@animation?.play @transformedLayer[0], @transformAttribute
 
 
 		start: -> @refresh()
