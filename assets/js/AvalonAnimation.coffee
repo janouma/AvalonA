@@ -148,7 +148,8 @@ defineAvalonAnimation = (TweenMax, TweenLite, GSEases)->
     play: (transformedLayer, transformAttr)->
       if transformedLayer
         if selector
-          @animatedObject = transformedLayer.querySelectorAll "#{selector}:not([#{transformAttr}])"
+          selector = ("#{chunk}:not([#{transformAttr}])" for chunk in selector.split(',')).join(',')
+          @animatedObject = transformedLayer.querySelectorAll selector
         else
            @animatedObject = transformedLayer
       
