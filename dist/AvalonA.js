@@ -1,11 +1,11 @@
-/* AvalonA 0.10.1*/
+/* AvalonA 0.10.2*/
 
 
 (function() {
   var defineAvalonA, _ref,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  console.log('%cAvalonA 0.10.1', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;');
+  console.log('%cAvalonA 0.10.2', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;');
 
   defineAvalonA = function($, TweenLite) {
     var ActiveArea, Frame3d;
@@ -564,7 +564,7 @@
         this.addPerspective();
         this.refreshTransform();
         this.trackMouseMovements();
-        return (_ref1 = this.animation) != null ? _ref1.play(this.transformedLayer[0]) : void 0;
+        return (_ref1 = this.animation) != null ? _ref1.play(this.transformedLayer[0], this.transformAttribute) : void 0;
       };
 
       Frame3d.prototype.start = function() {

@@ -1,10 +1,11 @@
-/* AvalonAnimation 0.9.0*/
+/* AvalonAnimation 0.9.1*/
 
 
 (function() {
-  var defineAvalonAnimation, _ref, _ref1, _ref2, _ref3;
+  var defineAvalonAnimation, _ref, _ref1, _ref2, _ref3,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  console.log('%cAvalonAnimation 0.9.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;');
+  console.log('%cAvalonAnimation 0.9.1', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;');
 
   defineAvalonAnimation = function(TweenMax, TweenLite, GSEases) {
     var Linear, Power1;
@@ -60,10 +61,10 @@
               ease: Power1.easeInOut
             });
           },
-          play: function(target) {
+          play: function(transformedLayer) {
             var _this = this;
-            if (target) {
-              this.animatedObject = target;
+            if (transformedLayer) {
+              this.animatedObject = transformedLayer;
             }
             if (this.animatedObject) {
               return this.timeline = TweenLite.to(this.animatedObject, duration, {
@@ -139,10 +140,10 @@
               bezier: path
             });
           },
-          play: function(target) {
+          play: function(transformedLayer) {
             var _this = this;
-            if (target) {
-              this.animatedObject = target;
+            if (transformedLayer) {
+              this.animatedObject = transformedLayer;
             }
             if (this.animatedObject) {
               return this.timeline = TweenLite.to(this.animatedObject, duration / 4, {
@@ -158,6 +159,78 @@
           pause: function() {
             var _ref;
             return (_ref = this.timeline) != null ? _ref.pause() : void 0;
+          }
+        };
+      },
+      /* Atom*/
+
+      Atom: function(options) {
+        var a, allowedAxis, axis, css, duration, selector, _i, _len, _ref;
+        if (options == null) {
+          options = {};
+        }
+        duration = options.duration, selector = options.selector, axis = options.axis;
+        allowedAxis = ['x', 'y', 'z'];
+        css = {};
+        if (!axis || !axis.length) {
+          axis = allowedAxis;
+        }
+        for (_i = 0, _len = axis.length; _i < _len; _i++) {
+          a = axis[_i];
+          if (axis !== allowedAxis) {
+            if (_ref = !a, __indexOf.call(allowedAxis, _ref) >= 0) {
+              throw Error("Revolution.axis is not valid");
+            }
+          }
+          css["rotation" + (a.toUpperCase())] = '+=360';
+        }
+        duration = duration == null ? 2.75 : parseFloat(duration);
+        if (!duration) {
+          throw Error("Revolution.duration is not valid");
+        }
+        return {
+          getTimeline: function() {
+            return this.timeline = new TweenMax(this.animatedObject, duration, {
+              paused: true,
+              css: css,
+              repeat: -1,
+              ease: Linear.easeNone
+            });
+          },
+          play: function(transformedLayer, transformAttr) {
+            var chunk,
+              _this = this;
+            if (transformedLayer) {
+              if (selector) {
+                selector = ((function() {
+                  var _j, _len1, _ref1, _results;
+                  _ref1 = selector.split(',');
+                  _results = [];
+                  for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                    chunk = _ref1[_j];
+                    _results.push("" + chunk + ":not([" + transformAttr + "])");
+                  }
+                  return _results;
+                })()).join(',');
+                this.animatedObject = transformedLayer.querySelectorAll(selector);
+              } else {
+                this.animatedObject = transformedLayer;
+              }
+            }
+            if (this.animatedObject) {
+              return this.timeline = TweenLite.to(this.animatedObject, duration, {
+                overwrite: true,
+                css: css,
+                ease: Linear.easeNone,
+                onComplete: function() {
+                  return _this.getTimeline().play();
+                }
+              });
+            }
+          },
+          pause: function() {
+            var _ref1;
+            return (_ref1 = this.timeline) != null ? _ref1.pause() : void 0;
           }
         };
       }
