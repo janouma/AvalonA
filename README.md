@@ -129,16 +129,16 @@ Animates the `transformed layer` when mouse is outside the active area *– mean
 The `animation` object must have the following api:
 
 	animation: {
-	
+
 		play: function(transformedLayer){
 			// animation code goes here
 		},
-		
+
 		pause: function(){
 			// pause code goes here
 		}
 	}
-	
+
 As the example shows, the `play()` method received as first argument the `transformed layer`, thus one can animate any attribute of this element *– not just the rotation*.
 
 ##### *idleTimeout*
@@ -180,13 +180,13 @@ It is possible to add event listeners like this
     	}
 	};
 	AvalonA('frame-3d', 'avalona-inner-frame', options).start();
-	
+
 or this
 
 	var a = AvalonA('frame-3d', 'avalona-inner-frame', options);
 	a.onevent = function(){ /* event code goes here */ };
 	a.start();
-	
+
 Available events:
 
 ##### *startrotation*
@@ -212,17 +212,17 @@ Note that the **TweenMax** module includes the **TweenLite** one *– see [GSAP]
 *Example 1*
 
 	animation: AvalonAnimation.Balance()
-	
+
 *Example 2*
 
 	animation: AvalonAnimation.Balance({
       duration: 0.75,
-      
+
       from:{
         rx: 30,
         ry: -30
       },
-      
+
       to:{
         rx: -90,
         ry: 30
@@ -248,7 +248,7 @@ Note that the **TweenMax** module includes the **TweenLite** and **BezierPlugin*
 *Example 1*
 
 	animation: AvalonAnimation.Spotlight()
-	
+
 *Example 2*
 
 	animation: AvalonAnimation.Spotlight({
