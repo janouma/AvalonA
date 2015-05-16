@@ -250,9 +250,10 @@ defineAvalonA = (TweenLite)->
 
 		trackMouseMovements: ->
 			if @debug is on and @activeArea
-				activeAreaPlaceholder = document.createElement 'div'
+				activeAreaPlaceholderId = 'avalona-active-area'
+				activeAreaPlaceholder = document.getElementById(activeAreaPlaceholderId) or document.createElement('div')
 				activeAreaPlaceholder.textContent = 'AvalonA Active Area'
-				activeAreaPlaceholder.id = 'avalona-active-area'
+				activeAreaPlaceholder.id = activeAreaPlaceholderId
 				
 				activeAreaPlaceholder.style.setProperty(rule, value) for rule, value of {
 					'background-color': 'hotpink'

@@ -24,7 +24,6 @@
 - [Preview](#preview)
 
 # <a name="dependencies"></a> Dependencies
-- [Zepto.js 1.0+](http://zeptojs.com) or [jQuery 1.9.1+](http://jquery.com)
 - [GSAP 1.9.2+](http://www.greensock.com) *(GreenSock Animation Platform)* **TweenLite** and **CSSPlugin** modules
 
 # <a name="example"></a> Example
