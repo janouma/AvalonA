@@ -7,7 +7,7 @@
 
   console.log('%cAvalonA 0.10.2', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;');
 
-  defineAvalonA = function($, TweenLite) {
+  defineAvalonA = function(TweenLite) {
     var ActiveArea, Frame3d;
     ActiveArea = (function() {
       var dimensionPattern, validDimension;
@@ -79,7 +79,7 @@
         this.yBase = (yBaseComputation = this.getYBaseComputation())();
         if (this.widthIsFluid) {
           this.xMaxComputation = function() {
-            return this.xMin + (this.width / 100) * this.frame.width();
+            return this.xMin + (this.width / 100) * parseInt(getComputedStyle(this.frame).width, 10);
           };
         } else {
           this.xMaxComputation = function() {
@@ -88,7 +88,7 @@
         }
         if (this.heightIsFluid) {
           this.yMaxComputation = function() {
-            return this.yMin + (this.height / 100) * this.frame.height();
+            return this.yMin + (this.height / 100) * parseInt(getComputedStyle(this.frame).height, 10);
           };
         } else {
           this.yMaxComputation = function() {
@@ -96,8 +96,8 @@
           };
         }
         if (this.attachment === 'fixed') {
-          this.xPadding = this.frame.prop('scrollLeft');
-          this.yPadding = this.frame.prop('scrollTop');
+          this.xPadding = this.frame.scrollLeft;
+          this.yPadding = this.frame.scrollTop;
           if (this.debug === true) {
             console.log("Listen to scroll event");
             self = this;
@@ -108,42 +108,42 @@
             scrollDebugCode = function() {};
           }
           windowScrollCount = 0;
-          $(window).scroll(function() {
+          window.addEventListener('scroll', function() {
             if (++windowScrollCount % 5 > 0) {
               return;
             }
-            _this.xPadding = $(window).prop('pageXOffset');
-            _this.yPadding = $(window).prop('pageYOffset');
+            _this.xPadding = window.pageXOffset;
+            _this.yPadding = window.pageYOffset;
             _this.refreshBounds();
             return scrollDebugCode();
-          });
+          }, false);
           frameScrollCount = 0;
-          this.frame.scroll(function() {
+          this.frame.addEventListener('scroll', function() {
             if (++frameScrollCount % 5 > 0) {
               return;
             }
-            _this.xPadding = _this.frame.prop('scrollLeft');
-            _this.yPadding = _this.frame.prop('scrollTop');
+            _this.xPadding = _this.frame.scrollLeft;
+            _this.yPadding = _this.frame.scrollTop;
             _this.refreshBounds();
             return scrollDebugCode();
-          });
+          }, false);
         } else {
           this.xPadding = this.yPadding = 0;
         }
         if (this.debug === true) {
           self = this;
           resizeDebugCode = function() {
-            return console.log("Resize : @frame.width() = " + (self.frame.width()) + ", @frame.height() = " + (self.frame.height()));
+            return console.log("Resize : @frame.style.width = " + (getComputedStyle(self.frame).width) + ", @frame.style.height = " + (getComputedStyle(self.frame).height));
           };
         } else {
           resizeDebugCode = function() {};
         }
-        $(window).resize(function() {
+        window.addEventListener('resize', function() {
           _this.xBase = xBaseComputation();
           _this.yBase = yBaseComputation();
           _this.refreshBounds();
           return resizeDebugCode();
-        });
+        }, false);
         return this.refreshBounds();
       };
 
@@ -164,12 +164,13 @@
       };
 
       ActiveArea.prototype.getXBaseComputation = function() {
-        var xBaseComputation,
+        var frameWidth, xBaseComputation,
           _this = this;
+        frameWidth = parseInt(getComputedStyle(this.frame).width, 10);
         if (this.position.x && this.position.x !== 'auto') {
           if (dimensionPattern.exec(this.position.x)[1] === '%') {
             xBaseComputation = function() {
-              return (_this.x / 100) * _this.frame.width();
+              return (_this.x / 100) * frameWidth;
             };
           } else {
             xBaseComputation = function() {
@@ -180,11 +181,11 @@
         } else {
           if (this.widthIsFluid) {
             xBaseComputation = function() {
-              return ((50 - _this.width / 2) / 100) * _this.frame.width();
+              return ((50 - _this.width / 2) / 100) * frameWidth;
             };
           } else {
             xBaseComputation = function() {
-              return _this.frame.width() / 2 - _this.width / 2;
+              return frameWidth / 2 - _this.width / 2;
             };
           }
         }
@@ -192,12 +193,13 @@
       };
 
       ActiveArea.prototype.getYBaseComputation = function() {
-        var yBaseComputation,
+        var frameHeight, yBaseComputation,
           _this = this;
+        frameHeight = parseInt(getComputedStyle(this.frame).height, 10);
         if (this.position.y && this.position.y !== 'auto') {
           if (dimensionPattern.exec(this.position.y)[1] === '%') {
             yBaseComputation = function() {
-              return (_this.y / 100) * _this.frame.height();
+              return (_this.y / 100) * frameHeight;
             };
           } else {
             yBaseComputation = function() {
@@ -208,11 +210,11 @@
         } else {
           if (this.heightIsFluid) {
             yBaseComputation = function() {
-              return ((50 - _this.height / 2) / 100) * _this.frame.height();
+              return ((50 - _this.height / 2) / 100) * frameHeight;
             };
           } else {
             yBaseComputation = function() {
-              return _this.frame.height() / 2 - _this.height / 2;
+              return frameHeight / 2 - _this.height / 2;
             };
           }
         }
@@ -259,30 +261,25 @@
         return rotation;
       };
 
-      transformStyleIsSupported = null;
+      transformStyleIsSupported = void 0;
 
       cssBackUpAttribute = 'data-css-backup';
 
       detectTransformStyleSupport = function() {
-        var body, element, id, _ref, _ref1, _ref2, _ref3;
-        if (transformStyleIsSupported === null) {
-          id = 'avalona-detection-element';
-          body = $('body').prepend("<b id='" + id + "' style='position:absolute; top:0; left:0;'></b>");
-          element = $("#" + id);
-          if ((_ref = element[0].style) != null) {
-            _ref.webkitTransformStyle = 'preserve-3d';
-          }
-          if ((_ref1 = element[0].style) != null) {
-            _ref1.MozTransformStyle = 'preserve-3d';
-          }
-          if ((_ref2 = element[0].style) != null) {
-            _ref2.msTransformStyle = 'preserve-3d';
-          }
-          if ((_ref3 = element[0].style) != null) {
-            _ref3.transformStyle = 'preserve-3d';
-          }
-          transformStyleIsSupported = getTransformStyle(element[0]) === 'preserve-3d';
-          element.remove();
+        var element;
+        if (transformStyleIsSupported === void 0) {
+          element = document.createElement('b');
+          element.id = 'avalona-detection-element';
+          element.style.position = 'absolute';
+          element.style.top = 0;
+          element.style.left = 0;
+          document.body.appendChild(element);
+          element.style.webkitTransformStyle = 'preserve-3d';
+          element.style.MozTransformStyle = 'preserve-3d';
+          element.style.msTransformStyle = 'preserve-3d';
+          element.style.transformStyle = 'preserve-3d';
+          transformStyleIsSupported = getTransformStyle(element) === 'preserve-3d';
+          document.body.removeChild(element);
         }
         return transformStyleIsSupported;
       };
@@ -294,26 +291,26 @@
       };
 
       debugName = function(node) {
-        return "" + (node.prop('tagName')) + "(" + (node.attr('id') || node.attr('class') || node.attr('href')) + ")";
+        return "" + node.tagName + "(" + (node.id || node.getAttribute('class') || node.getAttribute('href')) + ")";
       };
 
       Frame3d.prototype.find3dFrames = function() {
-        this.frame = $("#" + this.frameId);
-        this.transformedLayer = $("#" + this.layerId, this.frame);
+        this.frame = document.getElementById(this.frameId);
+        this.transformedLayer = this.frame.querySelector("#" + this.layerId);
         if (this.debug === true) {
           console.log("@transformAttribute: " + this.transformAttribute);
           console.log("@layerId: " + this.layerId);
         }
-        if (!this.frame.size()) {
+        if (!this.frame) {
           throw new Error("Cannot find 3d frame '#" + this.frameId + "' in dom");
         }
-        if (!this.transformedLayer.size()) {
+        if (!this.transformedLayer) {
           throw new Error("Cannot find 3d inner frame '#" + this.frameId + " > #" + this.layerId + "' in dom");
         }
       };
 
       Frame3d.prototype.addPerspective = function() {
-        return TweenLite.set(this.transformedLayer[0], {
+        return TweenLite.set(this.transformedLayer, {
           css: {
             perspective: 1000
           }
@@ -321,7 +318,7 @@
       };
 
       Frame3d.prototype.removePerspective = function() {
-        return TweenLite.set(this.transformedLayer[0], {
+        return TweenLite.set(this.transformedLayer, {
           css: {
             perspective: 'none'
           }
@@ -329,21 +326,42 @@
       };
 
       Frame3d.prototype.trackMouseMovements = function() {
-        var activeAreaPlaceholder;
+        var activeAreaPlaceholder, activeAreaPlaceholderId, rule, value, _ref;
         if (this.debug === true && this.activeArea) {
-          $('body').append("<div id='avalona-active-area' style='background-color:hotpink;opacity:0.75;pointer-events:none;position:absolute;visibility:hidden;z-index:10000;'>AvalonA Active Area</div>");
-          activeAreaPlaceholder = $('#avalona-active-area');
+          activeAreaPlaceholderId = 'avalona-active-area';
+          activeAreaPlaceholder = document.getElementById(activeAreaPlaceholderId) || document.createElement('div');
+          activeAreaPlaceholder.textContent = 'AvalonA Active Area';
+          activeAreaPlaceholder.id = activeAreaPlaceholderId;
+          _ref = {
+            'background-color': 'hotpink',
+            'opacity': 0.5,
+            'pointer-events': 'none',
+            'position': 'absolute',
+            'visibility': 'hidden',
+            'z-index': 10000
+          };
+          for (rule in _ref) {
+            value = _ref[rule];
+            activeAreaPlaceholder.style.setProperty(rule, value);
+          }
+          document.body.appendChild(activeAreaPlaceholder);
           this.debugMouseMove = function() {
-            var bounds;
+            var bounds, _ref1, _results;
             console.log("rotationX: " + this.rotationX + ", rotationY: " + this.rotationY);
             bounds = this.activeArea.bounds();
-            return activeAreaPlaceholder.css({
+            _ref1 = {
               visibility: 'visible',
               left: "" + bounds.xMin + "px",
               top: "" + bounds.yMin + "px",
               width: "" + (bounds.xMax - bounds.xMin) + "px",
               height: "" + (bounds.yMax - bounds.yMin) + "px"
-            });
+            };
+            _results = [];
+            for (rule in _ref1) {
+              value = _ref1[rule];
+              _results.push(activeAreaPlaceholder.style.setProperty(rule, value));
+            }
+            return _results;
           };
         } else {
           this.debugMouseMove = function() {};
@@ -351,9 +369,13 @@
         if (this.activeArea) {
           this.activeArea.init(this.frame);
         } else {
-          this.frame.on("mouseleave", "#" + this.frameId, this.mouseout);
+          this.frame.addEventListener('mouseleave', function(e) {
+            if (e.target.id === this.frameId) {
+              return this.mouseout();
+            }
+          }, false);
         }
-        return this.frame.mousemove(this.mousemove);
+        return this.frame.addEventListener('mousemove', this.mousemove, false);
       };
 
       Frame3d.prototype.mouseout = function() {
@@ -368,10 +390,10 @@
         }
         if (!this.activeArea || this.activeArea.mouseover(event)) {
           this.onrotation();
-          this.rotationY = (event.pageX - $(window).prop('innerWidth') / 2) / 25;
-          this.rotationX = -1 * (event.pageY - $(window).prop('innerHeight') / 2) / 15;
+          this.rotationY = (event.pageX - window.innerWidth / 2) / 25;
+          this.rotationX = -1 * (event.pageY - window.innerHeight / 2) / 15;
           this.debugMouseMove();
-          return TweenLite.to(this.transformedLayer[0], 0.1, {
+          return TweenLite.to(this.transformedLayer, 0.1, {
             css: {
               rotationX: this.fy(this.rotationX),
               rotationY: this.fx(this.rotationY)
@@ -427,7 +449,7 @@
         }
         clearTimeout(this.rotationTimeoutId);
         this.rotationX = this.rotationY = 0;
-        return TweenLite.to(this.transformedLayer[0], duration, {
+        return TweenLite.to(this.transformedLayer, duration, {
           css: {
             rotationX: 0,
             rotationY: 0
@@ -436,61 +458,70 @@
       };
 
       Frame3d.prototype.resetTransform = function() {
+        var rule, value, _ref, _results;
         clearTimeout(this.rotationTimeoutId);
         this.rotationX = this.rotationY = 0;
-        return this.transformedLayer.css({
+        _ref = {
           '-webkit-transform': 'none',
           '-moz-transform': 'none',
           '-o-transform': 'none',
           '-ms-transform': 'none',
-          transform: 'none'
-        });
+          'transform': 'none'
+        };
+        _results = [];
+        for (rule in _ref) {
+          value = _ref[rule];
+          _results.push(this.transformedLayer.style.setProperty(rule, value));
+        }
+        return _results;
       };
 
       Frame3d.prototype.untrackMouseMovements = function() {
         var _ref, _ref1;
         if ((_ref = this.frame) != null) {
-          _ref.off("mousemove", this.mousemove);
+          _ref.removeEventListener("mousemove", this.mousemove);
         }
-        return (_ref1 = this.frame) != null ? _ref1.off("mouseleave", this.mouseout) : void 0;
+        return (_ref1 = this.frame) != null ? _ref1.removeEventListener("mouseleave", this.mouseout) : void 0;
       };
 
       Frame3d.prototype.refreshTransform = function(node) {
-        var firstChild, self, target;
+        var child, target, _i, _len, _ref, _results;
         if (node == null) {
           node = null;
         }
         if (this.disabled === true) {
           return;
         }
-        self = this;
         if (node == null) {
           node = this.transformedLayer;
         }
-        target = typeof node === 'string' ? $(node, this.transformedLayer) : $(node);
+        target = typeof node === 'string' ? this.transformedLayer.querySelector(node) : node;
         if (this.debug === true) {
           console.log("target: " + (debugName(target)));
         }
         this.applyTransformOn(target);
-        firstChild = target.children().eq(0);
         if (this.debug === true) {
-          console.log("refreshTransform firstChild: " + (debugName(firstChild)));
+          console.log("refreshTransform firstChild: " + (debugName(target.firstElementChild)));
         }
-        return this.refreshChildTransform(firstChild).siblings().each(function() {
-          return self.refreshChildTransform($(this));
-        });
+        _ref = target.children;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          _results.push(this.refreshChildTransform(child));
+        }
+        return _results;
       };
 
       Frame3d.prototype.refreshChildTransform = function(child) {
         if (!child) {
           throw new Error("refreshChildTransform child argument cannot be null");
         }
-        if ($("[" + this.transformAttribute + "]", child).length) {
+        if (child.querySelectorAll("[" + this.transformAttribute + "]").length) {
           if (this.debug === true) {
             console.log("refreshTransform child " + (debugName(child)) + " has children");
           }
           this.refreshTransform(child);
-        } else if (child.attr(this.transformAttribute)) {
+        } else if (child.getAttribute(this.transformAttribute)) {
           if (this.debug === true) {
             console.log("refreshTransform child " + (debugName(child)) + " has '" + this.transformAttribute + "'");
           }
@@ -500,28 +531,29 @@
       };
 
       Frame3d.prototype.applyTransformOn = function(target) {
-        var attrValue, backup, css, prop, rx, ry, rz, t, transformBackup, transforms, value, z, _i, _len, _ref, _ref1;
+        var attrValue, backup, css, prop, rx, ry, rz, t, targetStyle, transformBackup, transforms, value, z, _i, _len, _ref, _ref1;
         if (!target) {
           throw new Error("applyTransformOn target argument cannot be null");
         }
-        if (!target.attr(cssBackUpAttribute)) {
+        if (!target.getAttribute(cssBackUpAttribute)) {
+          targetStyle = getComputedStyle(target);
           backup = {
-            transformStyle: getTransformStyle(target[0]) || 'flat',
-            overflow: target.css('overflow') || 'inherit'
+            transformStyle: getTransformStyle(target) || 'flat',
+            overflow: targetStyle.overflow || 'inherit'
           };
-          transformBackup = target.css('-webkit-transform') || target.css('-moz-transform') || target.css('-o-transform') || target.css('-ms-transform') || target.css('transform');
+          transformBackup = targetStyle.getPropertyValue('-webkit-transform') || targetStyle.getPropertyValue('-moz-transform') || targetStyle.getPropertyValue('-o-transform') || targetStyle.getPropertyValue('-ms-transform') || targetStyle.getPropertyValue('transform');
           if (transformBackup) {
             backup.transform = transformBackup;
           }
-          target.attr(cssBackUpAttribute, JSON.stringify(backup));
+          target.setAttribute(cssBackUpAttribute, JSON.stringify(backup));
         }
-        TweenLite.set(target[0], {
+        TweenLite.set(target, {
           css: {
             transformStyle: 'preserve-3d',
             overflow: 'visible'
           }
         });
-        if ((attrValue = target.attr(this.transformAttribute))) {
+        if ((attrValue = target.getAttribute(this.transformAttribute))) {
           transforms = {};
           _ref = attrValue.split(';');
           for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -544,7 +576,7 @@
             if (rz) {
               css.rotationZ = rz;
             }
-            return TweenLite.to(target[0], transitionDuration, {
+            return TweenLite.to(target, transitionDuration, {
               css: css
             });
           }
@@ -564,7 +596,7 @@
         this.addPerspective();
         this.refreshTransform();
         this.trackMouseMovements();
-        return (_ref1 = this.animation) != null ? _ref1.play(this.transformedLayer[0], this.transformAttribute) : void 0;
+        return (_ref1 = this.animation) != null ? _ref1.play(this.transformedLayer, this.transformAttribute) : void 0;
       };
 
       Frame3d.prototype.start = function() {
@@ -596,19 +628,21 @@
       };
 
       Frame3d.prototype.flatten = function() {
-        var self;
+        var css, node, _i, _len, _ref, _results;
         this.resetTransform();
-        self = this;
-        return $("[" + cssBackUpAttribute + "]", this.transformedLayer[0]).each(function() {
-          var css;
-          if (self.debug === true) {
-            console.log("flattening layer '" + (debugName($(this))) + "'");
+        _ref = this.transformedLayer.querySelectorAll("[" + cssBackUpAttribute + "]");
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          node = _ref[_i];
+          if (this.debug === true) {
+            console.log("flattening layer '" + (debugName(node)) + "'");
           }
-          css = JSON.parse($(this).attr(cssBackUpAttribute));
-          return TweenLite.set(this, {
+          css = JSON.parse(node.getAttribute(cssBackUpAttribute));
+          _results.push(TweenLite.set(node, {
             css: css
-          });
-        });
+          }));
+        }
+        return _results;
       };
 
       Frame3d.prototype.init = function(options) {
@@ -683,11 +717,11 @@
 
 
   if (typeof define === 'function' && define.amd) {
-    define('AvalonA', ['jquery', 'tweenlite'], function(jquery, tweenlite) {
-      return defineAvalonA(jquery, tweenlite);
+    define('AvalonA', ['tweenlite'], function(tweenlite) {
+      return defineAvalonA(tweenlite);
     });
   } else {
-    window.AvalonA = defineAvalonA($, ((_ref = window.GreenSockGlobals) != null ? _ref.TweenLite : void 0) || TweenLite);
+    window.AvalonA = defineAvalonA(((_ref = window.GreenSockGlobals) != null ? _ref.TweenLite : void 0) || TweenLite);
   }
 
 }).call(this);
