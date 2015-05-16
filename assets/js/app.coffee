@@ -1,11 +1,11 @@
-$ ->
+window.onload = ->
 	enableAll = ->
 		frame3d.enable()
 		frame3d2.enable()
-		$('#enable').css display: 'none'
-		$('#enable2,#enable3').css display: 'none'
-		$('#disable,#disable2,#disable3').css display: 'block'
-		$('#shuffle-all,#shuffle-one').css display: 'inline'
+		document.getElementById('enable').style.display = 'none'
+		node.style.display = 'none' for node in document.querySelectorAll('#enable2,#enable3')
+		node.style.display = 'block' for node in document.querySelectorAll('#disable,#disable2,#disable3')
+		node.style.display = 'inline' for node in document.querySelectorAll('#shuffle-all,#shuffle-one')
 
 	frame3d = AvalonA(
 		'body-3d'
@@ -17,9 +17,11 @@ $ ->
 			2 * rotation
 
 		activeArea:
-		#position:
-		#  x: 50
-		#  y: '10%'
+			###
+			position:
+				x: 50
+				y: '10%'
+			###
 			attachment: 'scroll'
 			width: '75%'
 			height: 350
@@ -38,7 +40,7 @@ $ ->
 			axis: ['y']
 		})
 
-		idleTimeout: -1
+		#idleTimeout: -1
 
 		#debug: on
 	)
@@ -76,62 +78,110 @@ $ ->
 
 	layerCursor = 0
 
-	outer = $('[data-outter]')
-	outer.attr('id', outer.attr('data-outter'))
-	inner = $('[data-inner]')
-	inner.attr('id', inner.attr('data-inner'))
+	outer = document.querySelector('[data-outter]')
+	outer.setAttribute('id', outer.getAttribute('data-outter'))
+	inner = document.querySelector('[data-inner]')
+	inner.setAttribute('id', inner.getAttribute('data-inner'))
 
-	$('#enable').click enableAll
+	document.getElementById('enable').addEventListener 'click', enableAll, false
 
-	$('#disable').click ->
-		$('#shuffle-all,#shuffle-one').css display: 'none'
-		$(@).css display: 'none'
-		$('#disable2,#disable3').css display: 'none'
-		$('#enable,#enable2,#enable3').css display: 'block'
-		frame3d.disable()
-		frame3d2.disable()
+	document.getElementById('disable').addEventListener(
+		'click'
+		->
+			node.style.display = 'none' for node in document.querySelectorAll('#shuffle-all,#shuffle-one')
+			this.style.display = 'none'
+			node.style.display = 'none' for node in document.querySelectorAll('#disable2,#disable3')
+			node.style.display = 'block' for node in document.querySelectorAll('#enable,#enable2,#enable3')
+			frame3d.disable()
+			frame3d2.disable()
+			
+		false
+	)
 
-	$('#shuffle-all').click ->
-		$('[at]').each -> $(@).attr 'at': ['z:', Math.round(Math.random() * 400 - 200), '; rx:', Math.random() * 360, '; ry:', Math.random() * 360, '; rz:', Math.random() * 360].join ''
-		do frame3d.refreshTransform
+	document.getElementById('shuffle-all').addEventListener(
+		'click'
+		->
+			for node in document.querySelectorAll('[at]')
+				node.setAttribute 'at', ['z:', Math.round(Math.random() * 400 - 200), '; rx:', Math.random() * 360, '; ry:', Math.random() * 360, '; rz:', Math.random() * 360].join ''
+									
+			do frame3d.refreshTransform
+								
+		no
+	)
 
 
-	$('#shuffle-one').click ->
-		node = $('[at]').eq(layerCursor)
-		node.attr 'at': ['z:', Math.round(Math.random() * 400 - 200), '; rx:', Math.random() * 360, '; ry:', Math.random() * 360, '; rz:', Math.random() * 360].join ''
-		frame3d.refreshTransform node
-		#frame3d.refreshTransform "[at]"
-		layerCursor = (layerCursor + 1) % $('[at]').size()
+	document.getElementById('shuffle-one').addEventListener(
+		'click'
+		->
+			nodes = document.querySelectorAll('[at]')
+			node = nodes[layerCursor]
+			node.setAttribute 'at', ['z:', Math.round(Math.random() * 400 - 200), '; rx:', Math.random() * 360, '; ry:', Math.random() * 360, '; rz:', Math.random() * 360].join ''
+			frame3d.refreshTransform node
+			#frame3d.refreshTransform "[at]"
+			layerCursor = (layerCursor + 1) % nodes.length
+			
+		false
+	)
 
-	$('#enable2').click ->
-		frame3d2.enable()
-		$(@).css display: 'none'
-		$('#disable2').css display: 'block'
+	document.getElementById('enable2').addEventListener(
+		'click'
+		->
+			frame3d2.enable()
+			this.style.display = 'none'
+			document.getElementById('disable2').style.display = 'block'
+			
+		false
+	)
 
-	$('#disable2').click ->
-		frame3d2.disable()
-		$(@).css display: 'none'
-		$('#enable2').css display: 'block'
+	document.getElementById('disable2').addEventListener(
+		'click'
+		->
+			frame3d2.disable()
+			this.style.display = 'none'
+			document.getElementById('enable2').style.display = 'block'
+			
+		no
+	)
 
-	$('#enable3').click ->
-		frame3d.enable()
-		$(@).css display: 'none'
-		$('#disable3').css display: 'block'
+	document.getElementById('enable3').addEventListener(
+		'click'
+		->
+			frame3d.enable()
+			this.style.display = 'none'
+			document.getElementById('disable3').style.display = 'block'
+			
+		no
+	)
 
-	$('#disable3').click ->
-		frame3d.disable()
-		$(@).css display: 'none'
-		$('#enable3').css display: 'block'
+	document.getElementById('disable3').addEventListener(
+		'click'
+		->
+			frame3d.disable()
+			this.style.display = 'none'
+			document.getElementById('enable3').style.display = 'block'
+		
+		no
+	)
 
-	$('#hide').click ->
-		$('#aa3d,#a3d2').css display: 'none'
-		$(@).css display: 'none'
-		$('#show').css display: 'block'
+	document.getElementById('hide').addEventListener(
+		'click'
+		->
+			node.style.display = 'none' for node in document.querySelectorAll('#aa3d,#a3d2')
+			this.style.display = 'none'
+			document.getElementById('show').style.display = 'block'
+		
+		no
+	)
 
-	$('#show').click ->
-		$('#aa3d,#a3d2').css display: 'block'
-		$(@).css display: 'none'
-		$('#hide').css display: 'block'
+	document.getElementById('show').addEventListener(
+		'click'
+		->
+			node.style.display = 'block' for node in document.querySelectorAll('#aa3d,#a3d2')
+			this.style.display = 'none'
+			document.getElementById('hide').style.display = 'block'
+			
+		no
+	)
 
 	###
 	speedTester.oncomplete (results)->

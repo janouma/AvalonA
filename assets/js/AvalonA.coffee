@@ -1,7 +1,7 @@
 ### AvalonA 0.10.2 ###
 console.log '%cAvalonA 0.10.2', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
 
-defineAvalonA = ($,TweenLite)->
+defineAvalonA = (TweenLite)->
 
 	class ActiveArea
 		dimensionPattern = /^\d+(%|px)?$/gi
@@ -50,61 +50,70 @@ defineAvalonA = ($,TweenLite)->
 			@yBase = (yBaseComputation = @getYBaseComputation())()
 
 			if @widthIsFluid
-				@xMaxComputation = ->
-					@xMin + (@width / 100) * @frame.width()
+				@xMaxComputation = -> @xMin + (@width / 100) * parseInt(getComputedStyle(@frame).width, 10)
 			else
-				@xMaxComputation = ->
-					@xMin + @width
+				@xMaxComputation = -> @xMin + @width
 
 			if @heightIsFluid
-				@yMaxComputation = ->
-					@yMin + (@height / 100) * @frame.height()
+				@yMaxComputation = -> @yMin + (@height / 100) * parseInt(getComputedStyle(@frame).height, 10)
 			else
-				@yMaxComputation = ->
-					@yMin + @height
+				@yMaxComputation = -> @yMin + @height
 
 			if @attachment is 'fixed'
-				@xPadding = @frame.prop('scrollLeft')
-				@yPadding = @frame.prop('scrollTop')
+				@xPadding = @frame.scrollLeft
+				@yPadding = @frame.scrollTop
 
 				if @debug is on
 					console.log "Listen to scroll event"
 					self = @
-					scrollDebugCode = ->
-						console.log "Scroll : @xPadding = #{self.xPadding}, @yPadding = #{self.yPadding}"
+					scrollDebugCode = -> console.log "Scroll : @xPadding = #{self.xPadding}, @yPadding = #{self.yPadding}"
 				else
 					scrollDebugCode = ->
 
 				windowScrollCount = 0
-				$(window).scroll =>
-					return if ++windowScrollCount % 5 > 0
-					@xPadding = $(window).prop 'pageXOffset'
-					@yPadding = $(window).prop 'pageYOffset'
-					@refreshBounds()
-					scrollDebugCode()
+				window.addEventListener(
+					'scroll'
+					=>
+						return if ++windowScrollCount % 5 > 0
+						@xPadding = window.pageXOffset
+						@yPadding = window.pageYOffset
+						@refreshBounds()
+						scrollDebugCode()
+						
+					no
+				)
 
 				frameScrollCount = 0
-				@frame.scroll =>
-					return if ++frameScrollCount % 5 > 0
-					@xPadding = @frame.prop('scrollLeft')
-					@yPadding = @frame.prop('scrollTop')
-					@refreshBounds()
-					scrollDebugCode()
+				@frame.addEventListener(
+					'scroll'
+					=>
+						return if ++frameScrollCount % 5 > 0
+						@xPadding = @frame.scrollLeft
+						@yPadding = @frame.scrollTop
+						@refreshBounds()
+						scrollDebugCode()
+						
+					no
+				)
 			else
 				@xPadding = @yPadding = 0
 
 			if @debug is on
 				self = @
-				resizeDebugCode = ->
-					console.log "Resize : @frame.width() = #{self.frame.width()}, @frame.height() = #{self.frame.height()}"
+				resizeDebugCode = -> console.log "Resize : @frame.style.width = #{getComputedStyle(self.frame).width}, @frame.style.height = #{getComputedStyle(self.frame).height}"
 			else
 				resizeDebugCode = ->
-
-			$(window).resize =>
-				@xBase = xBaseComputation()
-				@yBase = yBaseComputation()
-				@refreshBounds()
-				resizeDebugCode()
+			
+			window.addEventListener(
+				'resize'
+				=>
+					@xBase = xBaseComputation()
+					@yBase = yBaseComputation()
+					@refreshBounds()
+					resizeDebugCode()
+				
+				no
+			)
 
 			@refreshBounds()
 
@@ -115,7 +124,6 @@ defineAvalonA = ($,TweenLite)->
 			@yMin = @yBase + @yPadding
 			@yMax = @yMaxComputation()
 
-
 		bounds: ->
 			xMin: @xMin
 			xMax: @xMax
@@ -124,49 +132,44 @@ defineAvalonA = ($,TweenLite)->
 
 
 		getXBaseComputation: ->
+			frameWidth = parseInt(getComputedStyle(@frame).width, 10)
+			
 			if @position.x and @position.x isnt 'auto'
 				if dimensionPattern.exec(@position.x)[1] is '%'
-					xBaseComputation = =>
-						(@x / 100) * @frame.width()
+					xBaseComputation = => (@x / 100) * frameWidth
 				else
-					xBaseComputation = =>
-						@x
+					xBaseComputation = => @x
 
 				dimensionPattern.lastIndex = 0
 			else
 				if @widthIsFluid
-					xBaseComputation = =>
-						((50 - @width / 2) / 100) * @frame.width()
+					xBaseComputation = => ((50 - @width / 2) / 100) * frameWidth
 				else
-					xBaseComputation = =>
-						@frame.width() / 2 - @width / 2
+					xBaseComputation = => frameWidth / 2 - @width / 2
 
 			xBaseComputation
 
 
 		getYBaseComputation: ->
+			frameHeight = parseInt(getComputedStyle(@frame).height, 10)
+			
 			if @position.y and @position.y isnt 'auto'
 				if dimensionPattern.exec(@position.y)[1] is '%'
-					yBaseComputation = =>
-						(@y / 100) * @frame.height()
+					yBaseComputation = => (@y / 100) * frameHeight
 				else
-					yBaseComputation = =>
-						@y
+					yBaseComputation = => @y
 
 				dimensionPattern.lastIndex = 0
 			else
 				if @heightIsFluid
-					yBaseComputation = =>
-						((50 - @height / 2) / 100) * @frame.height()
+					yBaseComputation = => ((50 - @height / 2) / 100) * frameHeight
 				else
-					yBaseComputation = =>
-						@frame.height() / 2 - @height / 2
+					yBaseComputation = => frameHeight / 2 - @height / 2
 
 			yBaseComputation
 
 
-		mouseover: (event)->
-			@xMin <= event.pageX <= @xMax and @yMin <= event.pageY <= @yMax
+		mouseover: (event)-> @xMin <= event.pageX <= @xMax and @yMin <= event.pageY <= @yMax
 
 
 		constructor: (@area)->
@@ -187,22 +190,26 @@ defineAvalonA = ($,TweenLite)->
 	class Frame3d
 		transitionDuration = 0.75
 		noeffect = (rotation)-> rotation
-		transformStyleIsSupported = null
+		transformStyleIsSupported = undefined
 		cssBackUpAttribute = 'data-css-backup'
 
 		detectTransformStyleSupport = ->
-			if transformStyleIsSupported is null
-				id = 'avalona-detection-element'
-				body = $('body').prepend "<b id='#{id}' style='position:absolute; top:0; left:0;'></b>"
-				element = $ "##{id}"
+			if transformStyleIsSupported is undefined
+				element = document.createElement 'b'
+				element.id = 'avalona-detection-element'
+				element.style.position = 'absolute'
+				element.style.top = 0
+				element.style.left = 0
+				
+				document.body.appendChild element
 
-				element[0].style?.webkitTransformStyle = 'preserve-3d'
-				element[0].style?.MozTransformStyle = 'preserve-3d'
-				element[0].style?.msTransformStyle = 'preserve-3d'
-				element[0].style?.transformStyle = 'preserve-3d'
+				element.style.webkitTransformStyle = 'preserve-3d'
+				element.style.MozTransformStyle = 'preserve-3d'
+				element.style.msTransformStyle = 'preserve-3d'
+				element.style.transformStyle = 'preserve-3d'
 
-				transformStyleIsSupported = getTransformStyle(element[0]) is 'preserve-3d'
-				element.remove()
+				transformStyleIsSupported = getTransformStyle(element) is 'preserve-3d'
+				document.body.removeChild(element)
 
 			transformStyleIsSupported
 
@@ -212,62 +219,77 @@ defineAvalonA = ($,TweenLite)->
 			computedStyle.getPropertyValue('-webkit-transform-style') or computedStyle.getPropertyValue('-moz-transform-style') or computedStyle.getPropertyValue('-ms-transform-style') or computedStyle.getPropertyValue('transform-style')
 
 
-		debugName = (node)->
-			"#{node.prop('tagName')}(#{node.attr('id') or node.attr('class') or node.attr('href')})"
+		debugName = (node)-> "#{node.tagName}(#{node.id or node.getAttribute('class') or node.getAttribute('href')})"
+
 
 		find3dFrames: ->
-			@frame = $("##{@frameId}")
-			@transformedLayer = $("##{@layerId}", @frame)
+			@frame = document.getElementById @frameId
+			@transformedLayer = @frame.querySelector "##{@layerId}"
 
 			if @debug is on
 				console.log "@transformAttribute: #{@transformAttribute}"
 				console.log "@layerId: #{@layerId}"
 
-
-			throw new Error "Cannot find 3d frame '##{@frameId}' in dom" if not @frame.size()
-			throw new Error "Cannot find 3d inner frame '##{@frameId} > ##{@layerId}' in dom" if not @transformedLayer.size()
+			throw new Error "Cannot find 3d frame '##{@frameId}' in dom" if not @frame
+			throw new Error "Cannot find 3d inner frame '##{@frameId} > ##{@layerId}' in dom" if not @transformedLayer
 
 
 		addPerspective: ->
 			TweenLite.set(
-				@transformedLayer[0]
+				@transformedLayer
 				css: perspective: 1000
 			)
 
 
 		removePerspective: ->
 			TweenLite.set(
-				@transformedLayer[0]
+				@transformedLayer
 				css: perspective: 'none'
 			)
 
 
 		trackMouseMovements: ->
 			if @debug is on and @activeArea
-				$('body').append "<div id='avalona-active-area' style='background-color:hotpink;opacity:0.75;pointer-events:none;position:absolute;visibility:hidden;z-index:10000;'>AvalonA Active Area</div>"
-
-				activeAreaPlaceholder = $('#avalona-active-area')
+				activeAreaPlaceholder = document.createElement 'div'
+				activeAreaPlaceholder.textContent = 'AvalonA Active Area'
+				activeAreaPlaceholder.id = 'avalona-active-area'
+				
+				activeAreaPlaceholder.style.setProperty(rule, value) for rule, value of {
+					'background-color': 'hotpink'
+					'opacity': 0.5
+					'pointer-events': 'none'
+					'position': 'absolute'
+					'visibility': 'hidden'
+					'z-index': 10000
+				}
+				
+				document.body.appendChild activeAreaPlaceholder
 
 				@debugMouseMove = ->
 					console.log "rotationX: #{@rotationX}, rotationY: #{@rotationY}"
 
 					bounds = @activeArea.bounds()
-					activeAreaPlaceholder.css(
+					activeAreaPlaceholder.style.setProperty(rule, value) for rule, value of {
 						visibility: 'visible'
 						left: "#{bounds.xMin}px"
 						top: "#{bounds.yMin}px"
 						width: "#{bounds.xMax - bounds.xMin}px"
 						height: "#{bounds.yMax - bounds.yMin}px"
-					)
+					}
 			else
 				@debugMouseMove = ->
 
 			if @activeArea
 				@activeArea.init @frame
 			else
-				@frame.on "mouseleave", "##{@frameId}", @mouseout
+				@frame.addEventListener(
+					'mouseleave'
+					(e) -> @mouseout() if e.target.id is @frameId
+					no
+				)
+				
 
-			@frame.mousemove @mousemove
+			@frame.addEventListener 'mousemove', @mousemove, no
 
 
 		mouseout: => @disableRotation()
@@ -278,13 +300,13 @@ defineAvalonA = ($,TweenLite)->
 			return if ++@mouseMoveCount % 5 > 0
 			if not @activeArea or @activeArea.mouseover(event)
 				@onrotation()
-				@rotationY = (event.pageX - $(window).prop('innerWidth') / 2) / 25
-				@rotationX = -1 * (event.pageY - $(window).prop('innerHeight') / 2) / 15
+				@rotationY = (event.pageX - window.innerWidth / 2) / 25
+				@rotationX = -1 * (event.pageY - window.innerHeight / 2) / 15
 
 				@debugMouseMove()
 
 				TweenLite.to(
-					@transformedLayer[0]
+					@transformedLayer
 					0.1
 					css:
 						rotationX: @fy(@rotationX)
@@ -324,7 +346,7 @@ defineAvalonA = ($,TweenLite)->
 			clearTimeout @rotationTimeoutId
 			@rotationX = @rotationY = 0
 			TweenLite.to(
-				@transformedLayer[0]
+				@transformedLayer
 				duration
 				css:
 					rotationX: 0
@@ -334,44 +356,41 @@ defineAvalonA = ($,TweenLite)->
 		resetTransform: ->
 			clearTimeout @rotationTimeoutId
 			@rotationX = @rotationY = 0
-			@transformedLayer.css
+			@transformedLayer.style.setProperty(rule, value) for rule, value of {
 				'-webkit-transform': 'none'
 				'-moz-transform': 'none'
 				'-o-transform': 'none'
 				'-ms-transform': 'none'
-				transform: 'none'
-
+				'transform': 'none'
+			}
 
 		untrackMouseMovements: ->
-			@frame?.off "mousemove", @mousemove
-			@frame?.off "mouseleave", @mouseout
+			@frame?.removeEventListener "mousemove", @mousemove
+			@frame?.removeEventListener "mouseleave", @mouseout
 
 
 		refreshTransform: (node = null)->
 			return if @disabled is on
 
-			self = @
 			node ?= @transformedLayer
-			target = if typeof node is 'string' then $(node, @transformedLayer) else $(node)
+			target = if typeof node is 'string' then @transformedLayer.querySelector(node) else node
 
 			console.log "target: #{debugName target}" if @debug is on
 
 			@applyTransformOn target
-			firstChild = target.children().eq(0)
 
-			console.log "refreshTransform firstChild: #{debugName firstChild}" if @debug is on
+			console.log "refreshTransform firstChild: #{debugName target.firstElementChild}" if @debug is on
 
-			@refreshChildTransform(firstChild).siblings().each ->
-				self.refreshChildTransform $(@)
+			@refreshChildTransform child for child in target.children
 
 
 		refreshChildTransform: (child)=>
 			throw new Error "refreshChildTransform child argument cannot be null" if not child
 
-			if $("[#{@transformAttribute}]", child).length
+			if child.querySelectorAll("[#{@transformAttribute}]").length
 				console.log "refreshTransform child #{debugName child} has children" if @debug is on
 				@refreshTransform child
-			else if child.attr @transformAttribute
+			else if child.getAttribute @transformAttribute
 				console.log "refreshTransform child #{debugName child} has '#{@transformAttribute}'" if @debug is on
 				@applyTransformOn child
 
@@ -381,30 +400,32 @@ defineAvalonA = ($,TweenLite)->
 		applyTransformOn: (target)->
 			throw new Error "applyTransformOn target argument cannot be null" if not target
 
-			if not target.attr(cssBackUpAttribute)
+			if not target.getAttribute(cssBackUpAttribute)
+				targetStyle = getComputedStyle(target)
+				
 				backup =
-					transformStyle: getTransformStyle(target[0]) or 'flat'
-					overflow: target.css('overflow') or 'inherit'
+					transformStyle: getTransformStyle(target) or 'flat'
+					overflow: targetStyle.overflow or 'inherit'
 
-				transformBackup = target.css('-webkit-transform') or
-					target.css('-moz-transform') or
-					target.css('-o-transform') or
-					target.css('-ms-transform') or
-					target.css('transform')
+				transformBackup = targetStyle.getPropertyValue('-webkit-transform') or
+					targetStyle.getPropertyValue('-moz-transform') or
+					targetStyle.getPropertyValue('-o-transform') or
+					targetStyle.getPropertyValue('-ms-transform') or
+					targetStyle.getPropertyValue('transform')
 
 
 				backup.transform = transformBackup if transformBackup
 
-				target.attr(cssBackUpAttribute, JSON.stringify(backup))
+				target.setAttribute(cssBackUpAttribute, JSON.stringify(backup))
 
 			TweenLite.set(
-				target[0]
+				target
 				css:
 					transformStyle: 'preserve-3d'
 					overflow: 'visible'
 			)
 
-			if (attrValue = target.attr @transformAttribute)
+			if (attrValue = target.getAttribute @transformAttribute)
 				transforms = {};
 
 				for t in attrValue.split(';')
@@ -421,7 +442,7 @@ defineAvalonA = ($,TweenLite)->
 					css.rotationZ = rz if rz
 
 					TweenLite.to(
-						target[0]
+						target
 						transitionDuration
 						css: css
 					)
@@ -438,7 +459,7 @@ defineAvalonA = ($,TweenLite)->
 			@addPerspective()
 			@refreshTransform()
 			@trackMouseMovements()
-			@animation?.play @transformedLayer[0], @transformAttribute
+			@animation?.play @transformedLayer, @transformAttribute
 
 
 		start: -> @refresh()
@@ -464,12 +485,11 @@ defineAvalonA = ($,TweenLite)->
 
 		flatten: ->
 			@resetTransform()
-			self = @
-
-			$("[#{cssBackUpAttribute}]", @transformedLayer[0]).each ->
-				console.log "flattening layer '#{debugName $(@)}'" if self.debug is on
-				css = JSON.parse $(@).attr(cssBackUpAttribute)
-				TweenLite.set @, css: css
+			
+			for node in @transformedLayer.querySelectorAll("[#{cssBackUpAttribute}]")
+				console.log "flattening layer '#{debugName node}'" if @debug is on
+				css = JSON.parse node.getAttribute(cssBackUpAttribute)
+				TweenLite.set node, css: css
 
 
 		init: (options)->
@@ -522,7 +542,7 @@ defineAvalonA = ($,TweenLite)->
 ### Export ###
 
 if typeof define is 'function' and define.amd
-	define 'AvalonA', ['jquery','tweenlite'], (jquery, tweenlite)-> defineAvalonA(jquery,tweenlite)
+	define 'AvalonA', ['tweenlite'], (tweenlite)-> defineAvalonA(tweenlite)
 else
-	window.AvalonA = defineAvalonA($, window.GreenSockGlobals?.TweenLite or TweenLite)
+	window.AvalonA = defineAvalonA(window.GreenSockGlobals?.TweenLite or TweenLite)
 
