@@ -61,7 +61,7 @@ a {
 
  .page-header{
    background-color: #000055;
-   background-image: linear-gradient(rgba(0,0,85,0) 50%, rgba(26,26,26,0), #1a1a1a), url(images/stars.png), linear-gradient(#000055, #1a1a1a);
+   background-image: linear-gradient(rgba(0,0,85,0) 50%, rgba(26,26,26,0), #1a1a1a), url(/images/stars.png), linear-gradient(#000055, #1a1a1a);
  }
 
  .preview{
