@@ -126,23 +126,48 @@ a {
   font-weight: normal;
   color: #000055; }
 
-.main-content h1 {
-  font-size: 3.1rem;
+
+
+@media screen and (min-width: 42em) {
+  .main-content h1 {
+    font-size: 3.1rem;
+  }
+  .main-content h2 {
+    font-size: 2.75rem;
+  }
+  .main-content h3 {
+    font-size: 2.4rem;
+  }
+  .main-content h4 {
+    font-size: 2.05rem;
+  }
+  .main-content h5 {
+    font-size: 1.7rem;
+  }
+  .main-content h6 {
+    font-size: 1.35rem;
+  }
 }
-.main-content h2 {
-  font-size: 2.75rem;
-}
-.main-content h3 {
-  font-size: 2.4rem;
-}
-.main-content h4 {
-  font-size: 2.05rem;
-}
-.main-content h5 {
-  font-size: 1.7rem;
-}
-.main-content h6 {
-  font-size: 1.35rem;
+
+@media screen and (max-width: 42em) {
+  .main-content h1 {
+    font-size: 2.25rem;
+  }
+  .main-content h2 {
+    font-size: 2rem;
+  }
+  .main-content h3 {
+    font-size: 1.75rem;
+  }
+  .main-content h4 {
+    font-size: 1.5rem;
+  }
+  .main-content h5 {
+    font-size: 1.25rem;
+  }
+  .main-content h6 {
+    font-size: 1rem;
+  }
 }
 
 .main-content p {
