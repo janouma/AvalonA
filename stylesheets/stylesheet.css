@@ -112,7 +112,6 @@ p {
 
  .page-header{
    background-color: #000055;
-   background-image: linear-gradient(rgba(0,0,85,0) 50%, rgba(26,26,26,0), #1a1a1a), url(../images/stars.png), linear-gradient(#000055, #1a1a1a);
  }
 
  .preview{
@@ -130,10 +129,24 @@ p {
   .preview {
     padding: 3rem 4rem; } }
 
+@media screen and (min-width: 42em){
+  .page-header{
+    background-image: linear-gradient(rgba(0,0,85,0) 50%, rgba(26,26,26,0), #1a1a1a), url(../images/stars.png), linear-gradient(#000055, #1a1a1a);
+  }
+}
+
 @media screen and (max-width: 42em) {
   .page-header,
   .preview {
-    padding: 2rem 1rem; } }
+    padding: 2rem 1rem;
+  }
+
+  .page-header{
+    background-image: linear-gradient(rgba(0,0,85,0) 50%, rgba(26,26,26,0), #1a1a1a), url(../images/stars-sd.png), linear-gradient(#000055, #1a1a1a);
+  }
+}
+
+
 
 .project-name {
   margin-top: 0;
@@ -384,8 +397,19 @@ p {
 
 .black-hole{
   width: 100%;
-  background-image: url(../images/stars.png);
   border-radius: 40%;
+}
+
+@media screen and (min-width: 42em) {
+  .black-hole{
+    background-image: url(../images/stars.png);
+  }
+}
+
+@media screen and (max-width: 42em) {
+  .black-hole{
+    background-image: url(../images/stars-sd.png);
+  }
 }
 
 .black-hole:not(:first-child){
