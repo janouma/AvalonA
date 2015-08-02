@@ -1,13 +1,44 @@
+@font-face {
+  font-family: Lato;
+  font-weight: normal;
+  font-style: normal;
+  src: url("../fonts/lato/lato-light.eot");
+  src: url("../fonts/lato/lato-light.eot?#iefix") format("embedded-opentype"), url("../fonts/lato/lato-light.woff") format("woff"), url("../fonts/lato/lato-light.ttf") format("truetype"), url("../fonts/lato/lato-light.svg#Lato") format("svg"); }
+
+@font-face {
+  font-family: Lato;
+  font-weight: bold;
+  font-style: normal;
+  src: url("../fonts/lato/lato-regular.eot");
+  src: url("../fonts/lato/lato-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/lato/lato-regular.woff") format("woff"), url("../fonts/lato/lato-regular.ttf") format("truetype"), url("../fonts/lato/lato-regular.svg#Lato") format("svg"); }
+
+@font-face {
+  font-family: Lato;
+  font-weight: normal;
+  font-style: italic;
+  src: url("../fonts/lato/lato-light-italic.eot");
+  src: url("../fonts/lato/lato-light-italic.eot?#iefix") format("embedded-opentype"), url("../fonts/lato/lato-light-italic.woff") format("woff"), url("../fonts/lato/lato-light-italic.ttf") format("truetype"), url("../fonts/lato/lato-light-italic.svg#Lato") format("svg"); }
+
+@font-face {
+  font-family: Lato;
+  font-weight: bold;
+  font-style: italic;
+  src: url("../fonts/lato/lato-regular-italic.eot");
+  src: url("../fonts/lato/lato-regular-italic.eot?#iefix") format("embedded-opentype"), url("../fonts/lato/lato-regular-italic.woff") format("woff"), url("../fonts/lato/lato-regular-italic.ttf") format("truetype"), url("../fonts/lato/lato-regular-italic.svg#Lato") format("svg"); }
+
 * {
   box-sizing: border-box; }
 
 body {
   padding: 0;
   margin: 0;
-  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: white;
+  font-family: Lato;
   font-size: 16px;
   line-height: 1.5;
-  color: #606c71; }
+  color: #606c71;
+  overflow-x: hidden;
+}
 
 a {
   color: #1e6bb8;
@@ -32,9 +63,21 @@ p {
   border-style: solid;
   border-width: 1px;
   border-radius: 0.3rem;
-  transition: color 0.2s, background-color 0.2s, border-color 0.2s; }
+  transition: color 0.2s, background-color 0.2s, border-color 0.2s;
+
+  -webkit-transform: translateZ(1px);
+  transform: translateZ(1px);
+}
   .btn + .btn {
-    margin-left: 1rem; }
+    margin-left: 1rem;}
+
+ .btn::selection {
+   background: transparent;
+ }
+
+ .btn::-moz-selection {
+   background: transparent;
+ }
 
 .btn:hover {
   color: rgba(255, 255, 255, 0.8);
@@ -74,6 +117,7 @@ p {
 
  .preview{
    background-color: #1a1a1a;
+   background-image: linear-gradient(#1a1a1a 33%, #000);
  }
 
 @media screen and (min-width: 64em) {
@@ -131,7 +175,7 @@ p {
 .main-content h1, .main-content h2, .main-content h3, .main-content h4, .main-content h5, .main-content h6 {
   margin-top: 2rem;
   margin-bottom: 1rem;
-  font-weight: normal;
+  font-weight: bold;
   color: #000055; }
 
 
@@ -331,4 +375,98 @@ p {
   .site-footer-credits {
     font-size: 0.7rem
   }
+}
+
+.lightfx{
+  pointer-events: none;
+}
+
+
+.black-hole{
+  width: 100%;
+  background-image: url(../images/stars.png);
+  border-radius: 40%;
+}
+
+.black-hole:not(:first-child){
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.black-hole:first-child{
+  opacity: 0.95;
+}
+
+.black-hole:nth-child(2){
+  -webkit-transform: scale(0.75);
+  transform: scale(0.75);
+  opacity: 0.725;
+  z-index: -1;
+}
+
+.black-hole:nth-child(3){
+  -webkit-transform: scale(0.65);
+  transform: scale(0.65);
+  opacity: 0.5;
+  z-index: -2;
+}
+
+.black-hole:nth-child(4){
+  -webkit-transform: scale(0.55);
+  transform: scale(0.55);
+  opacity: 0.275;
+  z-index: -3;
+}
+
+.black-hole:nth-child(5){
+  -webkit-transform: scale(0.45);
+  transform: scale(0.45);
+  opacity: 0.1;
+  z-index: -4;
+}
+
+.t3d-layer{
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1000px;
+}
+
+@media screen and (min-width: 42em) {
+  .lightfx,
+  .t3d-layer{
+    width: 60%;
+  }
+
+  .lightfx{
+     margin-top: -40vw;
+  }
+
+  .t3d-layer{
+    margin-top: -27.5vw;
+  }
+}
+
+@media screen and (max-width: 42em) {
+  .lightfx,
+  .t3d-layer{
+    width: 100%;
+  }
+
+  .lightfx{
+    margin-top: -75vw;
+  }
+
+  .t3d-layer{
+    margin-top: -47.5vw;
+  }
+}
+
+.gravity {
+  position: relative;
+}
+
+.preview {
+  -moz-user-select: none;
+  -webkit-user-select: none;
 }
