@@ -58,15 +58,7 @@
 			duration: 10,
 			selector: '.gravity',
 			axis: ['z']
-		}),
-
-		/*activeArea:{
-			attachment: 'scroll',
-			width: '75%',
-			height: 350
-		},*/
-
-		debug: true
+		})
 	}).enable();
 
 })();
