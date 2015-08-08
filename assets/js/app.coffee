@@ -30,6 +30,7 @@ window.onload = ->
 			startrotation: -> console.log "3d rotation on"
 			endrotation: -> console.log "3d rotation off"
 			ready: -> console.log 'frame3d is ready'
+			enable: -> console.log 'frame3d is enabled'
 
 		#animation: AvalonAnimation.Balance()
 		#animation: AvalonAnimation.Spotlight()
@@ -73,6 +74,8 @@ window.onload = ->
 
 		debug: on
 	)
+
+	frame3d2.onenable = -> console.log 'frame3d II is enabled'
 
 	layerCursor = 0
 

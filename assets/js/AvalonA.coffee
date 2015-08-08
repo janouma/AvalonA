@@ -452,6 +452,13 @@ defineAvalonA = (TweenLite)->
 		refresh: ->
 			@disabled = off
 
+			if not @ready
+				try
+					@onready?()
+				catch error
+					console.error 'AvalonA - refresh - Error occured on ready', error
+				@ready = yes
+
 			if @frame
 				@untrackMouseMovements()
 				@animation?.pause()
@@ -460,8 +467,7 @@ defineAvalonA = (TweenLite)->
 			@addPerspective()
 			@refreshTransform()
 			@trackMouseMovements()
-			@onready?() if not @ready
-			@ready = yes
+			@onrefresh?()
 			@animation?.play @transformedLayer, @transformAttribute
 
 
@@ -504,9 +510,21 @@ defineAvalonA = (TweenLite)->
 			@onstartrotation = options.on?.startrotation
 			@onendrotation = options.on?.endrotation
 			@onready = options.on?.ready
+			@onrefresh = options.on and (options.on.refresh or options.on.enable or options.on.start)
 			@animation = options.animation
 			@idleTimeout = parseInt(options.idleTimeout or 1000, 10)
 			@assertAnimatorValid() if @animation
+
+			Object.defineProperties(
+				@
+				onenable:
+					get: -> @onrefresh
+					set: (onenable)-> @onrefresh = onenable
+
+				onstart:
+					get: -> @onrefresh
+					set: (onstart)-> @onrefresh = onstart
+			)
 
 
 		assertAnimatorValid: ->
@@ -540,7 +558,7 @@ defineAvalonA = (TweenLite)->
 
 
 	#======================================== Public API =============================================
-	(frameId, layerId, debug = false)-> new Frame3d(frameId, layerId, debug)
+	(frameId, layerId, options)-> new Frame3d(frameId, layerId, options)
 
 
 ### Export ###
