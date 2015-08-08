@@ -13,9 +13,11 @@ define(function defineResponsiveImageLoader(){
 			var mediaQuery = this._mediaQuery;
 			if(mediaQuery && mediaQuery.trim().length > 0
 				&& matchMedia(mediaQuery).matches){
+
 					console.debug('ResponsiveImageLoader - _applyMediaQuery - loading HD images');
+
 					this._loadImages();
-					window.removeEventListener('resize', this.__this_applyMediaQuery);
+					window.removeEventListener('resize', this._applyMediaQuery);
 			}
 		},
 
@@ -32,7 +34,9 @@ define(function defineResponsiveImageLoader(){
 					imageElement.addEventListener(
 						'load',
 						function onImageLoad() {
-							var elementList = document.querySelectorAll('img[src$="' + sdFileName + '"]');
+							var elementList = document
+								.querySelectorAll('img[src$="' + sdFileName + '"]');
+
 							Array.prototype.slice.call(elementList)
 								.forEach(function updateSrc(element) {
 									element.src = hdPath;
@@ -48,7 +52,8 @@ define(function defineResponsiveImageLoader(){
 
 
 		init: function init(){
-			var applyMediaQuery = this.__this_applyMediaQuery = this._applyMediaQuery.bind(this);
+			var applyMediaQuery = this._applyMediaQuery
+				= this._applyMediaQuery.bind(this);
 
 			window.matchMedia = window.matchMedia || window.msMatchMedia;
 			window.addEventListener('resize', applyMediaQuery, false);
