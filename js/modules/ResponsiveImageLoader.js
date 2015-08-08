@@ -1,6 +1,5 @@
 define(function defineResponsiveImageLoader(){
-	var ResponsiveImageLoader = {
-
+	return {
 		get basenames(){ return this._basenames.slice(); },
 
 		set basenames(basenames){ this._basenames = basenames.slice(); },
@@ -14,7 +13,9 @@ define(function defineResponsiveImageLoader(){
 			var mediaQuery = this._mediaQuery;
 			if(mediaQuery && mediaQuery.trim().length > 0
 				&& matchMedia(mediaQuery).matches){
+					console.debug('ResponsiveImageLoader - _applyMediaQuery - loading HD images');
 					this._loadImages();
+					window.removeEventListener('resize', this.__this_applyMediaQuery);
 			}
 		},
 
@@ -47,12 +48,12 @@ define(function defineResponsiveImageLoader(){
 
 
 		init: function init(){
+			var applyMediaQuery = this.__this_applyMediaQuery = this._applyMediaQuery.bind(this);
+
 			window.matchMedia = window.matchMedia || window.msMatchMedia;
-			window.addEventListener('resize', this._applyMediaQuery.bind(this), false);
-			this._applyMediaQuery();
+			window.addEventListener('resize', applyMediaQuery, false);
+			applyMediaQuery();
 		}
 
 	};
-
-	return ResponsiveImageLoader;
 });
