@@ -27,10 +27,9 @@ window.onload = ->
 			height: 350
 
 		on:
-			startrotation: ->
-				console.log "3d rotation on"
-			endrotation: ->
-				console.log "3d rotation off"
+			startrotation: -> console.log "3d rotation on"
+			endrotation: -> console.log "3d rotation off"
+			ready: -> console.log 'frame3d is ready'
 
 		#animation: AvalonAnimation.Balance()
 		#animation: AvalonAnimation.Spotlight()
@@ -63,10 +62,9 @@ window.onload = ->
 			height: 350
 
 		on:
-			startrotation: ->
-				console.log "3d II rotation on"
-			endrotation: ->
-				console.log "3d II rotation off"
+			startrotation: -> console.log "3d II rotation on"
+			endrotation: -> console.log "3d II rotation off"
+			ready: -> console.log 'frame3d II is ready'
 
 		animation: AvalonAnimation.Balance()
 		#animation: AvalonAnimation.Spotlight()
@@ -94,7 +92,7 @@ window.onload = ->
 			node.style.display = 'block' for node in document.querySelectorAll('#enable,#enable2,#enable3')
 			frame3d.disable()
 			frame3d2.disable()
-			
+
 		false
 	)
 
@@ -103,9 +101,9 @@ window.onload = ->
 		->
 			for node in document.querySelectorAll('[at]')
 				node.setAttribute 'at', ['z:', Math.round(Math.random() * 400 - 200), '; rx:', Math.random() * 360, '; ry:', Math.random() * 360, '; rz:', Math.random() * 360].join ''
-									
+
 			do frame3d.refreshTransform
-								
+
 		no
 	)
 
@@ -119,7 +117,7 @@ window.onload = ->
 			frame3d.refreshTransform node
 			#frame3d.refreshTransform "[at]"
 			layerCursor = (layerCursor + 1) % nodes.length
-			
+
 		false
 	)
 
@@ -129,7 +127,7 @@ window.onload = ->
 			frame3d2.enable()
 			this.style.display = 'none'
 			document.getElementById('disable2').style.display = 'block'
-			
+
 		false
 	)
 
@@ -139,7 +137,7 @@ window.onload = ->
 			frame3d2.disable()
 			this.style.display = 'none'
 			document.getElementById('enable2').style.display = 'block'
-			
+
 		no
 	)
 
@@ -149,7 +147,7 @@ window.onload = ->
 			frame3d.enable()
 			this.style.display = 'none'
 			document.getElementById('disable3').style.display = 'block'
-			
+
 		no
 	)
 
@@ -159,7 +157,7 @@ window.onload = ->
 			frame3d.disable()
 			this.style.display = 'none'
 			document.getElementById('enable3').style.display = 'block'
-		
+
 		no
 	)
 
@@ -169,7 +167,7 @@ window.onload = ->
 			node.style.display = 'none' for node in document.querySelectorAll('#aa3d,#a3d2')
 			this.style.display = 'none'
 			document.getElementById('show').style.display = 'block'
-		
+
 		no
 	)
 
@@ -179,7 +177,7 @@ window.onload = ->
 			node.style.display = 'block' for node in document.querySelectorAll('#aa3d,#a3d2')
 			this.style.display = 'none'
 			document.getElementById('hide').style.display = 'block'
-			
+
 		no
 	)
 

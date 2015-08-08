@@ -1,5 +1,5 @@
-### AvalonA 0.10.2 ###
-console.log '%cAvalonA 0.10.2', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
+### AvalonA 1.0.0 ###
+console.log '%cAvalonA 1.0.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
 
 defineAvalonA = (TweenLite)->
 
@@ -79,7 +79,7 @@ defineAvalonA = (TweenLite)->
 						@yPadding = window.pageYOffset
 						@refreshBounds()
 						scrollDebugCode()
-						
+
 					no
 				)
 
@@ -92,7 +92,7 @@ defineAvalonA = (TweenLite)->
 						@yPadding = @frame.scrollTop
 						@refreshBounds()
 						scrollDebugCode()
-						
+
 					no
 				)
 			else
@@ -103,7 +103,7 @@ defineAvalonA = (TweenLite)->
 				resizeDebugCode = -> console.log "Resize : @frame.style.width = #{getComputedStyle(self.frame).width}, @frame.style.height = #{getComputedStyle(self.frame).height}"
 			else
 				resizeDebugCode = ->
-			
+
 			window.addEventListener(
 				'resize'
 				=>
@@ -111,7 +111,7 @@ defineAvalonA = (TweenLite)->
 					@yBase = yBaseComputation()
 					@refreshBounds()
 					resizeDebugCode()
-				
+
 				no
 			)
 
@@ -133,7 +133,7 @@ defineAvalonA = (TweenLite)->
 
 		getXBaseComputation: ->
 			frameWidth = parseInt(getComputedStyle(@frame).width, 10)
-			
+
 			if @position.x and @position.x isnt 'auto'
 				if dimensionPattern.exec(@position.x)[1] is '%'
 					xBaseComputation = => (@x / 100) * frameWidth
@@ -152,7 +152,7 @@ defineAvalonA = (TweenLite)->
 
 		getYBaseComputation: ->
 			frameHeight = parseInt(getComputedStyle(@frame).height, 10)
-			
+
 			if @position.y and @position.y isnt 'auto'
 				if dimensionPattern.exec(@position.y)[1] is '%'
 					yBaseComputation = => (@y / 100) * frameHeight
@@ -200,7 +200,7 @@ defineAvalonA = (TweenLite)->
 				element.style.position = 'absolute'
 				element.style.top = 0
 				element.style.left = 0
-				
+
 				document.body.appendChild element
 
 				element.style.webkitTransformStyle = 'preserve-3d'
@@ -254,7 +254,7 @@ defineAvalonA = (TweenLite)->
 				activeAreaPlaceholder = document.getElementById(activeAreaPlaceholderId) or document.createElement('div')
 				activeAreaPlaceholder.textContent = 'AvalonA Active Area'
 				activeAreaPlaceholder.id = activeAreaPlaceholderId
-				
+
 				activeAreaPlaceholder.style.setProperty(rule, value) for rule, value of {
 					'background-color': 'hotpink'
 					'opacity': 0.5
@@ -263,7 +263,7 @@ defineAvalonA = (TweenLite)->
 					'visibility': 'hidden'
 					'z-index': 10000
 				}
-				
+
 				document.body.appendChild activeAreaPlaceholder
 
 				@debugMouseMove = ->
@@ -288,7 +288,7 @@ defineAvalonA = (TweenLite)->
 					(e) -> @mouseout() if e.target.id is @frameId
 					no
 				)
-				
+
 
 			@frame.addEventListener 'mousemove', @mousemove, no
 
@@ -403,7 +403,7 @@ defineAvalonA = (TweenLite)->
 
 			if not target.getAttribute(cssBackUpAttribute)
 				targetStyle = getComputedStyle(target)
-				
+
 				backup =
 					transformStyle: getTransformStyle(target) or 'flat'
 					overflow: targetStyle.overflow or 'inherit'
@@ -460,6 +460,8 @@ defineAvalonA = (TweenLite)->
 			@addPerspective()
 			@refreshTransform()
 			@trackMouseMovements()
+			@onready?() if not @ready
+			@ready = yes
 			@animation?.play @transformedLayer, @transformAttribute
 
 
@@ -486,7 +488,7 @@ defineAvalonA = (TweenLite)->
 
 		flatten: ->
 			@resetTransform()
-			
+
 			for node in @transformedLayer.querySelectorAll("[#{cssBackUpAttribute}]")
 				console.log "flattening layer '#{debugName node}'" if @debug is on
 				css = JSON.parse node.getAttribute(cssBackUpAttribute)
@@ -501,6 +503,7 @@ defineAvalonA = (TweenLite)->
 			@activeArea?.debug = @debug
 			@onstartrotation = options.on?.startrotation
 			@onendrotation = options.on?.endrotation
+			@onready = options.on?.ready
 			@animation = options.animation
 			@idleTimeout = parseInt(options.idleTimeout or 1000, 10)
 			@assertAnimatorValid() if @animation
