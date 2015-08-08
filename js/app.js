@@ -8,7 +8,8 @@ require.config({
 		tweenlite: 'shim/tweenlite',
 		GSEases: 'shim/gs_eases',
 		AvalonA: 'avalona/AvalonA.min',
-		AvalonAnimation: 'avalona/AvalonAnimation.min'
+		AvalonAnimation: 'avalona/AvalonAnimation.min',
+		ResponsiveImageLoader: 'modules/ResponsiveImageLoader'
 	},
 
 	shim: {
@@ -19,52 +20,28 @@ require.config({
 });
 
 require(
-	['AvalonA', 'AvalonAnimation'],
-	function startApp(AvalonA, AvalonAnimation) {
+	[
+		'AvalonA',
+		'AvalonAnimation',
+		'ResponsiveImageLoader'
+	],
+	function startApp(
+		AvalonA,
+		AvalonAnimation,
+		ResponsiveImageLoader
+	) {
 		/********************
 		* Init steps
 		* *******************/
+		var imgLoader = Object.create(ResponsiveImageLoader);
 
-		function loadHdImages() {
-			[
-				'lightfx',
-				'black-hole'
-			].forEach(function loadHdImage(imageBasename) {
-				var imageExtension = '.png';
-				var sdImageFile = imageBasename + '-sd' + imageExtension;
-				var hdImagePath = 'images/' + imageBasename + imageExtension;
-				var imageElement = new Image();
+		imgLoader.basenames = [
+			'lightfx',
+			'black-hole'
+		];
 
-				imageElement.addEventListener(
-					'load',
-					function onImageLoad() {
-						var elementList = document.querySelectorAll('img[src$="' + sdImageFile + '"]');
-						Array.prototype.slice.call(elementList)
-							.forEach(function updateSrc(element) {
-								element.src = hdImagePath;
-							});
-					},
-					false
-				);
-
-				imageElement.src = hdImagePath;
-			});
-		}
-
-
-		window.matchMedia = window.matchMedia || window.msMatchMedia;
-
-		function applyMediaQueries() {
-			if (matchMedia('screen and (min-width: 42em)').matches) {
-				loadHdImages();
-			}
-		}
-
-
-		applyMediaQueries();
-
-		window.addEventListener('resize', applyMediaQueries, false);
-
+		imgLoader.mediaQuery = 'screen and (min-width: 42em)';
+		imgLoader.init();
 
 		/********************
 		* Start Avalon (A)
