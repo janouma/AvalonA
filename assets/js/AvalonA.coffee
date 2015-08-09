@@ -3,6 +3,7 @@ console.log '%cAvalonA 1.0.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;
 
 defineAvalonA = (TweenLite)->
 	# @codekit-prepend 'ActiveArea'
+	# @codekit-prepend 'Layer'
 	#================================================================================================
 	class Frame3d
 		transitionDuration = 0.75
@@ -199,7 +200,23 @@ defineAvalonA = (TweenLite)->
 
 			console.log "refreshTransform firstChild: #{debugName target.firstElementChild}" if @debug is on
 
-			@refreshChildTransform child for child in target.children
+			children = (@refreshChildTransform child for child in target.children)
+
+			if node is @transformedLayer
+				layers = {}
+				layers.layers = (for child in children
+					layer = new Layer node
+					layers["##{layer.id}"] = layer if layer.id
+
+					if layer.classes
+						for cssClass in layer.classes
+							classSelector = ".#{cssClass}"
+							layers[classSelector] ?= []
+							layers[classSelector].push layer
+					
+					layer)
+
+				layers
 
 
 		refreshChildTransform: (child)=>
@@ -282,10 +299,11 @@ defineAvalonA = (TweenLite)->
 
 			@find3dFrames()
 			@addPerspective()
-			@refreshTransform()
+			layers = @refreshTransform()
 			@trackMouseMovements()
 			@onrefresh?()
 			@animation?.play @transformedLayer, @transformAttribute
+			layers
 
 
 		start: -> @refresh()

@@ -1,7 +1,7 @@
 window.onload = ->
 	enableAll = ->
-		frame3d.enable()
-		frame3d2.enable()
+		console.debug frame3d.enable()
+		console.debug frame3d2.enable()
 		document.getElementById('enable').style.display = 'none'
 		node.style.display = 'none' for node in document.querySelectorAll('#enable2,#enable3')
 		node.style.display = 'block' for node in document.querySelectorAll('#disable,#disable2,#disable3')
