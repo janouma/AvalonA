@@ -188,35 +188,38 @@ defineAvalonA = (TweenLite)->
 			@frame?.removeEventListener "mouseleave", @mouseout
 
 
-		refreshTransform: (node = null)->
+		refreshTransform: (root = null)->
 			return if @disabled is on
 
-			node ?= @transformedLayer
-			target = if typeof node is 'string' then @transformedLayer.querySelector(node) else node
+			root ?= @transformedLayer
+			rootNode = if typeof root is 'string' then @transformedLayer.querySelector(root) else root
 
-			console.log "target: #{debugName target}" if @debug is on
+			console.log "rootNode: #{debugName rootNode}" if @debug is on
 
-			@applyTransformOn target
+			@applyTransformOn rootNode
 
-			console.log "refreshTransform firstChild: #{debugName target.firstElementChild}" if @debug is on
+			console.log "refreshTransform firstChild: #{debugName rootNode.firstElementChild}" if @debug is on
 
-			children = (@refreshChildTransform child for child in target.children)
+			layers = all: []
 
-			if node is @transformedLayer
-				layers = {}
-				layers.layers = (for child in children
-					layer = new Layer node
-					layers["##{layer.id}"] = layer if layer.id
+			for child in rootNode.children
+				subLayers = @refreshChildTransform child
+				layers.all.push subLayers... if subLayers
 
-					if layer.classes
-						for cssClass in layer.classes
-							classSelector = ".#{cssClass}"
-							layers[classSelector] ?= []
-							layers[classSelector].push layer
-					
-					layer)
+			if rootNode isnt @transformedLayer and rootNode.getAttribute @transformAttribute
+				layers.root = rootNode
+				layers.all.push rootNode
 
-				layers
+			for layer in layers.all
+				layers["##{layer.id}"] = layer if layer.id
+
+				if layer.classes
+					for cssClass in layer.classes
+						classSelector = ".#{cssClass}"
+						layers[classSelector] ?= []
+						layers[classSelector].push layer
+
+			layers
 
 
 		refreshChildTransform: (child)=>
@@ -224,12 +227,12 @@ defineAvalonA = (TweenLite)->
 
 			if child.querySelectorAll("[#{@transformAttribute}]").length
 				console.log "refreshTransform child #{debugName child} has children" if @debug is on
-				@refreshTransform child
+				return @refreshTransform(child).all
 			else if child.getAttribute @transformAttribute
 				console.log "refreshTransform child #{debugName child} has '#{@transformAttribute}'" if @debug is on
 				@applyTransformOn child
 
-			child
+			[new Layer child] if child.getAttribute @transformAttribute
 
 
 		applyTransformOn: (target)->
