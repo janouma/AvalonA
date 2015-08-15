@@ -1,7 +1,14 @@
 window.onload = ->
+	frame3dLayers = undefined
+	frame3d2Layers = undefined
+
 	enableAll = ->
-		console.debug frame3d.enable()
-		console.debug frame3d2.enable()
+		frame3dLayers = frame3d.enable()
+		frame3d2Layers = frame3d2.enable()
+
+		console.debug frame3dLayers
+		console.debug frame3d2Layers
+
 		document.getElementById('enable').style.display = 'none'
 		node.style.display = 'none' for node in document.querySelectorAll('#enable2,#enable3')
 		node.style.display = 'block' for node in document.querySelectorAll('#disable,#disable2,#disable3')
@@ -102,8 +109,18 @@ window.onload = ->
 	document.getElementById('shuffle-all').addEventListener(
 		'click'
 		->
-			for node in document.querySelectorAll('[at]')
-				node.setAttribute 'at', ['z:', Math.round(Math.random() * 400 - 200), '; rx:', Math.random() * 360, '; ry:', Math.random() * 360, '; rz:', Math.random() * 360].join ''
+			for layer in frame3dLayers.all
+				[
+					layer.z
+					layer.rx
+					layer.ry
+					layer.rz
+				] = [
+					Math.round(Math.random() * 400 - 200)
+					Math.random() * 360
+					Math.random() * 360
+					Math.random() * 360
+				]
 
 			do frame3d.refreshTransform
 

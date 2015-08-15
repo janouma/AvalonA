@@ -2,14 +2,32 @@ class Layer
 
 	for property in ['z','rx','ry','rz']
 		do (property) =>
+			propertyPattern = new RegExp "\\b#{property}\\s*:\\s*(-?\\w+)\\b"
+
 			Object.defineProperty(
 				@::,
 				property,
 
+
 				get: ->
-					propertyPattern = new RegExp("\\b#{property}\\s*:\\s*(\\w+)\\b")
-					transformations = @_node.getAttribute @_transformAttribute
-					parseInt(propertyPattern.exec(transformations)?[1].trim() or 0, 10)
+					transforms = @_node.getAttribute @_transformAttribute
+					parseInt(propertyPattern.exec(transforms)?[1].trim() or 0, 10)
+
+
+				set: (value)->
+					numericValue = parseInt(value, 10)
+
+					if isNaN numericValue
+						throw "[Layer] - set #{property} - value (#{value}) is not valid"
+
+					transforms = (@_node.getAttribute @_transformAttribute).trim()
+
+					if propertyPattern.test transforms
+						newTransforms = transforms.replace propertyPattern, "#{property}:#{numericValue}"
+						@_node.setAttribute @_transformAttribute, newTransforms
+					else
+						newTransforms += "#{transforms?';':''}#{property}:#{numericValue}"
+
 			)
 
 
