@@ -12,4 +12,5 @@ class Signal
 
 	send: (sender, data) ->
 		if @_listeners
-			listener.call({}, sender, data) for listener in @_listeners
+			Ø = {}
+			listener.call(Ø, sender, data) for listener in @_listeners

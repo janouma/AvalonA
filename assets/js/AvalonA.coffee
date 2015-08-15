@@ -211,18 +211,19 @@ defineAvalonA = (TweenLite)->
 				layers.root = new Layer rootNode, @transformAttribute
 				layers.all.push layers.root
 
-			for layer in layers.all
-				layers["##{layer.id}"] = layer if layer.id
+			unless layers.root
+				for layer in layers.all
+					layers["##{layer.id}"] = layer if layer.id
 
-				unless layer.registered
-					layer.registered = yes
-					layer.onRefresh.register (layer)=> @refreshTransform layer.node
+					unless layer.registered
+						layer.registered = yes
+						layer.on.refresh.register (layer)=> @refreshTransform layer.node
 
-				if layer.classes
-					for cssClass in layer.classes
-						classSelector = ".#{cssClass}"
-						layers[classSelector] ?= []
-						layers[classSelector].push layer
+					if layer.classes
+						for cssClass in layer.classes
+							classSelector = ".#{cssClass}"
+							layers[classSelector] ?= []
+							layers[classSelector].push layer
 
 			layers
 
