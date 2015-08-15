@@ -109,7 +109,7 @@ window.onload = ->
 	document.getElementById('shuffle-all').addEventListener(
 		'click'
 		->
-			for layer in frame3dLayers.all
+			for layer in [frame3dLayers.all..., frame3d2Layers.all...]
 				[
 					layer.z
 					layer.rx
@@ -123,6 +123,7 @@ window.onload = ->
 				]
 
 			do frame3d.refreshTransform
+			do frame3d2.refreshTransform
 
 		no
 	)

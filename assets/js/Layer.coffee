@@ -24,10 +24,11 @@ class Layer
 
 					if propertyPattern.test transforms
 						newTransforms = transforms.replace propertyPattern, "#{property}:#{numericValue}"
-						@_node.setAttribute @_transformAttribute, newTransforms
 					else
-						newTransforms += "#{transforms?';':''}#{property}:#{numericValue}"
+						newTransforms = "#{property}:#{numericValue}"
+						newTransforms = "#{transforms}; #{newTransforms}" if transforms
 
+					@_node.setAttribute @_transformAttribute, newTransforms
 			)
 
 
