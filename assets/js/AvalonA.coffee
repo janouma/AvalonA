@@ -207,8 +207,8 @@ defineAvalonA = (TweenLite)->
 				layers.all.push subLayers... if subLayers
 
 			if rootNode isnt @transformedLayer and rootNode.getAttribute @transformAttribute
-				layers.root = rootNode
-				layers.all.push rootNode
+				layers.root = new Layer rootNode, @transformAttribute
+				layers.all.push layers.root
 
 			for layer in layers.all
 				layers["##{layer.id}"] = layer if layer.id
@@ -232,7 +232,7 @@ defineAvalonA = (TweenLite)->
 				console.log "refreshTransform child #{debugName child} has '#{@transformAttribute}'" if @debug is on
 				@applyTransformOn child
 
-			[new Layer child] if child.getAttribute @transformAttribute
+			[new Layer child, @transformAttribute] if child.getAttribute @transformAttribute
 
 
 		applyTransformOn: (target)->
