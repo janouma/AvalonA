@@ -109,20 +109,22 @@ window.onload = ->
 	document.getElementById('shuffle-all').addEventListener(
 		'click'
 		->
-			for layer in [frame3dLayers.all..., frame3d2Layers.all...]
-				[
-					layer.z
-					layer.rx
-					layer.ry
-					layer.rz
-				] = [
-					Math.round(Math.random() * 400 - 200)
-					Math.random() * 360
-					Math.random() * 360
-					Math.random() * 360
-				]
+			for layer in frame3dLayers.all
+				layer.transform(
+					z	: Math.round(Math.random() * 400 - 200)
+					rx	: Math.random() * 360
+					ry	: Math.random() * 360
+					rz	: Math.random() * 360
+				)
 
 			do frame3d.refreshTransform
+
+			for layer in frame3d2Layers.all
+				layer.transform(
+					z	: Math.round(Math.random() * 400 - 200)
+					rz	: Math.random() * 360
+				)
+
 			do frame3d2.refreshTransform
 
 		no
@@ -132,20 +134,13 @@ window.onload = ->
 	document.getElementById('shuffle-one').addEventListener(
 		'click'
 		->
-			layers = frame3dLayers.all
+			layers = [frame3dLayers.all..., frame3d2Layers.all...]
 			layer = layers[layerCursor]
 
-			[
-				layer.z
-				layer.rx
-				layer.ry
-				layer.rz
-			] = [
-				Math.round(Math.random() * 400 - 200)
-				Math.random() * 360
-				Math.random() * 360
-				Math.random() * 360
-			]
+			layer.transform(
+				z	: Math.round(Math.random() * 400 - 200)
+				rz	: Math.random() * 360
+			)
 
 			layerCursor = (layerCursor + 1) % layers.length
 			layer.refresh()

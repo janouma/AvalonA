@@ -1,6 +1,8 @@
 class Layer
 
-	for property in ['z','rx','ry','rz']
+	@properties = ['z','rx','ry','rz']
+
+	for property in @properties
 		do (property) =>
 			propertyPattern = new RegExp "\\b#{property}\\s*:\\s*(-?\\w+)\\b"
 
@@ -39,3 +41,8 @@ class Layer
 
 
 	refresh: -> @onRefresh.send @
+
+
+	transform: (properties)->
+		for property, value of properties when property in Layer.properties
+			@[property] = value
