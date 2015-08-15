@@ -148,7 +148,9 @@ window.onload = ->
 			]
 
 			layerCursor = (layerCursor + 1) % layers.length
-			frame3d.refreshTransform layer.node
+			layer.refresh()
+
+			#frame3d.refreshTransform layer.node
 			#frame3d.refreshTransform "[at]"
 
 		false

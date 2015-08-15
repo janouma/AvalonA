@@ -3,6 +3,7 @@ console.log '%cAvalonA 1.0.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;
 
 defineAvalonA = (TweenLite)->
 	# @codekit-prepend 'ActiveArea'
+	# @codekit-prepend 'Signal'
 	# @codekit-prepend 'Layer'
 	#================================================================================================
 	class Frame3d
@@ -188,7 +189,7 @@ defineAvalonA = (TweenLite)->
 			@frame?.removeEventListener "mouseleave", @mouseout
 
 
-		refreshTransform: (root = null)->
+		refreshTransform: (root)->
 			return if @disabled is on
 
 			root ?= @transformedLayer
@@ -212,6 +213,10 @@ defineAvalonA = (TweenLite)->
 
 			for layer in layers.all
 				layers["##{layer.id}"] = layer if layer.id
+
+				unless layer.registered
+					layer.registered = yes
+					layer.onRefresh.register (layer)=> @refreshTransform layer.node
 
 				if layer.classes
 					for cssClass in layer.classes

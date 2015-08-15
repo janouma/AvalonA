@@ -35,3 +35,7 @@ class Layer
 	constructor: (@node, @_transformAttribute)->
 		@id = @node.id if @node.id
 		@classes = (cssClass for cssClass in @node.className.split /\s+/g) if @node.className
+		@onRefresh = new Signal
+
+
+	refresh: -> @onRefresh.send @
