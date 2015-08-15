@@ -10,7 +10,7 @@ class Layer
 
 
 				get: ->
-					transforms = @_node.getAttribute @_transformAttribute
+					transforms = @node.getAttribute @_transformAttribute
 					parseInt(propertyPattern.exec(transforms)?[1].trim() or 0, 10)
 
 
@@ -20,7 +20,7 @@ class Layer
 					if isNaN numericValue
 						throw "[Layer] - set #{property} - value (#{value}) is not valid"
 
-					transforms = (@_node.getAttribute @_transformAttribute).trim()
+					transforms = (@node.getAttribute @_transformAttribute).trim()
 
 					if propertyPattern.test transforms
 						newTransforms = transforms.replace propertyPattern, "#{property}:#{numericValue}"
@@ -28,10 +28,10 @@ class Layer
 						newTransforms = "#{property}:#{numericValue}"
 						newTransforms = "#{transforms}; #{newTransforms}" if transforms
 
-					@_node.setAttribute @_transformAttribute, newTransforms
+					@node.setAttribute @_transformAttribute, newTransforms
 			)
 
 
-	constructor: (@_node, @_transformAttribute)->
-		@id = @_node.id if @_node.id
-		@classes = (cssClass for cssClass in @_node.className.split /\s+/g) if @_node.className
+	constructor: (@node, @_transformAttribute)->
+		@id = @node.id if @node.id
+		@classes = (cssClass for cssClass in @node.className.split /\s+/g) if @node.className

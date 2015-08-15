@@ -132,12 +132,24 @@ window.onload = ->
 	document.getElementById('shuffle-one').addEventListener(
 		'click'
 		->
-			nodes = document.querySelectorAll('[at]')
-			node = nodes[layerCursor]
-			node.setAttribute 'at', ['z:', Math.round(Math.random() * 400 - 200), '; rx:', Math.random() * 360, '; ry:', Math.random() * 360, '; rz:', Math.random() * 360].join ''
-			frame3d.refreshTransform node
+			layers = frame3dLayers.all
+			layer = layers[layerCursor]
+
+			[
+				layer.z
+				layer.rx
+				layer.ry
+				layer.rz
+			] = [
+				Math.round(Math.random() * 400 - 200)
+				Math.random() * 360
+				Math.random() * 360
+				Math.random() * 360
+			]
+
+			layerCursor = (layerCursor + 1) % layers.length
+			frame3d.refreshTransform layer.node
 			#frame3d.refreshTransform "[at]"
-			layerCursor = (layerCursor + 1) % nodes.length
 
 		false
 	)
