@@ -15,10 +15,9 @@
 	- [Methods](#methods)
 	- [Properties](#properties)
 	- [Events](#events)
-- [Plugins](#plugins)
-	- [AvalonAnimation](#avalonAnimation)
-		- [Balance](#balance)
-		- [Spotlight](#spotlight)
+- [AvalonAnimation](#avalonAnimation)
+	- [Balance](#balance)
+	- [Spotlight](#spotlight)
 - [SpeedTester utility](#speedTesterUtility)
 - [Browser compatibility](#browserCompatibility)
 - [Using it with require.js](#usingRequireJS)
@@ -250,20 +249,19 @@ Alias for `refresh` event.
 ##### *enable*
 Alias for `refresh` event.
 
-# <a name="plugins"></a> Plugins
-## <a name="avalonAnimation"></a> AvalonAnimation
+# <a name="avalonAnimation"></a> AvalonAnimation
 Provides a collection of preset animations.
 
-### <a name="balance"></a> Balance
+## <a name="balance"></a> Balance
 Adds a balancing movement between two rotation angles.
 
-###### *Dependencies*
+##### *Dependencies*
 
 - [GSAP 1.9.2+](http://www.greensock.com) *(GreenSock Animation Platform)* **TweenMax** module
 
 Note that the **TweenMax** module includes the **TweenLite** one *– see [GSAP](http://www.greensock.com) documentation for details*.
 
-###### *Examples*
+##### *Examples*
 *Example 1*
 
 	animation: AvalonAnimation.Balance()
@@ -284,22 +282,22 @@ Note that the **TweenMax** module includes the **TweenLite** one *– see [GSAP]
       }
     })
 
-###### *Options*
+##### *Options*
 
 - duration *(seconds)* – ***default value is 2.75***
 - from: { rx: *< rotation on X axis >*, ry: *< rotation on Y axis >* } – ***default value is { rx: 0 , ry: -20 }***
 - to: { rx: *< rotation on X axis >*, ry: *< rotation on Y axis >* } – ***default value is the negative version of `from`***
 
-### <a name="spotlight"></a> Spotlight
+## <a name="spotlight"></a> Spotlight
 Rotates like a spotlight.
 
-###### *Dependencies*
+##### *Dependencies*
 
 - [GSAP 1.9.2+](http://www.greensock.com) *(GreenSock Animation Platform)* **TweenMax** and **BezierPlugin** modules
 
 Note that the **TweenMax** module includes the **TweenLite** and **BezierPlugin** ones *– see [GSAP](http://www.greensock.com) documentation for details*.
 
-###### *Examples*
+##### *Examples*
 *Example 1*
 
 	animation: AvalonAnimation.Spotlight()
@@ -312,7 +310,7 @@ Note that the **TweenMax** module includes the **TweenLite** and **BezierPlugin*
       angle: 10
     })
 
-###### *Options*
+##### *Options*
 
 - duration *(seconds)* – ***default value is 8***
 - direction `'cw'` *(clockwise)* or `'ccw'` *(counter-clockwise)* – ***default value is 'cw'***
