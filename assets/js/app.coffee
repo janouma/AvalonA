@@ -3,11 +3,8 @@ window.onload = ->
 	frame3d2Layers = undefined
 
 	enableAll = ->
-		frame3dLayers = frame3d.enable()
-		frame3d2Layers = frame3d2.enable()
-
-		console.debug frame3dLayers
-		console.debug frame3d2Layers
+		console.debug frame3d.enable()
+		console.debug frame3d2.enable()
 
 		document.getElementById('enable').style.display = 'none'
 		node.style.display = 'none' for node in document.querySelectorAll('#enable2,#enable3')
@@ -109,7 +106,7 @@ window.onload = ->
 	document.getElementById('shuffle-all').addEventListener(
 		'click'
 		->
-			for layer in frame3dLayers.all
+			for layer in frame3d.layers.all
 				layer.transform(
 					z	: Math.round(Math.random() * 400 - 200)
 					rx	: Math.random() * 360
@@ -119,13 +116,17 @@ window.onload = ->
 
 			do frame3d.refreshTransform
 
-			for layer in frame3d2Layers.all
+			console.debug '1. frame3d.layers:', frame3d.layers
+
+			for layer in frame3d2.layers.all
 				layer.transform(
 					z	: Math.round(Math.random() * 400 - 200)
 					rz	: Math.random() * 360
 				)
 
 			do frame3d2.refreshTransform
+
+			console.debug '1. frame3d2.layers:', frame3d2.layers
 
 		no
 	)
@@ -134,7 +135,7 @@ window.onload = ->
 	document.getElementById('shuffle-one').addEventListener(
 		'click'
 		->
-			layers = [frame3dLayers.all..., frame3d2Layers.all...]
+			layers = [frame3d.layers.all..., frame3d2.layers.all...]
 			layer = layers[layerCursor]
 
 			layer.transform(
@@ -144,6 +145,9 @@ window.onload = ->
 
 			layerCursor = (layerCursor + 1) % layers.length
 			layer.refresh()
+
+			console.debug '2. frame3d.layers:', frame3d.layers
+			console.debug '2. frame3d2.layers:', frame3d2.layers
 
 			#frame3d.refreshTransform layer.node
 			#frame3d.refreshTransform "[at]"

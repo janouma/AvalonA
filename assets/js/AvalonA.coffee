@@ -192,6 +192,9 @@ defineAvalonA = (TweenLite)->
 		refreshTransform: (root)->
 			return if @disabled is on
 
+			root = root.trim() if typeof root is 'string'
+			fromRoot = not root or root is @transformedLayer
+
 			root ?= @transformedLayer
 			rootNode = if typeof root is 'string' then @transformedLayer.querySelector(root) else root
 
@@ -207,11 +210,13 @@ defineAvalonA = (TweenLite)->
 				subLayers = @refreshChildTransform child
 				layers.all.push subLayers... if subLayers
 
-			if rootNode isnt @transformedLayer and rootNode.getAttribute @transformAttribute
+			if not fromRoot and rootNode.getAttribute @transformAttribute
 				layers.root = new Layer rootNode, @transformAttribute
 				layers.all.push layers.root
 
-			unless layers.root
+			if fromRoot
+				@layers = layers
+
 				for layer in layers.all
 					layers["##{layer.id}"] = layer if layer.id
 
