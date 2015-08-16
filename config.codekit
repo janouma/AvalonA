@@ -77,6 +77,19 @@
 		"ignore": 0,
 		"ignoreWasSetByUser": 1,
 		"inputAbbreviatedPath": "\/assets\/js\/AvalonA.coffee",
+		"minifyOutput": 0,
+		"outputAbbreviatedPath": "\/dist\/AvalonA.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 1,
+		"outputStyle": 0,
+		"syntaxCheckerStyle": 1
+		},
+	"\/assets\/js\/AvalonA.min.coffee": {
+		"createSourceMap": 0,
+		"fileType": 32,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/assets\/js\/AvalonA.min.coffee",
 		"minifyOutput": 1,
 		"outputAbbreviatedPath": "\/dist\/AvalonA.min.js",
 		"outputPathIsOutsideProject": 0,
@@ -90,6 +103,19 @@
 		"ignore": 0,
 		"ignoreWasSetByUser": 1,
 		"inputAbbreviatedPath": "\/assets\/js\/AvalonAnimation.coffee",
+		"minifyOutput": 0,
+		"outputAbbreviatedPath": "\/dist\/AvalonAnimation.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 1,
+		"outputStyle": 0,
+		"syntaxCheckerStyle": 1
+		},
+	"\/assets\/js\/AvalonAnimation.min.coffee": {
+		"createSourceMap": 0,
+		"fileType": 32,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/assets\/js\/AvalonAnimation.min.coffee",
 		"minifyOutput": 1,
 		"outputAbbreviatedPath": "\/dist\/AvalonAnimation.min.js",
 		"outputPathIsOutsideProject": 0,
@@ -193,8 +219,21 @@
 		"createSourceMap": 0,
 		"fileType": 32,
 		"ignore": 0,
-		"ignoreWasSetByUser": 0,
+		"ignoreWasSetByUser": 1,
 		"inputAbbreviatedPath": "\/assets\/js\/SpeedTester.coffee",
+		"minifyOutput": 0,
+		"outputAbbreviatedPath": "\/dist\/SpeedTester.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 1,
+		"outputStyle": 0,
+		"syntaxCheckerStyle": 1
+		},
+	"\/assets\/js\/SpeedTester.min.coffee": {
+		"createSourceMap": 0,
+		"fileType": 32,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/assets\/js\/SpeedTester.min.coffee",
 		"minifyOutput": 1,
 		"outputAbbreviatedPath": "\/dist\/SpeedTester.min.js",
 		"outputPathIsOutsideProject": 0,
@@ -224,7 +263,7 @@
 		},
 	"\/dist\/AvalonA.js": {
 		"fileType": 64,
-		"ignore": 0,
+		"ignore": 1,
 		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/dist\/AvalonA.js",
 		"outputAbbreviatedPath": "\/dist\/min\/AvalonA-min.js",
@@ -246,7 +285,7 @@
 		},
 	"\/dist\/AvalonAnimation.js": {
 		"fileType": 64,
-		"ignore": 0,
+		"ignore": 1,
 		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/dist\/AvalonAnimation.js",
 		"outputAbbreviatedPath": "\/dist\/min\/AvalonAnimation-min.js",
@@ -268,7 +307,7 @@
 		},
 	"\/dist\/SpeedTester.js": {
 		"fileType": 64,
-		"ignore": 0,
+		"ignore": 1,
 		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/dist\/SpeedTester.js",
 		"outputAbbreviatedPath": "\/dist\/min\/SpeedTester-min.js",
@@ -340,6 +379,30 @@
 			"followForSyntaxChecking": 1,
 			"linkedFileAbbreviatedPath": "\/assets\/js\/AvalonAnimation.coffee",
 			"position": 2,
+			"type": 0
+			}
+		],
+	"\/assets\/js\/AvalonA.min.coffee": [
+		{
+			"followForSyntaxChecking": 1,
+			"linkedFileAbbreviatedPath": "\/assets\/js\/AvalonA.coffee",
+			"position": 0,
+			"type": 0
+			}
+		],
+	"\/assets\/js\/AvalonAnimation.min.coffee": [
+		{
+			"followForSyntaxChecking": 1,
+			"linkedFileAbbreviatedPath": "\/assets\/js\/AvalonAnimation.coffee",
+			"position": 0,
+			"type": 0
+			}
+		],
+	"\/assets\/js\/SpeedTester.min.coffee": [
+		{
+			"followForSyntaxChecking": 1,
+			"linkedFileAbbreviatedPath": "\/assets\/js\/SpeedTester.coffee",
+			"position": 0,
 			"type": 0
 			}
 		]
