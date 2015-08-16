@@ -3,7 +3,7 @@
 *version: 1.0.0*
 
 
-**Avalon(A)** allows you to easily add 3d to a set of html elements to simulate a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/5/show))*. To make this 3d effect noticeable, all html elements pertaining to the `transformed layer` *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
+**Avalon(A)** allows you to easily add 3d to a set of html elements to simulate a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/9/show))*. To make this 3d effect noticeable, all html elements pertaining to the `transformed layer` *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
 
 # Summary
 - [Dependencies](#dependencies)
@@ -13,6 +13,7 @@
 - [API](#api)
 	- [Constructor options](#constructorOptions)
 	- [Methods](#methods)
+	- [Properties](#properties)
 	- [Events](#events)
 - [Plugins](#plugins)
 	- [AvalonAnimation](#avalonAnimation)
@@ -34,7 +35,7 @@
         		<div id="square" data-avalonA-transform="z:75; rx:20.32; ry:5; rz:-10.2">
             		<div id="inner-square" data-avalonA-transform="z:150"></div>
         		</div>
-        	<div id="circle" data-avalonA-transform="z:200;rx:45"></div>
+        	<div id="circle" data-avalonA-transform="x:100; y:150; z:200;rx:45"></div>
     	</div>
 	</div>
 
@@ -157,6 +158,8 @@ Enable debug logs and display when set to `true`.
 ##### *refresh()*
 Fetch `3d Frame` and `transformed layer` from the DOM and apply initial setup.
 
+Return **layers** *([see **layers** property](#layers))*.
+
 ##### *start()*
 Alias for ***refresh()***.
 
@@ -166,9 +169,50 @@ Alias for ***refresh()***.
 ##### *disable()*
 Flatten `transformed layer`, remove mouse movement tracking, unable events and pause animation.
 
-##### *refreshTransform( [target : selector OR html node] )*
-Update **z translation** according to new values of `data-avalonA-transform`.
-When **target** is provided, only matching html nodes get updated.
+##### <a name="refreshTransform"></a> *refreshTransform( [target : selector OR html node] )*
+Update **transformations** according to new values of `data-avalonA-transform`.
+When **target** is provided, only first matching html node get updated.
+
+## <a name="properties"></a> Properties
+##### <a name="layers"></a> *layers*
+Provides all nodes picked up while running `start()` or `refresh()` or `enable()` method.
+It has the following structure:
+
+	{
+		"#<layer-id-1>": <Layer>,
+		"#<layer-id-2>": <Layer>,
+		...
+		".<layer-class-1>": <Layer>[],
+		".<layer-class-2>": <Layer>[],
+		...
+		all: <Layer>[]
+	}
+
+The **layers** property references all transformed html elements by their ids *(#layer-id)*, their css classes *(.layer-class)* and
+all elements are also referenced under `all`, including those not having neither id nor class attribute.
+
+Each html element is wrapped by a `Layer` object — *private to the lib, meaning you can't directly instanciate one* — so that it is more convenient to manipulate transform properties.
+
+The `Layer` instance has the following properties:
+
+- `node` – the raw html node
+- `x` – get/set the translateX style of the node
+- `y` – get/set the translateY style of the node
+- `z` – get/set the translateZ style of the node
+- `rx` – get/set the rotateX style of the node
+- `ry` – get/set the rotateY style of the node
+- `rz` – get/set the rotateZ style of the node
+
+The node style get updated – *according to the x, y, z, ... getter/setter* – only after calling either
+`refreshTransform` method *([see `refreshTransform()`](#refreshTransform))* or `<Layer>.refresh()`.
+Calling `refreshTransform` with no **node** argument also update the layers property: so if transformations has been added to a new node,
+this one will also end up as a `Layer` in the `layers` field.
+
+The `Layer` instance has the following methods:
+
+- `refresh()` – to actually apply transformations
+
+- `transform({[x:<x value>], [y:<y value>], [z:<z value>], ...})` – to set several transformations at once
 
 ## <a name="events"></a> Events
 It is possible to add event listeners like this
@@ -302,4 +346,4 @@ Check out this [code sample](https://raw.github.com/janouma/AvalonA/master/dist/
 
 
 # <a name="preview"></a> Preview
-**[see jsFiddle preview](http://jsfiddle.net/K3kPx/5/show)**
+**[see jsFiddle preview](http://jsfiddle.net/K3kPx/9/show)**

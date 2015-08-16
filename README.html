@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+</head>
+<body>
+<h1 id="avalona—bringdeepnesstoyourwebapps">Avalon(A) — Bring deepness to your web apps</h1>
+
+<p><em>version: 1.0.0</em></p>
+
+<p><strong>Avalon(A)</strong> allows you to easily add 3d to a set of html elements to simulate a deepness effect <em>(<a href="http://jsfiddle.net/K3kPx/9/show">see jsFiddle preview</a>)</em>. To make this 3d effect noticeable, all html elements pertaining to the <code>transformed layer</code> <em>(basically the root container to which the 3d effect get applied to)</em> - rotate on their x and y axis according to mouse movements.</p>
+
+<h1 id="summary">Summary</h1>
+
+<ul>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#example">Example</a>
+
+<ul>
+<li><a href="#html">Html</a></li>
+<li><a href="#script">Script</a></li>
+</ul></li>
+<li><a href="#api">API</a>
+
+<ul>
+<li><a href="#constructorOptions">Constructor options</a></li>
+<li><a href="#methods">Methods</a></li>
+<li><a href="#properties">Properties</a></li>
+<li><a href="#events">Events</a></li>
+</ul></li>
+<li><a href="#plugins">Plugins</a>
+
+<ul>
+<li><a href="#avalonAnimation">AvalonAnimation</a>
+
+<ul>
+<li><a href="#balance">Balance</a></li>
+<li><a href="#spotlight">Spotlight</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#speedTesterUtility">SpeedTester utility</a></li>
+<li><a href="#browserCompatibility">Browser compatibility</a></li>
+<li><a href="#usingRequireJS">Using it with require.js</a></li>
+<li><a href="#preview">Preview</a></li>
+</ul>
+
+<h1 id="anamedependenciesadependencies"><a name="dependencies"></a> Dependencies</h1>
+
+<ul>
+<li><a href="http://www.greensock.com">GSAP 1.9.2+</a> <em>(GreenSock Animation Platform)</em> <strong>TweenLite</strong> and <strong>CSSPlugin</strong> modules</li>
+</ul>
+
+<h1 id="anameexampleaexample"><a name="example"></a> Example</h1>
+
+<h2 id="anamehtmlahtml"><a name="html"></a> Html</h2>
+
+<pre><code>&lt;div id=&quot;frame-3d&quot;&gt; &lt;!-- 3d Frame --&gt;
+    &lt;div id=&quot;avalona-inner-frame&quot;&gt; &lt;!-- transformed layer --&gt;
+        &lt;div id=&quot;half-circle&quot; data-avalonA-transform=&quot;z:-300&quot;&gt;&lt;/div&gt;
+            &lt;div id=&quot;square&quot; data-avalonA-transform=&quot;z:75; rx:20.32; ry:5; rz:-10.2&quot;&gt;
+                &lt;div id=&quot;inner-square&quot; data-avalonA-transform=&quot;z:150&quot;&gt;&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;div id=&quot;circle&quot; data-avalonA-transform=&quot;x:100; y:150; z:200;rx:45&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>It is mandatory to have at least the <code>3d Frame</code> and <code>transformed layer</code> defined when <strong>Avalon(A)</strong> initialization occurs. Within the <code>3d Frame</code>, the element div having the id <code>avalona-inner-frame</code> becomes the <code>transformed layer</code>.</p>
+
+<p><code>data-avalonA-transform</code> attribute value has the following structure:</p>
+
+<p><strong>z: z translation; rx: x rotation; ry: y rotation; rz: z rotation</strong></p>
+
+<p>All properties are optional.</p>
+
+<h2 id="anamescriptascript"><a name="script"></a> Script</h2>
+
+<pre><code>$(function(){
+    AvalonA('frame-3d', 'avalona-inner-frame').start();
+});
+</code></pre>
+
+<h1 id="anameapiaapi"><a name="api"></a> API</h1>
+
+<h2 id="anameconstructoroptionsaconstructoroptions"><a name="constructorOptions"></a> Constructor options</h2>
+
+<p>It is possible to pass an object along with the id of the <code>3d Frame</code> to set options:</p>
+
+<pre><code>$(function(){
+    AvalonA('frame-3d', 'avalona-inner-frame', {option: value}).start();
+});
+</code></pre>
+
+<h5 id="tattr"><em>tAttr</em></h5>
+
+<p>Changes the name of the attribute used to define layer <strong>z translation</strong>. Default value is <code>data-avalonA-transform</code>.</p>
+
+<h5 id="fy"><em>fy</em></h5>
+
+<p>A function that affects the amount of rotation triggered by the mouse movements on the <strong>y axis</strong>.</p>
+
+<pre><code>AvalonA('frame-3d', 'avalona-inner-frame', {fy: function(rotation){
+    return rotation * 2;
+} }).start();
+</code></pre>
+
+<p>Default function as no effect on the rotation value.</p>
+
+<h5 id="fx"><em>fx</em></h5>
+
+<p>A function that affects the amount of rotation triggered by the mouse movements on the <strong>x axis</strong>. Default function as no effect on the rotation value.</p>
+
+<h5 id="activearea"><em>activeArea</em></h5>
+
+<p>When available, restrict mouse movements tracking to this area: moving outside the area reset the <code>transformed layer</code> rotation.</p>
+
+<pre><code>var options = {
+    activeArea: {
+        position: {
+            x: 'auto',
+            y: '15%'
+        },
+        attachment: 'scroll',
+        width: '150px',
+        height: 100
+    }
+};
+AvalonA('frame-3d', 'avalona-inner-frame', options).start();
+</code></pre>
+
+<p>Enable the <code>debug</code> option to display the area <em>( for development purpose only )</em>.</p>
+
+<h5 id="activearea.width"><em>activeArea.width</em></h5>
+
+<ul>
+<li>numeric like <code>200</code></li>
+<li>length like <code>'200px'</code></li>
+<li>percent like <code>'30%'</code></li>
+</ul>
+
+<h5 id="activearea.height"><em>activeArea.height</em></h5>
+
+<ul>
+<li>numeric like <code>100</code></li>
+<li>length like <code>'100px'</code></li>
+<li>percent like <code>'20%'</code></li>
+</ul>
+
+<h5 id=""><em>[activeArea.position]</em></h5>
+
+<p>Set the position of the area. Possible values:</p>
+
+<ul>
+<li><code>'auto'</code> means that the area will be centered within the browser window. <strong><em>(default)</em></strong></li>
+<li><code>{x: value, y: value}</code> where <strong><em>value</em></strong> can be
+
+<ul>
+<li><code>null</code></li>
+<li><code>'auto'</code></li>
+<li>numeric</li>
+<li>length</li>
+<li>percent</li>
+</ul></li>
+</ul>
+
+<h5 id=""><em>[activeArea.attachment]</em></h5>
+
+<p>Act like css <code>position: absolute|fixed</code>. Possible values:</p>
+
+<ul>
+<li><code>'fixed'</code> same as css <code>position: fixed</code>. <strong><em>(default)</em></strong></li>
+<li><code>'scroll'</code> like css <code>position: absolute</code>, the area will scroll along with the <code>transformed layer</code></li>
+</ul>
+
+<h5 id="animation"><em>animation</em></h5>
+
+<p>Animates the <code>transformed layer</code> when mouse is outside the active area <em>– meaning the actual <code>activeArea</code> or simply the <code>3d Frame</code> when no <code>activeArea</code> is provided</em>. The animation plays as well when the mouse is iddle.</p>
+
+<p>The <code>animation</code> object must have the following api:</p>
+
+<pre><code>animation: {
+
+    play: function(transformedLayer){
+        // animation code goes here
+    },
+
+    pause: function(){
+        // pause code goes here
+    }
+}
+</code></pre>
+
+<p>As the example shows, the <code>play()</code> method received as first argument the <code>transformed layer</code>, thus one can animate any attribute of this element <em>– not just the rotation</em>.</p>
+
+<h5 id="idletimeout"><em>idleTimeout</em></h5>
+
+<p>The delay, in milliseconds, after which the user is considered idle when there is no mouse movements:</p>
+
+<ul>
+<li>Default value is <strong>1000</strong></li>
+<li><strong>0</strong> is equivalent to default</li>
+<li>Any negative value means <strong><em>infinite</em></strong></li>
+</ul>
+
+<p>When the user is idle, the animation resumes <em>– if any –</em> and <code>endrotation</code> event is triggered.</p>
+
+<h5 id="debug"><em>debug</em></h5>
+
+<p>Enable debug logs and display when set to <code>true</code>.</p>
+
+<h2 id="anamemethodsamethods"><a name="methods"></a> Methods</h2>
+
+<h5 id="refresh"><em>refresh()</em></h5>
+
+<p>Fetch <code>3d Frame</code> and <code>transformed layer</code> from the DOM and apply initial setup.</p>
+
+<p>Return <strong>layers</strong> <em>(<a href="#layers">see <strong>layers</strong> property</a>)</em>.</p>
+
+<h5 id="start"><em>start()</em></h5>
+
+<p>Alias for <strong><em>refresh()</em></strong>.</p>
+
+<h5 id="enable"><em>enable()</em></h5>
+
+<p>Alias for <strong><em>refresh()</em></strong>.</p>
+
+<h5 id="disable"><em>disable()</em></h5>
+
+<p>Flatten <code>transformed layer</code>, remove mouse movement tracking, unable events and pause animation.</p>
+
+<h5 id="anamerefreshtransformarefreshtransform"><a name="refreshTransform"></a> <em>refreshTransform( [target : selector OR html node] )</em></h5>
+
+<p>Update <strong>transformations</strong> according to new values of <code>data-avalonA-transform</code>.
+When <strong>target</strong> is provided, only first matching html node get updated.</p>
+
+<h2 id="anamepropertiesaproperties"><a name="properties"></a> Properties</h2>
+
+<h5 id="anamelayersalayers"><a name="layers"></a> <em>layers</em></h5>
+
+<p>Provides all nodes picked up while running <code>start()</code> or <code>refresh()</code> or <code>enable()</code> method.
+It has the following structure:</p>
+
+<pre><code>{
+    &quot;#&lt;layer-id-1&gt;&quot;: &lt;Layer&gt;,
+    &quot;#&lt;layer-id-2&gt;&quot;: &lt;Layer&gt;,
+    ...
+    &quot;.&lt;layer-class-1&gt;&quot;: &lt;Layer&gt;[],
+    &quot;.&lt;layer-class-2&gt;&quot;: &lt;Layer&gt;[],
+    ...
+    all: &lt;Layer&gt;[]
+}
+</code></pre>
+
+<p>The <strong>layers</strong> property references all transformed html elements by their ids <em>(#layer-id)</em>, their css classes <em>(.layer-class)</em> and
+all elements are also referenced under <code>all</code>, including those not having neither id nor class attribute.</p>
+
+<p>Each html element is wrapped by a <code>Layer</code> object — <em>private to the lib, meaning you can&#8217;t directly instanciate one</em> — so that it is more convenient to manipulate transform properties.</p>
+
+<p>The <code>Layer</code> instance has the following properties:</p>
+
+<ul>
+<li><code>node</code> – the raw html node</li>
+<li><code>x</code> – get/set the translateX style of the node</li>
+<li><code>y</code> – get/set the translateY style of the node</li>
+<li><code>z</code> – get/set the translateZ style of the node</li>
+<li><code>rx</code> – get/set the rotateX style of the node</li>
+<li><code>ry</code> – get/set the rotateY style of the node</li>
+<li><code>rz</code> – get/set the rotateZ style of the node</li>
+</ul>
+
+<p>The node style get updated – <em>according to the x, y, z, &#8230; getter/setter</em> – only after calling either
+<code>refreshTransform</code> method <em>(<a href="#refreshTransform">see <code>refreshTransform()</code></a>)</em> or <code>&lt;Layer&gt;.refresh()</code>.
+Calling <code>refreshTransform</code> with no <strong>node</strong> argument also update the layers property: so if transformations has been added to a new node,
+this one will also end up as a <code>Layer</code> in the <code>layers</code> field.</p>
+
+<p>The <code>Layer</code> instance has the following methods:</p>
+
+<ul>
+<li><p><code>refresh()</code> – to actually apply transformations</p></li>
+<li><p><code>transform({[x:&lt;x value&gt;], [y:&lt;y value&gt;], [z:&lt;z value&gt;], ...})</code> – to set several transformations at once</p></li>
+</ul>
+
+<h2 id="anameeventsaevents"><a name="events"></a> Events</h2>
+
+<p>It is possible to add event listeners like this</p>
+
+<pre><code>var options = {
+    on: {
+        event: function(){ /* event code goes here */ },
+    }
+};
+AvalonA('frame-3d', 'avalona-inner-frame', options).start();
+</code></pre>
+
+<p>or this</p>
+
+<pre><code>var a = AvalonA('frame-3d', 'avalona-inner-frame', options);
+a.onevent = function(){ /* event code goes here */ };
+a.start();
+</code></pre>
+
+<p>Available events:</p>
+
+<h5 id="startrotation"><em>startrotation</em></h5>
+
+<p>Triggered when <code>transformed layer</code> rotation starts.</p>
+
+<h5 id="endrotation"><em>endrotation</em></h5>
+
+<p>Triggered when <code>transformed layer</code> rotation ends.</p>
+
+<h1 id="anamepluginsaplugins"><a name="plugins"></a> Plugins</h1>
+
+<h2 id="anameavalonanimationaavalonanimation"><a name="avalonAnimation"></a> AvalonAnimation</h2>
+
+<p>Provides a collection of preset animations.</p>
+
+<h3 id="anamebalanceabalance"><a name="balance"></a> Balance</h3>
+
+<p>Adds a balancing movement between two rotation angles.</p>
+
+<h6 id="dependencies"><em>Dependencies</em></h6>
+
+<ul>
+<li><a href="http://www.greensock.com">GSAP 1.9.2+</a> <em>(GreenSock Animation Platform)</em> <strong>TweenMax</strong> module</li>
+</ul>
+
+<p>Note that the <strong>TweenMax</strong> module includes the <strong>TweenLite</strong> one <em>– see <a href="http://www.greensock.com">GSAP</a> documentation for details</em>.</p>
+
+<h6 id="examples"><em>Examples</em></h6>
+
+<p><em>Example 1</em></p>
+
+<pre><code>animation: AvalonAnimation.Balance()
+</code></pre>
+
+<p><em>Example 2</em></p>
+
+<pre><code>animation: AvalonAnimation.Balance({
+  duration: 0.75,
+
+  from:{
+    rx: 30,
+    ry: -30
+  },
+
+  to:{
+    rx: -90,
+    ry: 30
+  }
+})
+</code></pre>
+
+<h6 id="options"><em>Options</em></h6>
+
+<ul>
+<li>duration <em>(seconds)</em> – <strong><em>default value is 2.75</em></strong></li>
+<li>from: { rx: <em>< rotation on X axis ></em>, ry: <em>< rotation on Y axis ></em> } – <strong><em>default value is { rx: 0 , ry: &#8211;20 }</em></strong></li>
+<li>to: { rx: <em>< rotation on X axis ></em>, ry: <em>< rotation on Y axis ></em> } – <strong><em>default value is the negative version of <code>from</code></em></strong></li>
+</ul>
+
+<h3 id="anamespotlightaspotlight"><a name="spotlight"></a> Spotlight</h3>
+
+<p>Rotates like a spotlight.</p>
+
+<h6 id="dependencies"><em>Dependencies</em></h6>
+
+<ul>
+<li><a href="http://www.greensock.com">GSAP 1.9.2+</a> <em>(GreenSock Animation Platform)</em> <strong>TweenMax</strong> and <strong>BezierPlugin</strong> modules</li>
+</ul>
+
+<p>Note that the <strong>TweenMax</strong> module includes the <strong>TweenLite</strong> and <strong>BezierPlugin</strong> ones <em>– see <a href="http://www.greensock.com">GSAP</a> documentation for details</em>.</p>
+
+<h6 id="examples"><em>Examples</em></h6>
+
+<p><em>Example 1</em></p>
+
+<pre><code>animation: AvalonAnimation.Spotlight()
+</code></pre>
+
+<p><em>Example 2</em></p>
+
+<pre><code>animation: AvalonAnimation.Spotlight({
+  duration: 5,
+  direction: 'ccw',
+  angle: 10
+})
+</code></pre>
+
+<h6 id="options"><em>Options</em></h6>
+
+<ul>
+<li>duration <em>(seconds)</em> – <strong><em>default value is 8</em></strong></li>
+<li>direction <code>'cw'</code> <em>(clockwise)</em> or <code>'ccw'</code> <em>(counter-clockwise)</em> – <strong><em>default value is &#8216;cw&#8217;</em></strong></li>
+<li>angle – <strong><em>default value is 20</em></strong></li>
+</ul>
+
+<h1 id="anamespeedtesterutilityaspeedtesterutility"><a name="speedTesterUtility"></a> SpeedTester utility</h1>
+
+<p>The <strong>SpeedTester</strong> <em>(SpeedTester.min.js)</em> allows you to check system performance before activating <strong>Avalon(A)</strong>, thus preventing to undermine the usability of your website. It is meant to be used like this:</p>
+
+<p><em>Main html document – preferably before loading any other scripts</em></p>
+
+<pre><code>&lt;script&gt;
+    var speedTester = new SpeedTester(&lt; how many times the test must be run (default 1) &gt;);
+    speedTester.run();
+&lt;/script&gt;
+</code></pre>
+
+<p><em>Main script – after document as been loaded</em></p>
+
+<pre><code>speedTester.oncomplete(function(results){
+    if(results.fps &gt; 30){
+        AvalonA('frame-3d', 'avalona-inner-frame').start();
+    }else{
+        console.warn('Your frame rate is too low, recommended: 30');
+    }
+});
+</code></pre>
+
+<h1 id="anamebrowsercompatibilityabrowsercompatibility"><a name="browserCompatibility"></a> Browser compatibility</h1>
+
+<ul>
+<li>Safari</li>
+<li>Chrome</li>
+<li>Firefox</li>
+</ul>
+
+<p><em>Nothing happens on browsers that doesn&#8217;t support 3d transform.</em></p>
+
+<h1 id="anameusingrequirejsausingitwithrequire.js"><a name="usingRequireJS"></a> Using it with require.js</h1>
+
+<p><strong>Avalon(A)</strong> is AMD compliant: if <strong>require.js</strong> is present, <code>AvalonA</code> function won&#8217;t be exposed as a global variable but as a module having the same name.
+The same goes for <code>AvalonAnimation</code> plugin and <code>SpeedTester</code> utility.</p>
+
+<p>As an AMD module, <code>AvalonA</code> requires <code>jquery</code> and <code>tweenlite</code> modules. <code>AvalonAnimation</code> requires <code>tweenmax</code>,<code>tweenlite</code> and <code>GSEases</code>modules, where <code>GSEases</code> contains key/value pairs of standard greensock easing functions — <em>the ones bundled with TweenMax</em>.</p>
+
+<h4 id="greensockspecifics">GreenSock specifics</h4>
+
+<p>Keep in mind that since GreenSock bundles several modules within one file — <em>indeed TweenMax file contains TweenMax as well as TweenLite, CSSPlugin, BezierPlugin, Eeasin, etc</em> — it needs special care to be used with <strong>require.js</strong>.</p>
+
+<p>Check out this <a href="https://raw.github.com/janouma/AvalonA/master/dist/avalona-amd-test.zip">code sample</a> to understand how to use <strong>Avalon(A)</strong> and <strong>GreenSock</strong> with <strong>require.js</strong>.</p>
+
+<h1 id="anamepreviewapreview"><a name="preview"></a> Preview</h1>
+
+<p><strong><a href="http://jsfiddle.net/K3kPx/9/show">see jsFiddle preview</a></strong></p>
+
+</body>
+</html>
