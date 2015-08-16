@@ -108,6 +108,8 @@ window.onload = ->
 		->
 			for layer in frame3d.layers.all
 				layer.transform(
+					x	: Math.round(Math.random() * 400 - 200)
+					y	: Math.round(Math.random() * 400 - 200)
 					z	: Math.round(Math.random() * 400 - 200)
 					rx	: Math.random() * 360
 					ry	: Math.random() * 360
@@ -120,6 +122,8 @@ window.onload = ->
 
 			for layer in frame3d2.layers.all
 				layer.transform(
+					x	: Math.round(Math.random() * 400 - 200)
+					y	: Math.round(Math.random() * 400 - 200)
 					z	: Math.round(Math.random() * 400 - 200)
 					rz	: Math.random() * 360
 				)
@@ -139,6 +143,8 @@ window.onload = ->
 			layer = layers[layerCursor]
 
 			layer.transform(
+				x	: Math.round(Math.random() * 400 - 200)
+				y	: Math.round(Math.random() * 400 - 200)
 				z	: Math.round(Math.random() * 400 - 200)
 				rz	: Math.random() * 360
 			)

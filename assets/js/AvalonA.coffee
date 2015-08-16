@@ -281,10 +281,12 @@ defineAvalonA = (TweenLite)->
 					[prop, value] = t.split(':');
 					transforms[prop.trim()] = parseInt value.trim(), 10
 
-				{z:z, rx:rx, ry:ry, rz:rz} = transforms
+				{x:x, y:y, z:z, rx:rx, ry:ry, rz:rz} = transforms
 
-				if z or rx or ry or rz
+				if x or y or z or rx or ry or rz
 					css = {}
+					css.x = x if x
+					css.y = y if y
 					css.z = z if z
 					css.rotationX = rx if rx
 					css.rotationY = ry if ry

@@ -1,6 +1,6 @@
 class Layer
 
-	@properties = ['z','rx','ry','rz']
+	@properties = ['x','y','z','rx','ry','rz']
 
 	for property in @properties
 		do (property) =>
