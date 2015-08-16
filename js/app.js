@@ -9,7 +9,8 @@ require.config({
 		GSEases: 'shim/gs_eases',
 		AvalonA: 'avalona/AvalonA.min',
 		AvalonAnimation: 'avalona/AvalonAnimation.min',
-		ResponsiveImageLoader: 'modules/ResponsiveImageLoader'
+		ResponsiveImageLoader: 'modules/ResponsiveImageLoader',
+		FrameTimer: 'modules/FrameTimer'
 	},
 
 	shim: {
@@ -23,12 +24,14 @@ require(
 	[
 		'AvalonA',
 		'AvalonAnimation',
-		'ResponsiveImageLoader'
+		'ResponsiveImageLoader',
+		'FrameTimer'
 	],
 	function startApp(
 		AvalonA,
 		AvalonAnimation,
-		ResponsiveImageLoader
+		ResponsiveImageLoader,
+		FrameTimer
 	) {
 		/********************
 		* Init steps
@@ -47,7 +50,7 @@ require(
 		* Start Avalon (A)
 		* *******************/
 
-		AvalonA('t3d-frame', 't3d-layer', {
+		var avalona = AvalonA('t3d-frame', 't3d-layer', {
 			tAttr: 'transform',
 			fx: function fx(rotation) { return rotation * 0.5; },
 			fy: function fy(rotation) { return rotation * 0.15; },
@@ -57,6 +60,20 @@ require(
 				selector: '.gravity',
 				axis: ['z']
 			})
-		}).enable();
+		});
+
+		avalona.enable();
+
+		/********************
+		* Update Avalon (A)
+		* *******************/
+
+		var timer = Object.create(FrameTimer);
+
+		timer.run(function updateVortex(){
+			// TODO DEBUG
+			console.info("update vortex");
+			//
+		}).every(180);
 	}
 );
