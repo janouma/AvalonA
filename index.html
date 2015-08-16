@@ -36,72 +36,57 @@
         </section>
 
         <section class="main-content">
-<p><em>version: 0.10.2</em></p>
+<p><em>version: 1.0.0</em></p>
 
 <p><strong>Avalon(A)</strong> allows you to easily add 3d to a set of html elements to simulate a deepness effect. To make this 3d effect noticeable, all html elements pertaining to the <code>transformed layer</code> <em>(basically the root container to which the 3d effect get applied to)</em> - rotate on their x and y axis according to mouse movements.</p>
 
-<h1>
-<a id="summary" class="anchor" href="#summary" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summary</h1>
+<h1 id="summary">Summary</h1>
 
 <ul>
 <li><a href="#dependencies">Dependencies</a></li>
-<li>
-<a href="#example">Example</a>
+<li><a href="#example">Example</a>
 
 <ul>
 <li><a href="#html">Html</a></li>
 <li><a href="#script">Script</a></li>
-</ul>
-</li>
-<li>
-<a href="#api">API</a>
+</ul></li>
+<li><a href="#api">API</a>
 
 <ul>
 <li><a href="#constructorOptions">Constructor options</a></li>
 <li><a href="#methods">Methods</a></li>
+<li><a href="#properties">Properties</a></li>
 <li><a href="#events">Events</a></li>
-</ul>
-</li>
-<li>
-<a href="#plugins">Plugins</a>
-
-<ul>
-<li>
-<a href="#avalonAnimation">AvalonAnimation</a>
+</ul></li>
+<li><a href="#avalonAnimation">AvalonAnimation</a>
 
 <ul>
 <li><a href="#balance">Balance</a></li>
 <li><a href="#spotlight">Spotlight</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li><a href="#atom">Atom</a></li>
+</ul></li>
 <li><a href="#speedTesterUtility">SpeedTester utility</a></li>
 <li><a href="#browserCompatibility">Browser compatibility</a></li>
 <li><a href="#usingRequireJS">Using it with require.js</a></li>
 </ul>
 
-<h1>
-<a id="-dependencies" class="anchor" href="#-dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a><a name="dependencies"></a> Dependencies</h1>
+<h1 id="anamedependenciesadependencies"><a name="dependencies"></a> Dependencies</h1>
 
 <ul>
-<li>
-<a href="http://www.greensock.com">GSAP 1.9.2+</a> <em>(GreenSock Animation Platform)</em> <strong>TweenLite</strong> and <strong>CSSPlugin</strong> modules</li>
+<li><a href="http://www.greensock.com">GSAP 1.9.2+</a> <em>(GreenSock Animation Platform)</em> <strong>TweenLite</strong> and <strong>CSSPlugin</strong> modules</li>
 </ul>
 
-<h1>
-<a id="-example" class="anchor" href="#-example" aria-hidden="true"><span class="octicon octicon-link"></span></a><a name="example"></a> Example</h1>
+<h1 id="anameexampleaexample"><a name="example"></a> Example</h1>
 
-<h2>
-<a id="-html" class="anchor" href="#-html" aria-hidden="true"><span class="octicon octicon-link"></span></a><a name="html"></a> Html</h2>
+<h2 id="anamehtmlahtml"><a name="html"></a> Html</h2>
 
-<pre><code>&lt;div id="frame-3d"&gt; &lt;!-- 3d Frame --&gt;
-    &lt;div id="avalona-inner-frame"&gt; &lt;!-- transformed layer --&gt;
-        &lt;div id="half-circle" data-avalonA-transform="z:-300"&gt;&lt;/div&gt;
-            &lt;div id="square" data-avalonA-transform="z:75; rx:20.32; ry:5; rz:-10.2"&gt;
-                &lt;div id="inner-square" data-avalonA-transform="z:150"&gt;&lt;/div&gt;
+<pre><code>&lt;div id=&quot;frame-3d&quot;&gt; &lt;!-- 3d Frame --&gt;
+    &lt;div id=&quot;avalona-inner-frame&quot;&gt; &lt;!-- transformed layer --&gt;
+        &lt;div id=&quot;half-circle&quot; data-avalonA-transform=&quot;z:-300&quot;&gt;&lt;/div&gt;
+            &lt;div id=&quot;square&quot; data-avalonA-transform=&quot;z:75; rx:20.32; ry:5; rz:-10.2&quot;&gt;
+                &lt;div id=&quot;inner-square&quot; data-avalonA-transform=&quot;z:150&quot;&gt;&lt;/div&gt;
             &lt;/div&gt;
-        &lt;div id="circle" data-avalonA-transform="z:200;rx:45"&gt;&lt;/div&gt;
+        &lt;div id=&quot;circle&quot; data-avalonA-transform=&quot;x:100; y:150; z:200;rx:45&quot;&gt;&lt;/div&gt;
     &lt;/div&gt;
 &lt;/div&gt;
 </code></pre>
@@ -114,19 +99,16 @@
 
 <p>All properties are optional.</p>
 
-<h2>
-<a id="-script" class="anchor" href="#-script" aria-hidden="true"><span class="octicon octicon-link"></span></a><a name="script"></a> Script</h2>
+<h2 id="anamescriptascript"><a name="script"></a> Script</h2>
 
 <pre><code>$(function(){
     AvalonA('frame-3d', 'avalona-inner-frame').start();
 });
 </code></pre>
 
-<h1>
-<a id="-api" class="anchor" href="#-api" aria-hidden="true"><span class="octicon octicon-link"></span></a><a name="api"></a> API</h1>
+<h1 id="anameapiaapi"><a name="api"></a> API</h1>
 
-<h2>
-<a id="-constructor-options" class="anchor" href="#-constructor-options" aria-hidden="true"><span class="octicon octicon-link"></span></a><a name="constructorOptions"></a> Constructor options</h2>
+<h2 id="anameconstructoroptionsaconstructoroptions"><a name="constructorOptions"></a> Constructor options</h2>
 
 <p>It is possible to pass an object along with the id of the <code>3d Frame</code> to set options:</p>
 
@@ -135,15 +117,11 @@
 });
 </code></pre>
 
-<h5>
-<a id="tattr" class="anchor" href="#tattr" aria-hidden="true"><span class="octicon octicon-link"></span></a>tAttr
-</h5>
+<h5 id="tattr"><em>tAttr</em></h5>
 
-<p>Changes the name of the attribute used to define layer <strong>z translation</strong>. Default value is <code>data-avalonA-transform</code>.</p>
+<p>Changes the name of the attribute used to define layer <strong>transformations</strong>. Default value is <code>data-avalonA-transform</code>.</p>
 
-<h5>
-<a id="fy" class="anchor" href="#fy" aria-hidden="true"><span class="octicon octicon-link"></span></a>fy
-</h5>
+<h5 id="fy"><em>fy</em></h5>
 
 <p>A function that affects the amount of rotation triggered by the mouse movements on the <strong>y axis</strong>.</p>
 
@@ -154,15 +132,11 @@
 
 <p>Default function as no effect on the rotation value.</p>
 
-<h5>
-<a id="fx" class="anchor" href="#fx" aria-hidden="true"><span class="octicon octicon-link"></span></a>fx
-</h5>
+<h5 id="fx"><em>fx</em></h5>
 
 <p>A function that affects the amount of rotation triggered by the mouse movements on the <strong>x axis</strong>. Default function as no effect on the rotation value.</p>
 
-<h5>
-<a id="activearea" class="anchor" href="#activearea" aria-hidden="true"><span class="octicon octicon-link"></span></a>activeArea
-</h5>
+<h5 id="activearea"><em>activeArea</em></h5>
 
 <p>When available, restrict mouse movements tracking to this area: moving outside the area reset the <code>transformed layer</code> rotation.</p>
 
@@ -182,44 +156,29 @@ AvalonA('frame-3d', 'avalona-inner-frame', options).start();
 
 <p>Enable the <code>debug</code> option to display the area <em>( for development purpose only )</em>.</p>
 
-<h5>
-<a id="activeareawidth" class="anchor" href="#activeareawidth" aria-hidden="true"><span class="octicon octicon-link"></span></a>activeArea.width
-</h5>
+<h5 id="activearea.width"><em>activeArea.width</em></h5>
 
 <ul>
-<li>numeric like <code>200</code>
-</li>
-<li>length like <code>'200px'</code>
-</li>
-<li>percent like <code>'30%'</code>
-</li>
+<li>numeric like <code>200</code></li>
+<li>length like <code>'200px'</code></li>
+<li>percent like <code>'30%'</code></li>
 </ul>
 
-<h5>
-<a id="activeareaheight" class="anchor" href="#activeareaheight" aria-hidden="true"><span class="octicon octicon-link"></span></a>activeArea.height
-</h5>
+<h5 id="activearea.height"><em>activeArea.height</em></h5>
 
 <ul>
-<li>numeric like <code>100</code>
-</li>
-<li>length like <code>'100px'</code>
-</li>
-<li>percent like <code>'20%'</code>
-</li>
+<li>numeric like <code>100</code></li>
+<li>length like <code>'100px'</code></li>
+<li>percent like <code>'20%'</code></li>
 </ul>
 
-<h5>
-<a id="activeareaposition" class="anchor" href="#activeareaposition" aria-hidden="true"><span class="octicon octicon-link"></span></a>[activeArea.position]
-</h5>
+<h5 id=""><em>[activeArea.position]</em></h5>
 
 <p>Set the position of the area. Possible values:</p>
 
 <ul>
-<li>
-<code>'auto'</code> means that the area will be centered within the browser window. <strong><em>(default)</em></strong>
-</li>
-<li>
-<code>{x: value, y: value}</code> where <strong><em>value</em></strong> can be
+<li><code>'auto'</code> means that the area will be centered within the browser window. <strong><em>(default)</em></strong></li>
+<li><code>{x: value, y: value}</code> where <strong><em>value</em></strong> can be
 
 <ul>
 <li><code>null</code></li>
@@ -227,28 +186,19 @@ AvalonA('frame-3d', 'avalona-inner-frame', options).start();
 <li>numeric</li>
 <li>length</li>
 <li>percent</li>
-</ul>
-</li>
+</ul></li>
 </ul>
 
-<h5>
-<a id="activeareaattachment" class="anchor" href="#activeareaattachment" aria-hidden="true"><span class="octicon octicon-link"></span></a>[activeArea.attachment]
-</h5>
+<h5 id=""><em>[activeArea.attachment]</em></h5>
 
 <p>Act like css <code>position: absolute|fixed</code>. Possible values:</p>
 
 <ul>
-<li>
-<code>'fixed'</code> same as css <code>position: fixed</code>. <strong><em>(default)</em></strong>
-</li>
-<li>
-<code>'scroll'</code> like css <code>position: absolute</code>, the area will scroll along with the <code>transformed layer</code>
-</li>
+<li><code>'fixed'</code> same as css <code>position: fixed</code>. <strong><em>(default)</em></strong></li>
+<li><code>'scroll'</code> like css <code>position: absolute</code>, the area will scroll along with the <code>transformed layer</code></li>
 </ul>
 
-<h5>
-<a id="animation" class="anchor" href="#animation" aria-hidden="true"><span class="octicon octicon-link"></span></a>animation
-</h5>
+<h5 id="animation"><em>animation</em></h5>
 
 <p>Animates the <code>transformed layer</code> when mouse is outside the active area <em>– meaning the actual <code>activeArea</code> or simply the <code>3d Frame</code> when no <code>activeArea</code> is provided</em>. The animation plays as well when the mouse is iddle.</p>
 
@@ -268,65 +218,95 @@ AvalonA('frame-3d', 'avalona-inner-frame', options).start();
 
 <p>As the example shows, the <code>play()</code> method received as first argument the <code>transformed layer</code>, thus one can animate any attribute of this element <em>– not just the rotation</em>.</p>
 
-<h5>
-<a id="idletimeout" class="anchor" href="#idletimeout" aria-hidden="true"><span class="octicon octicon-link"></span></a>idleTimeout
-</h5>
+<h5 id="idletimeout"><em>idleTimeout</em></h5>
 
 <p>The delay, in milliseconds, after which the user is considered idle when there is no mouse movements:</p>
 
 <ul>
-<li>Default value is <strong>1000</strong>
-</li>
-<li>
-<strong>0</strong> is equivalent to default</li>
-<li>Any negative value means <strong><em>infinite</em></strong>
-</li>
+<li>Default value is <strong>1000</strong></li>
+<li><strong>0</strong> is equivalent to default</li>
+<li>Any negative value means <strong><em>infinite</em></strong></li>
 </ul>
 
 <p>When the user is idle, the animation resumes <em>– if any –</em> and <code>endrotation</code> event is triggered.</p>
 
-<h5>
-<a id="debug" class="anchor" href="#debug" aria-hidden="true"><span class="octicon octicon-link"></span></a>debug
-</h5>
+<h5 id="debug"><em>debug</em></h5>
 
 <p>Enable debug logs and display when set to <code>true</code>.</p>
 
-<h2>
-<a id="-methods" class="anchor" href="#-methods" aria-hidden="true"><span class="octicon octicon-link"></span></a><a name="methods"></a> Methods</h2>
+<h2 id="anamemethodsamethods"><a name="methods"></a> Methods</h2>
 
-<h5>
-<a id="refresh" class="anchor" href="#refresh" aria-hidden="true"><span class="octicon octicon-link"></span></a>refresh()
-</h5>
+<h5 id="refresh"><em>refresh()</em></h5>
 
 <p>Fetch <code>3d Frame</code> and <code>transformed layer</code> from the DOM and apply initial setup.</p>
 
-<h5>
-<a id="start" class="anchor" href="#start" aria-hidden="true"><span class="octicon octicon-link"></span></a>start()
-</h5>
+<p>Return <strong>layers</strong> <em>(<a href="#layers">see <strong>layers</strong> property</a>)</em>.</p>
 
-<p>Alias for <strong>refresh()</strong>.</p>
+<h5 id="start"><em>start()</em></h5>
 
-<h5>
-<a id="enable" class="anchor" href="#enable" aria-hidden="true"><span class="octicon octicon-link"></span></a>enable()
-</h5>
+<p>Alias for <strong><em>refresh()</em></strong>.</p>
 
-<p>Alias for <strong>refresh()</strong>.</p>
+<h5 id="enable"><em>enable()</em></h5>
 
-<h5>
-<a id="disable" class="anchor" href="#disable" aria-hidden="true"><span class="octicon octicon-link"></span></a>disable()
-</h5>
+<p>Alias for <strong><em>refresh()</em></strong>.</p>
+
+<h5 id="disable"><em>disable()</em></h5>
 
 <p>Flatten <code>transformed layer</code>, remove mouse movement tracking, unable events and pause animation.</p>
 
-<h5>
-<a id="refreshtransform-target--selector-or-html-node-" class="anchor" href="#refreshtransform-target--selector-or-html-node-" aria-hidden="true"><span class="octicon octicon-link"></span></a>refreshTransform( [target : selector OR html node] )
-</h5>
+<h5 id="anamerefreshtransformarefreshtransform"><a name="refreshTransform"></a> <em>refreshTransform( [target : selector OR html node] )</em></h5>
 
-<p>Update <strong>z translation</strong> according to new values of <code>data-avalonA-transform</code>.
-When <strong>target</strong> is provided, only matching html nodes get updated.</p>
+<p>Update <strong>transformations</strong> according to new values of <code>data-avalonA-transform</code>.
+When <strong>target</strong> is provided, only first matching html node get updated.</p>
 
-<h2>
-<a id="-events" class="anchor" href="#-events" aria-hidden="true"><span class="octicon octicon-link"></span></a><a name="events"></a> Events</h2>
+<h2 id="anamepropertiesaproperties"><a name="properties"></a> Properties</h2>
+
+<h5 id="anamelayersalayers"><a name="layers"></a> <em>layers</em></h5>
+
+<p>Provides all nodes picked up while running <code>start()</code> or <code>refresh()</code> or <code>enable()</code> method.
+It has the following structure:</p>
+
+<pre><code>{
+    &quot;#&lt;layer-id-1&gt;&quot;: &lt;Layer&gt;,
+    &quot;#&lt;layer-id-2&gt;&quot;: &lt;Layer&gt;,
+    ...
+    &quot;.&lt;layer-class-1&gt;&quot;: &lt;Layer&gt;[],
+    &quot;.&lt;layer-class-2&gt;&quot;: &lt;Layer&gt;[],
+    ...
+    all: &lt;Layer&gt;[]
+}
+</code></pre>
+
+<p>The <strong>layers</strong> property references all transformed html elements by their ids <em>(#layer-id)</em>, their css classes <em>(.layer-class)</em> and
+all elements are also referenced under <code>all</code>, including those not having neither id nor class attribute.</p>
+
+<p>Each html element is wrapped by a <code>Layer</code> object — <em>private to the lib, meaning you can&#8217;t directly instanciate one</em> — so that it is more convenient to manipulate transform properties.</p>
+
+<p>The <code>Layer</code> instance has the following properties:</p>
+
+<ul>
+<li><code>node</code> – the raw html node</li>
+<li><code>x</code> – get/set the translateX style of the node</li>
+<li><code>y</code> – get/set the translateY style of the node</li>
+<li><code>z</code> – get/set the translateZ style of the node</li>
+<li><code>rx</code> – get/set the rotateX style of the node</li>
+<li><code>ry</code> – get/set the rotateY style of the node</li>
+<li><code>rz</code> – get/set the rotateZ style of the node</li>
+</ul>
+
+<p>The node style get updated – <em>according to the x, y, z, &#8230; getter/setter</em> – only after calling either
+<code>refreshTransform</code> method <em>(<a href="#refreshTransform">see <code>refreshTransform()</code></a>)</em> or <code>&lt;Layer&gt;.refresh()</code>.
+Calling <code>refreshTransform</code> with no <strong>node</strong> argument also update the layers property: so if transformations has been added to a new node,
+this one will also end up as a <code>Layer</code> in the <code>layers</code> field.</p>
+
+<p>The <code>Layer</code> instance has the following methods:</p>
+
+<ul>
+<li><p><code>refresh()</code> – to actually apply transformations</p></li>
+<li><p><code>transform({[x:&lt;x value&gt;], [y:&lt;y value&gt;], [z:&lt;z value&gt;], ...})</code> – to set several transformations at once</p></li>
+</ul>
+
+<h2 id="anameeventsaevents"><a name="events"></a> Events</h2>
 
 <p>It is possible to add event listeners like this</p>
 
@@ -347,45 +327,47 @@ a.start();
 
 <p>Available events:</p>
 
-<h5>
-<a id="startrotation" class="anchor" href="#startrotation" aria-hidden="true"><span class="octicon octicon-link"></span></a>startrotation
-</h5>
+<h5 id="startrotation"><em>startrotation</em></h5>
 
 <p>Triggered when <code>transformed layer</code> rotation starts.</p>
 
-<h5>
-<a id="endrotation" class="anchor" href="#endrotation" aria-hidden="true"><span class="octicon octicon-link"></span></a>endrotation
-</h5>
+<h5 id="endrotation"><em>endrotation</em></h5>
 
 <p>Triggered when <code>transformed layer</code> rotation ends.</p>
 
-<h1>
-<a id="-plugins" class="anchor" href="#-plugins" aria-hidden="true"><span class="octicon octicon-link"></span></a><a name="plugins"></a> Plugins</h1>
+<h5 id="ready"><em>ready</em></h5>
 
-<h2>
-<a id="-avalonanimation" class="anchor" href="#-avalonanimation" aria-hidden="true"><span class="octicon octicon-link"></span></a><a name="avalonAnimation"></a> AvalonAnimation</h2>
+<p>Triggered ONLY ONCE by <code>start()</code>, <code>refresh()</code> or <code>enable()</code> BEFORE transformations gets actually applied.</p>
+
+<h5 id="refresh"><em>refresh</em></h5>
+
+<p>Triggered every time by <code>start()</code>, <code>refresh()</code> or <code>enable()</code> AFTER transformations has been applied.</p>
+
+<h5 id="start"><em>start</em></h5>
+
+<p>Alias for <code>refresh</code> event.</p>
+
+<h5 id="enable"><em>enable</em></h5>
+
+<p>Alias for <code>refresh</code> event.</p>
+
+<h1 id="anameavalonanimationaavalonanimation"><a name="avalonAnimation"></a> AvalonAnimation</h1>
 
 <p>Provides a collection of preset animations.</p>
 
-<h3>
-<a id="-balance" class="anchor" href="#-balance" aria-hidden="true"><span class="octicon octicon-link"></span></a><a name="balance"></a> Balance</h3>
+<h2 id="anamebalanceabalance"><a name="balance"></a> Balance</h2>
 
 <p>Adds a balancing movement between two rotation angles.</p>
 
-<h6>
-<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies
-</h6>
+<h5 id="dependencies"><em>Dependencies</em></h5>
 
 <ul>
-<li>
-<a href="http://www.greensock.com">GSAP 1.9.2+</a> <em>(GreenSock Animation Platform)</em> <strong>TweenMax</strong> module</li>
+<li><a href="http://www.greensock.com">GSAP 1.9.2+</a> <em>(GreenSock Animation Platform)</em> <strong>TweenMax</strong> module</li>
 </ul>
 
 <p>Note that the <strong>TweenMax</strong> module includes the <strong>TweenLite</strong> one <em>– see <a href="http://www.greensock.com">GSAP</a> documentation for details</em>.</p>
 
-<h6>
-<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples
-</h6>
+<h5 id="examples"><em>Examples</em></h5>
 
 <p><em>Example 1</em></p>
 
@@ -409,38 +391,27 @@ a.start();
 })
 </code></pre>
 
-<h6>
-<a id="options" class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Options
-</h6>
+<h5 id="options"><em>Options</em></h5>
 
 <ul>
-<li>duration <em>(seconds)</em> – <strong><em>default value is 2.75</em></strong>
-</li>
-<li>from: { rx: <em>&lt; rotation on X axis &gt;</em>, ry: <em>&lt; rotation on Y axis &gt;</em> } – <strong><em>default value is { rx: 0 , ry: -20 }</em></strong>
-</li>
-<li>to: { rx: <em>&lt; rotation on X axis &gt;</em>, ry: <em>&lt; rotation on Y axis &gt;</em> } – <strong><em>default value is the negative version of <code>from</code></em></strong>
-</li>
+<li>duration <em>(seconds)</em> – <strong><em>default value is 2.75</em></strong></li>
+<li>from: { rx: <em>< rotation on X axis ></em>, ry: <em>< rotation on Y axis ></em> } – <strong><em>default value is { rx: 0 , ry: &#8211;20 }</em></strong></li>
+<li>to: { rx: <em>< rotation on X axis ></em>, ry: <em>< rotation on Y axis ></em> } – <strong><em>default value is the negative version of <code>from</code></em></strong></li>
 </ul>
 
-<h3>
-<a id="-spotlight" class="anchor" href="#-spotlight" aria-hidden="true"><span class="octicon octicon-link"></span></a><a name="spotlight"></a> Spotlight</h3>
+<h2 id="anamespotlightaspotlight"><a name="spotlight"></a> Spotlight</h2>
 
 <p>Rotates like a spotlight.</p>
 
-<h6>
-<a id="dependencies-1" class="anchor" href="#dependencies-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies
-</h6>
+<h5 id="dependencies"><em>Dependencies</em></h5>
 
 <ul>
-<li>
-<a href="http://www.greensock.com">GSAP 1.9.2+</a> <em>(GreenSock Animation Platform)</em> <strong>TweenMax</strong> and <strong>BezierPlugin</strong> modules</li>
+<li><a href="http://www.greensock.com">GSAP 1.9.2+</a> <em>(GreenSock Animation Platform)</em> <strong>TweenMax</strong> and <strong>BezierPlugin</strong> modules</li>
 </ul>
 
 <p>Note that the <strong>TweenMax</strong> module includes the <strong>TweenLite</strong> and <strong>BezierPlugin</strong> ones <em>– see <a href="http://www.greensock.com">GSAP</a> documentation for details</em>.</p>
 
-<h6>
-<a id="examples-1" class="anchor" href="#examples-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples
-</h6>
+<h5 id="examples"><em>Examples</em></h5>
 
 <p><em>Example 1</em></p>
 
@@ -456,21 +427,44 @@ a.start();
 })
 </code></pre>
 
-<h6>
-<a id="options-1" class="anchor" href="#options-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Options
-</h6>
+<h5 id="options"><em>Options</em></h5>
 
 <ul>
-<li>duration <em>(seconds)</em> – <strong><em>default value is 8</em></strong>
-</li>
-<li>direction <code>'cw'</code> <em>(clockwise)</em> or <code>'ccw'</code> <em>(counter-clockwise)</em> – <strong><em>default value is 'cw'</em></strong>
-</li>
-<li>angle – <strong><em>default value is 20</em></strong>
-</li>
+<li>duration <em>(seconds)</em> – <strong><em>default value is 8</em></strong></li>
+<li>direction <code>'cw'</code> <em>(clockwise)</em> or <code>'ccw'</code> <em>(counter-clockwise)</em> – <strong><em>default value is &#8216;cw&#8217;</em></strong></li>
+<li>angle – <strong><em>default value is 20</em></strong></li>
 </ul>
 
-<h1>
-<a id="-speedtester-utility" class="anchor" href="#-speedtester-utility" aria-hidden="true"><span class="octicon octicon-link"></span></a><a name="speedTesterUtility"></a> SpeedTester utility</h1>
+<h2 id="anameatomaatom"><a name="atom"></a> Atom</h2>
+
+<p>Rotates a layer or a group of layers like electrons around an atom&#8217;s nucleus.</p>
+
+<h5 id="dependencies"><em>Dependencies</em></h5>
+
+<ul>
+<li><a href="http://www.greensock.com">GSAP 1.9.2+</a> <em>(GreenSock Animation Platform)</em> <strong>TweenMax</strong> module</li>
+</ul>
+
+<h5 id="example"><em>Example</em></h5>
+
+<pre><code>animation: AvalonAnimation.Atom({
+  duration: 20,
+  selector: '.electron',
+  axis: ['y','z']
+})
+</code></pre>
+
+<h5 id="options"><em>Options</em></h5>
+
+<ul>
+<li><p>duration <em>(seconds)</em> – <strong><em>default value is 2.75</em></strong></p></li>
+<li><p>selector – every <small>non-transformed</small> <sup>(*)</sup> div within the <code>transformed layer</code> matching this selector will rotate, along with all his children.</p></li>
+<li><p>axis – the axis on which elements will rotate <strong><em>(default values are x,y and z)</em></strong></p></li>
+</ul>
+
+<p><sup>(*)</sup> <small>non-transformed means not having the <code>data-avalonA-transform</code> attribute (or the one define through &#8220;tAttr&#8221; option).</small></p>
+
+<h1 id="anamespeedtesterutilityaspeedtesterutility"><a name="speedTesterUtility"></a> SpeedTester utility</h1>
 
 <p>The <strong>SpeedTester</strong> <em>(SpeedTester.min.js)</em> allows you to check system performance before activating <strong>Avalon(A)</strong>, thus preventing to undermine the usability of your website. It is meant to be used like this:</p>
 
@@ -493,8 +487,7 @@ a.start();
 });
 </code></pre>
 
-<h1>
-<a id="-browser-compatibility" class="anchor" href="#-browser-compatibility" aria-hidden="true"><span class="octicon octicon-link"></span></a><a name="browserCompatibility"></a> Browser compatibility</h1>
+<h1 id="anamebrowsercompatibilityabrowsercompatibility"><a name="browserCompatibility"></a> Browser compatibility</h1>
 
 <ul>
 <li>Safari</li>
@@ -502,25 +495,20 @@ a.start();
 <li>Firefox</li>
 </ul>
 
-<p><em>Nothing happens on browsers that doesn't support 3d transform.</em></p>
+<p><em>Nothing happens on browsers that doesn&#8217;t support 3d transform.</em></p>
 
-<h1>
-<a id="-using-it-with-requirejs" class="anchor" href="#-using-it-with-requirejs" aria-hidden="true"><span class="octicon octicon-link"></span></a><a name="usingRequireJS"></a> Using it with require.js</h1>
+<h1 id="anameusingrequirejsausingitwithrequire.js"><a name="usingRequireJS"></a> Using it with require.js</h1>
 
-<p><strong>Avalon(A)</strong> is AMD compliant: if <strong>require.js</strong> is present, <code>AvalonA</code> function won't be exposed as a global variable but as a module having the same name.
+<p><strong>Avalon(A)</strong> is AMD compliant: if <strong>require.js</strong> is present, <code>AvalonA</code> function won&#8217;t be exposed as a global variable but as a module having the same name.
 The same goes for <code>AvalonAnimation</code> plugin and <code>SpeedTester</code> utility.</p>
 
 <p>As an AMD module, <code>AvalonA</code> requires <code>jquery</code> and <code>tweenlite</code> modules. <code>AvalonAnimation</code> requires <code>tweenmax</code>,<code>tweenlite</code> and <code>GSEases</code>modules, where <code>GSEases</code> contains key/value pairs of standard greensock easing functions — <em>the ones bundled with TweenMax</em>.</p>
 
-<h4>
-<a id="greensock-specifics" class="anchor" href="#greensock-specifics" aria-hidden="true"><span class="octicon octicon-link"></span></a>GreenSock specifics</h4>
+<h4 id="greensockspecifics">GreenSock specifics</h4>
 
 <p>Keep in mind that since GreenSock bundles several modules within one file — <em>indeed TweenMax file contains TweenMax as well as TweenLite, CSSPlugin, BezierPlugin, Eeasin, etc</em> — it needs special care to be used with <strong>require.js</strong>.</p>
 
 <p>Check out this <a href="https://raw.github.com/janouma/AvalonA/master/dist/avalona-amd-test.zip">code sample</a> to understand how to use <strong>Avalon(A)</strong> and <strong>GreenSock</strong> with <strong>require.js</strong>.</p>
-
-
-
         </section>
 
         <footer class="site-footer">
