@@ -33,6 +33,7 @@
 <ul>
 <li><a href="#balance">Balance</a></li>
 <li><a href="#spotlight">Spotlight</a></li>
+<li><a href="#atom">Atom</a></li>
 </ul></li>
 <li><a href="#speedTesterUtility">SpeedTester utility</a></li>
 <li><a href="#browserCompatibility">Browser compatibility</a></li>
@@ -89,7 +90,7 @@
 
 <h5 id="tattr"><em>tAttr</em></h5>
 
-<p>Changes the name of the attribute used to define layer <strong>z translation</strong>. Default value is <code>data-avalonA-transform</code>.</p>
+<p>Changes the name of the attribute used to define layer <strong>transformations</strong>. Default value is <code>data-avalonA-transform</code>.</p>
 
 <h5 id="fy"><em>fy</em></h5>
 
@@ -404,6 +405,35 @@ a.start();
 <li>direction <code>'cw'</code> <em>(clockwise)</em> or <code>'ccw'</code> <em>(counter-clockwise)</em> – <strong><em>default value is &#8216;cw&#8217;</em></strong></li>
 <li>angle – <strong><em>default value is 20</em></strong></li>
 </ul>
+
+<h2 id="anameatomaatom"><a name="atom"></a> Atom</h2>
+
+<p>Rotates a layer or a group of layers like electrons around an atom&#8217;s nucleus.</p>
+
+<h5 id="dependencies"><em>Dependencies</em></h5>
+
+<ul>
+<li><a href="http://www.greensock.com">GSAP 1.9.2+</a> <em>(GreenSock Animation Platform)</em> <strong>TweenMax</strong> module</li>
+</ul>
+
+<h5 id="example"><em>Example</em></h5>
+
+<pre><code>animation: AvalonAnimation.Atom({
+  duration: 20,
+  selector: '.electron',
+  axis: ['y','z']
+})
+</code></pre>
+
+<h5 id="options"><em>Options</em></h5>
+
+<ul>
+<li><p>duration <em>(seconds)</em> – <strong><em>default value is 2.75</em></strong></p></li>
+<li><p>selector – every <small>non-transformed</small> <sup>(*)</sup> div within the <code>transformed layer</code> matching this selector will rotate, along with all his children.</p></li>
+<li><p>axis – the axis on which elements will rotate <strong><em>(default values are x,y and z)</em></strong></p></li>
+</ul>
+
+<p><sup>(*)</sup> <small>non-transformed means not having the <code>data-avalonA-transform</code> attribute (or the one define through &#8220;tAttr&#8221; option).</small></p>
 
 <h1 id="anamespeedtesterutilityaspeedtesterutility"><a name="speedTesterUtility"></a> SpeedTester utility</h1>
 

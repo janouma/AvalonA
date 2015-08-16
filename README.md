@@ -18,6 +18,7 @@
 - [AvalonAnimation](#avalonAnimation)
 	- [Balance](#balance)
 	- [Spotlight](#spotlight)
+	- [Atom](#atom)
 - [SpeedTester utility](#speedTesterUtility)
 - [Browser compatibility](#browserCompatibility)
 - [Using it with require.js](#usingRequireJS)
@@ -60,7 +61,7 @@ It is possible to pass an object along with the id of the `3d Frame` to set opti
     });
 
 ##### *tAttr*
-Changes the name of the attribute used to define layer **z translation**. Default value is `data-avalonA-transform`.
+Changes the name of the attribute used to define layer **transformations**. Default value is `data-avalonA-transform`.
 
 ##### *fy*
 A function that affects the amount of rotation triggered by the mouse movements on the **y axis**.
@@ -315,6 +316,29 @@ Note that the **TweenMax** module includes the **TweenLite** and **BezierPlugin*
 - duration *(seconds)* – ***default value is 8***
 - direction `'cw'` *(clockwise)* or `'ccw'` *(counter-clockwise)* – ***default value is 'cw'***
 - angle – ***default value is 20***
+
+## <a name="atom"></a> Atom
+Rotates a layer or a group of layers like electrons around an atom's nucleus.
+
+##### *Dependencies*
+- [GSAP 1.9.2+](http://www.greensock.com) *(GreenSock Animation Platform)* **TweenMax** module
+
+##### *Example*
+
+	animation: AvalonAnimation.Atom({
+      duration: 20,
+      selector: '.electron',
+      axis: ['y','z']
+    })
+
+##### *Options*
+- duration *(seconds)* – ***default value is 2.75***
+
+- selector – every <small>non-transformed</small> <sup>(*)</sup> div within the `transformed layer` matching this selector will rotate, along with all his children.
+
+- axis – the axis on which elements will rotate ***(default values are x,y and z)***
+
+<sup>(*)</sup> <small>non-transformed means not having the `data-avalonA-transform` attribute (or the one define through "tAttr" option).</small>
 
 # <a name="speedTesterUtility"></a> SpeedTester utility
 The **SpeedTester** *(SpeedTester.min.js)* allows you to check system performance before activating **Avalon(A)**, thus preventing to undermine the usability of your website. It is meant to be used like this:
