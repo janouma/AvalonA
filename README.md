@@ -23,7 +23,6 @@
 - [Browser compatibility](#browserCompatibility)
 - [Using it with require.js](#usingRequireJS)
 - [Preview](#preview)
-
 # <a name="dependencies"></a> Dependencies
 - [GSAP 1.9.2+](http://www.greensock.com) *(GreenSock Animation Platform)* **TweenLite** and **CSSPlugin** modules
 
@@ -51,7 +50,6 @@ All properties are optional.
     $(function(){
         AvalonA('frame-3d', 'avalona-inner-frame').start();
     });
-
 # <a name="api"></a> API
 ## <a name="constructorOptions"></a> Constructor options
 It is possible to pass an object along with the id of the `3d Frame` to set options:
@@ -153,7 +151,6 @@ When the user is idle, the animation resumes *– if any –* and `endrotation` 
 
 ##### *debug*
 Enable debug logs and display when set to `true`.
-
 ## <a name="methods"></a> Methods
 ##### *refresh()*
 Fetch `3d Frame` and `transformed layer` from the DOM and apply initial setup.
@@ -172,7 +169,6 @@ Flatten `transformed layer`, remove mouse movement tracking, unable events and p
 ##### <a name="refreshTransform"></a> *refreshTransform( [target : selector OR html node] )*
 Update **transformations** according to new values of `data-avalonA-transform`.
 When **target** is provided, only first matching html node get updated.
-
 ## <a name="properties"></a> Properties
 ##### <a name="layers"></a> *layers*
 Provides all nodes picked up while running `start()` or `refresh()` or `enable()` method.
@@ -213,7 +209,6 @@ The `Layer` instance has the following methods:
 - `refresh()` – to actually apply transformations
 
 - `transform({[x:<x value>], [y:<y value>], [z:<z value>], ...})` – to set several transformations at once
-
 ## <a name="events"></a> Events
 It is possible to add event listeners like this
 
@@ -249,7 +244,6 @@ Alias for `refresh` event.
 
 ##### *enable*
 Alias for `refresh` event.
-
 # <a name="avalonAnimation"></a> AvalonAnimation
 Provides a collection of preset animations.
 
@@ -339,7 +333,6 @@ Rotates a layer or a group of layers like electrons around an atom's nucleus.
 - axis – the axis on which elements will rotate ***(default values are x,y and z)***
 
 <sup>(*)</sup> <small>non-transformed means not having the `data-avalonA-transform` attribute (or the one define through "tAttr" option).</small>
-
 # <a name="speedTesterUtility"></a> SpeedTester utility
 The **SpeedTester** *(SpeedTester.min.js)* allows you to check system performance before activating **Avalon(A)**, thus preventing to undermine the usability of your website. It is meant to be used like this:
 
@@ -381,3 +374,4 @@ Check out this [code sample](https://raw.github.com/janouma/AvalonA/master/dist/
 
 # <a name="preview"></a> Preview
 **[see jsFiddle preview](http://jsfiddle.net/K3kPx/9/show)**
+
