@@ -238,6 +238,18 @@ Triggered when `transformed layer` rotation starts.
 ##### *endrotation*
 Triggered when `transformed layer` rotation ends.
 
+##### *ready*
+Triggered ONLY ONCE by `start()`, `refresh()` or `enable()` BEFORE transformations gets actually applied.
+
+##### *refresh*
+Triggered every time by `start()`, `refresh()` or `enable()` AFTER transformations has been applied.
+
+##### *start*
+Alias for `refresh` event.
+
+##### *enable*
+Alias for `refresh` event.
+
 # <a name="plugins"></a> Plugins
 ## <a name="avalonAnimation"></a> AvalonAnimation
 Provides a collection of preset animations.
