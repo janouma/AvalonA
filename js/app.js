@@ -69,7 +69,7 @@ require(
 		* *******************/
 
 		Object.create(FrameTimer)
-			.every(180)
+			.every(300)
 			.run(function updateVortex(){
 				avalona.layers['.black-hole']
 					.forEach(function update(layer){
