@@ -98,18 +98,15 @@ define(function defineFrameTimer(){
 				this.every = this._after.bind(this, true);
 				this.after = this._after.bind(this, false);
 			}else{
-				this.every = this.after = (function after(){
+				this.every = this.after = function after(){
 					var timerType = this._repeat ? 'interval' : 'timeout';
 					throw [timerType, 'delay has already been set to', this._delay].join(' ');
-				}).bind(this);
+				};
 
 				this._getRequestAnimationFrame()(this._frame.bind(this));
 			}
 
-			return {
-				every: this.every,
-				after: this.after,
-			};
+			return this;
 		},
 
 
