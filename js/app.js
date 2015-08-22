@@ -68,35 +68,16 @@ require(
 		* Update Avalon (A)
 		* *******************/
 
-		/*
-		var interval = Object.create(FrameTimer);
-		var timeout = Object.create(FrameTimer);
-
-		// TODO DEBUG
-		var count = 0;
-		//
-
-		interval.every(180).run(function updateVortex(){
-			// TODO DEBUG
-			count++;
-			console.info("update vortex. interval.running:", interval.running);
-			interval.resume();
-
-			if(count >= 3){
-				interval.stop();
-				console.log('interval.running:', interval.running);
-			}
-			//
-		});
-
-		timeout.after(600).run(function updateVortexOnce(){
-			// TODO DEBUG
-			console.info("update vortex once. timeout.running:", timeout.running);
-			interval.resume();
-			timeout.resume();
-			//
-		});
-		*/
+		Object.create(FrameTimer)
+			.every(180)
+			.run(function updateVortex(){
+				avalona.layers['.black-hole']
+					.forEach(function update(layer){
+						layer.rx *= -1;
+						layer.ry *= -1;
+						layer.refresh();
+					});
+			});
 
 	}
 );
