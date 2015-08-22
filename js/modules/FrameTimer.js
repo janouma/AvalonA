@@ -14,12 +14,8 @@ define(function defineFrameTimer(){
 		_after: function _after(repeat, delay){
 			var requestAnimationFrame = this._requestAnimationFrame;
 
-			if(typeof delay !== 'number' || isNaN(delay) || delay <= 0){
-				throw 'delay argument must be a strictly positive number. Actual ' + delay;
-			}
-
+			this._setDelay(delay);
 			this._repeat = repeat;
-			this._delay = Math.ceil(delay);
 
 			if(requestAnimationFrame){
 				requestAnimationFrame(this._frame.bind(this));
@@ -54,8 +50,17 @@ define(function defineFrameTimer(){
 		},
 
 
+		_setDelay: function _setDelay(delay){
+			if(typeof delay !== 'number' || isNaN(delay) || delay <= 0){
+				throw 'delay argument must be a strictly positive number. Actual ' + delay;
+			}
+
+			this._delay = Math.ceil(delay);
+		},
+
+
 		get initialized(){
-			return !!this._callback;
+			return this._callback && this._delay;
 		},
 
 
@@ -80,10 +85,32 @@ define(function defineFrameTimer(){
 
 			this._callback = callback;
 
+			if( ! this._delay ){
+				this.every = this._after.bind(this, true);
+				this.after = this._after.bind(this, false);
+			}else{
+				this.every = this.after = function every(){
+					var timerType = this._repeat ? 'interval' : 'timeout';
+					throw [timerType, ' delay has already been set to ', this._delay].join('');
+				};
+			}
+
 			return {
-				every: this._after.bind(this, true),
-				after: this._after.bind(this, false),
+				every: this.every,
+				after: this.after,
 			};
+		},
+
+
+		every: function every(delay){
+			this._setDelay(delay);
+			this._repeat = true;
+		},
+
+
+		after: function after(delay){
+			this._setDelay(delay);
+			this._repeat = false;
 		},
 
 

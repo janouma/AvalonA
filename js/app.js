@@ -88,12 +88,15 @@ require(
 			//
 		}).every(180);
 
+
 		timeout.run(function updateVortexOnce(){
 			// TODO DEBUG
 			console.info("update vortex once. timeout.running:", timeout.running);
 			interval.resume();
 			timeout.resume();
 			//
-		}).after(600);
+		});
+
+		timeout.after(600);
 	}
 );
