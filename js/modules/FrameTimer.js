@@ -5,28 +5,15 @@ define(function defineFrameTimer(){
 
 		_Ø: Object.create(null),
 
-		_requestAnimationFrame: window.requestAnimationFrame ||
-			window.mozRequestAnimationFrame ||
-			window.webkitRequestAnimationFrame ||
-			window.oRequestAnimationFrame,
-
 
 		_after: function _after(repeat, delay){
-			var requestAnimationFrame = this._requestAnimationFrame;
-
 			this._setDelay(delay);
 			this._repeat = repeat;
-
-			if(requestAnimationFrame){
-				requestAnimationFrame(this._frame.bind(this));
-			}else{
-				console.error('requestAnimationFrame is not supported');
-			}
+			this._getRequestAnimationFrame()(this._frame.bind(this));
 		},
 
 
 		_frame: function _frame(){
-			var requestAnimationFrame = this._requestAnimationFrame;
 			var frameCount;
 
 			this._timeoutReached = false;
@@ -42,7 +29,7 @@ define(function defineFrameTimer(){
 				}
 
 				if( ! this.ended ){
-					requestAnimationFrame(this._frame.bind(this));
+					this._getRequestAnimationFrame()(this._frame.bind(this));
 				}
 			}else{
 				this._frameCount = 0;
@@ -56,6 +43,28 @@ define(function defineFrameTimer(){
 			}
 
 			this._delay = Math.ceil(delay);
+		},
+
+
+		_getRequestAnimationFrame: function _getRequestAnimationFrame(){
+			var requestAnimationFrame = this._requestAnimationFrame = window.requestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.oRequestAnimationFrame;
+
+			if(requestAnimationFrame){
+				this._getRequestAnimationFrame = function _getRequestAnimationFrame(){
+					return this._requestAnimationFrame;
+				};
+
+				return requestAnimationFrame;
+			}else{
+				this._getRequestAnimationFrame = function _getRequestAnimationFrame(){
+					throw 'requestAnimationFrame is not supported';
+				};
+
+				throw 'requestAnimationFrame is not supported';
+			}
 		},
 
 
@@ -89,10 +98,12 @@ define(function defineFrameTimer(){
 				this.every = this._after.bind(this, true);
 				this.after = this._after.bind(this, false);
 			}else{
-				this.every = this.after = function every(){
+				this.every = this.after = (function after(){
 					var timerType = this._repeat ? 'interval' : 'timeout';
-					throw [timerType, ' delay has already been set to ', this._delay].join('');
-				};
+					throw [timerType, 'delay has already been set to', this._delay].join(' ');
+				}).bind(this);
+
+				this._getRequestAnimationFrame()(this._frame.bind(this));
 			}
 
 			return {
@@ -120,8 +131,6 @@ define(function defineFrameTimer(){
 
 
 		resume: function resume(){
-			var requestAnimationFrame = this._requestAnimationFrame;
-
 			if( ! this.initialized ){
 				throw 'timer is not yet initialized';
 			}
@@ -129,7 +138,7 @@ define(function defineFrameTimer(){
 			if(this._stopped){
 				if( ! this.ended ){
 					this._stopped = false;
-					requestAnimationFrame(this._frame.bind(this));
+					this._getRequestAnimationFrame()(this._frame.bind(this));
 				}else{
 					throw 'one time timer has already ended';
 				}

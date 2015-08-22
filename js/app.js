@@ -75,6 +75,8 @@ require(
 		var count = 0;
 		//
 
+		//interval.every(180);
+
 		interval.run(function updateVortex(){
 			// TODO DEBUG
 			count++;
@@ -88,6 +90,10 @@ require(
 			//
 		}).every(180);
 
+		//interval.every(180);
+
+
+		//timeout.after(600);
 
 		timeout.run(function updateVortexOnce(){
 			// TODO DEBUG
@@ -95,8 +101,8 @@ require(
 			interval.resume();
 			timeout.resume();
 			//
-		});
+		}).after(600);
 
-		timeout.after(600);
+		//timeout.after(600);
 	}
 );
