@@ -68,12 +68,32 @@ require(
 		* Update Avalon (A)
 		* *******************/
 
-		var timer = Object.create(FrameTimer);
+		var interval = Object.create(FrameTimer);
+		var timeout = Object.create(FrameTimer);
 
-		timer.run(function updateVortex(){
+		// TODO DEBUG
+		var count = 0;
+		//
+
+		interval.run(function updateVortex(){
 			// TODO DEBUG
-			console.info("update vortex");
+			count++;
+			console.info("update vortex. interval.running:", interval.running);
+			interval.resume();
+
+			if(count >= 3){
+				interval.stop();
+				console.log('interval.running:', interval.running);
+			}
 			//
 		}).every(180);
+
+		timeout.run(function updateVortexOnce(){
+			// TODO DEBUG
+			console.info("update vortex once. timeout.running:", timeout.running);
+			interval.resume();
+			timeout.resume();
+			//
+		}).after(600);
 	}
 );

@@ -11,13 +11,14 @@ define(function defineFrameTimer(){
 			window.oRequestAnimationFrame,
 
 
-		_every: function _every(delay){
+		_after: function _after(repeat, delay){
 			var requestAnimationFrame = this._requestAnimationFrame;
 
 			if(typeof delay !== 'number' || isNaN(delay) || delay <= 0){
 				throw 'delay argument must be a strictly positive number. Actual ' + delay;
 			}
 
+			this._repeat = repeat;
 			this._delay = Math.ceil(delay);
 
 			if(requestAnimationFrame){
@@ -32,15 +33,21 @@ define(function defineFrameTimer(){
 			var requestAnimationFrame = this._requestAnimationFrame;
 			var frameCount;
 
+			this._timeoutReached = false;
+
 			if( ! this._stopped ){
 				frameCount = ++this._frameCount;
 
 				if(frameCount === this._delay){
 					this._frameCount = 0;
+					this._timeoutReached = true;
+					! this._repeat && (this._stopped = true);
 					this._callback.call(this._Ø);
 				}
 
-				requestAnimationFrame(this._frame.bind(this));
+				if( ! this.ended ){
+					requestAnimationFrame(this._frame.bind(this));
+				}
 			}else{
 				this._frameCount = 0;
 			}
@@ -57,6 +64,11 @@ define(function defineFrameTimer(){
 		},
 
 
+		get ended(){
+			return this._timeoutReached && ! this._repeat;
+		},
+
+
 		run: function run(callback){
 			if(this.initialized){
 				throw 'timer is already initialized';
@@ -69,7 +81,8 @@ define(function defineFrameTimer(){
 			this._callback = callback;
 
 			return {
-				every: this._every.bind(this)
+				every: this._after.bind(this, true),
+				after: this._after.bind(this, false),
 			};
 		},
 
@@ -87,8 +100,12 @@ define(function defineFrameTimer(){
 			}
 
 			if(this._stopped){
-				this._stopped = false;
-				requestAnimationFrame(this._frame.bind(this));
+				if( ! this.ended ){
+					this._stopped = false;
+					requestAnimationFrame(this._frame.bind(this));
+				}else{
+					throw 'one time timer has already ended';
+				}
 			}else{
 				console.warn('timer is already running');
 			}
