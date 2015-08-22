@@ -6,13 +6,6 @@ define(function defineFrameTimer(){
 		_Ø: Object.create(null),
 
 
-		_after: function _after(repeat, delay){
-			this._setDelay(delay);
-			this._repeat = repeat;
-			this._getRequestAnimationFrame()(this._frame.bind(this));
-		},
-
-
 		_frame: function _frame(){
 			var frameCount;
 
@@ -37,12 +30,18 @@ define(function defineFrameTimer(){
 		},
 
 
-		_setDelay: function _setDelay(delay){
+		_setDelay: function _setDelay(delay, repeat){
 			if(typeof delay !== 'number' || isNaN(delay) || delay <= 0){
 				throw 'delay argument must be a strictly positive number. Actual ' + delay;
 			}
 
 			this._delay = Math.ceil(delay);
+			this._repeat = repeat;
+			this._overwriteDelaySetters();
+
+			if(this._callback){
+				this._getRequestAnimationFrame()(this._frame.bind(this));
+			}
 		},
 
 
@@ -68,6 +67,21 @@ define(function defineFrameTimer(){
 		},
 
 
+		_overwriteRun: function _overwriteRun(){
+			this.run = function run(){
+				throw 'callback has already been set to ' + this._callback;
+			};
+		},
+
+
+		_overwriteDelaySetters: function _overwriteDelaySetters(){
+			this.every = this.after = function after(){
+				var timerType = this._repeat ? 'interval' : 'timeout';
+				throw [timerType, 'delay has already been set to', this._delay].join(' ');
+			};
+		},
+
+
 		get initialized(){
 			return this._callback && this._delay;
 		},
@@ -84,25 +98,14 @@ define(function defineFrameTimer(){
 
 
 		run: function run(callback){
-			if(this.initialized){
-				throw 'timer is already initialized';
-			}
-
 			if(typeof callback !== 'function'){
 				throw 'callback argument must be a function. Actual ' + callback;
 			}
 
 			this._callback = callback;
+			this._overwriteRun();
 
-			if( ! this._delay ){
-				this.every = this._after.bind(this, true);
-				this.after = this._after.bind(this, false);
-			}else{
-				this.every = this.after = function after(){
-					var timerType = this._repeat ? 'interval' : 'timeout';
-					throw [timerType, 'delay has already been set to', this._delay].join(' ');
-				};
-
+			if(this._delay){
 				this._getRequestAnimationFrame()(this._frame.bind(this));
 			}
 
@@ -111,14 +114,14 @@ define(function defineFrameTimer(){
 
 
 		every: function every(delay){
-			this._setDelay(delay);
-			this._repeat = true;
+			this._setDelay(delay, true);
+			return this;
 		},
 
 
 		after: function after(delay){
-			this._setDelay(delay);
-			this._repeat = false;
+			this._setDelay(delay, false);
+			return this;
 		},
 
 
