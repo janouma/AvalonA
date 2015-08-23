@@ -57,7 +57,7 @@ require(
 
 			animation: AvalonAnimation.Atom({
 				duration: 10,
-				selector: '.gravity',
+				selector: '.gravity, .group-hole',
 				axis: ['z']
 			})
 		});
@@ -68,22 +68,13 @@ require(
 		* Update Avalon (A)
 		* *******************/
 
-		var blackHoles = avalona.layers['.black-hole'];
-
-		var origRz = blackHoles.map(function getRz(layer){
-			return layer.rz;
-		});
-
 		Object.create(FrameTimer)
 			.every(300)
 			.run(function updateVortex(){
-				var reset = blackHoles[0].rz > 720;
-
-				blackHoles
+				avalona.layers['.black-hole']
 					.forEach(function update(layer, index){
 						layer.rx *= -1;
 						layer.ry *= -1;
-						layer.rz = ! reset ? layer.rz + 60 : origRz[index];
 						layer.refresh();
 					});
 			});

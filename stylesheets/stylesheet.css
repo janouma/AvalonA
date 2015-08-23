@@ -415,6 +415,11 @@ p {
   border-radius: 40%;
 }
 
+.group-hole {
+  width: 100%;
+  z-index: -1;
+}
+
 @media screen and (min-width: 42em) {
   .black-hole{
     background-image: url(../images/stars.png);
@@ -427,38 +432,39 @@ p {
   }
 }
 
-.black-hole:not(:first-child){
+.group-hole,
+.group-hole .black-hole:not(:first-child) {
   position: absolute;
   top: 0;
   left: 0;
 }
 
-.black-hole:first-child{
+.root.black-hole{
   opacity: 0.95;
 }
 
-.black-hole:nth-child(2){
+.group-hole .black-hole:nth-child(1){
   -webkit-transform: scale(0.75);
   transform: scale(0.75);
   opacity: 0.725;
   z-index: -1;
 }
 
-.black-hole:nth-child(3){
+.group-hole .black-hole:nth-child(2){
   -webkit-transform: scale(0.65);
   transform: scale(0.65);
   opacity: 0.5;
   z-index: -2;
 }
 
-.black-hole:nth-child(4){
+.group-hole .black-hole:nth-child(3){
   -webkit-transform: scale(0.55);
   transform: scale(0.55);
   opacity: 0.275;
   z-index: -3;
 }
 
-.black-hole:nth-child(5){
+.group-hole .black-hole:nth-child(4){
   -webkit-transform: scale(0.45);
   transform: scale(0.45);
   opacity: 0.1;
