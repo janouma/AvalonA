@@ -3,13 +3,16 @@ The **SpeedTester** *(SpeedTester.min.js)* allows you to check system performanc
 
 *Main html document – preferably before loading any other scripts*
 
+``` html
 	<script>
     	var speedTester = new SpeedTester(< how many times the test must be run (default 1) >);
     	speedTester.run();
 	</script>
+```
 
 *Main script – after document as been loaded*
 
+``` js
 	speedTester.oncomplete(function(results){
 		if(results.fps > 30){
 			AvalonA('frame-3d', 'avalona-inner-frame').start();
@@ -17,6 +20,7 @@ The **SpeedTester** *(SpeedTester.min.js)* allows you to check system performanc
 			console.warn('Your frame rate is too low, recommended: 30');
 		}
 	});
+```
 
 # <a name="browserCompatibility"></a> Browser compatibility
 - Safari

@@ -3,6 +3,7 @@
 Provides all nodes picked up while running `start()` or `refresh()` or `enable()` method.
 It has the following structure:
 
+``` js
 	{
 		"#<layer-id-1>": <Layer>,
 		"#<layer-id-2>": <Layer>,
@@ -12,6 +13,7 @@ It has the following structure:
 		...
 		all: <Layer>[]
 	}
+```
 
 The **layers** property references all transformed html elements by their ids *(#layer-id)*, their css classes *(.layer-class)* and
 all elements are also referenced under `all`, including those not having neither id nor class attribute.

@@ -29,15 +29,17 @@
 
 # <a name="example"></a> Example
 ## <a name="html"></a> Html
-	<div id="frame-3d"> <!-- 3d Frame -->
-    	<div id="avalona-inner-frame"> <!-- transformed layer -->
-        	<div id="half-circle" data-avalonA-transform="z:-300"></div>
-        		<div id="square" data-avalonA-transform="z:75; rx:20.32; ry:5; rz:-10.2">
-            		<div id="inner-square" data-avalonA-transform="z:150"></div>
-        		</div>
-        	<div id="circle" data-avalonA-transform="x:100; y:150; z:200;rx:45"></div>
-    	</div>
-	</div>
+```html
+    <div id="frame-3d"> <!-- 3d Frame -->
+        <div id="avalona-inner-frame"> <!-- transformed layer -->
+            <div id="half-circle" data-avalonA-transform="z:-300"></div>
+                <div id="square" data-avalonA-transform="z:75; rx:20.32; ry:5; rz:-10.2">
+                    <div id="inner-square" data-avalonA-transform="z:150"></div>
+                </div>
+            <div id="circle" data-avalonA-transform="x:100; y:150; z:200;rx:45"></div>
+        </div>
+    </div>
+```
 
 It is mandatory to have at least the `3d Frame` and `transformed layer` defined when **Avalon(A)** initialization occurs. Within the `3d Frame`, the element div having the id `avalona-inner-frame` becomes the `transformed layer`.
 
@@ -48,17 +50,21 @@ It is mandatory to have at least the `3d Frame` and `transformed layer` defined 
 All properties are optional.
 
 ## <a name="script"></a> Script
+``` js
     $(function(){
         AvalonA('frame-3d', 'avalona-inner-frame').start();
     });
+```
 
 # <a name="api"></a> API
 ## <a name="constructorOptions"></a> Constructor options
 It is possible to pass an object along with the id of the `3d Frame` to set options:
 
-    $(function(){
-        AvalonA('frame-3d', 'avalona-inner-frame', {option: value}).start();
-    });
+``` js
+	$(function(){
+		AvalonA('frame-3d', 'avalona-inner-frame', {option: value}).start();
+	});
+```
 
 ##### *tAttr*
 Changes the name of the attribute used to define layer **transformations**. Default value is `data-avalonA-transform`.
@@ -66,9 +72,11 @@ Changes the name of the attribute used to define layer **transformations**. Defa
 ##### *fy*
 A function that affects the amount of rotation triggered by the mouse movements on the **y axis**.
 
+``` js
 	AvalonA('frame-3d', 'avalona-inner-frame', {fy: function(rotation){
 		return rotation * 2;
 	} }).start();
+```
 
 Default function as no effect on the rotation value.
 
@@ -78,6 +86,7 @@ A function that affects the amount of rotation triggered by the mouse movements 
 ##### *activeArea*
 When available, restrict mouse movements tracking to this area: moving outside the area reset the `transformed layer` rotation.
 
+``` js
 	var options = {
 		activeArea: {
 			position: {
@@ -90,6 +99,7 @@ When available, restrict mouse movements tracking to this area: moving outside t
 		}
 	};
 	AvalonA('frame-3d', 'avalona-inner-frame', options).start();
+```
 
 Enable the `debug` option to display the area *( for development purpose only )*.
 
@@ -128,6 +138,7 @@ Animates the `transformed layer` when mouse is outside the active area *– mean
 
 The `animation` object must have the following api:
 
+``` js
 	animation: {
 
 		play: function(transformedLayer){
@@ -138,6 +149,7 @@ The `animation` object must have the following api:
 			// pause code goes here
 		}
 	}
+```
 
 As the example shows, the `play()` method received as first argument the `transformed layer`, thus one can animate any attribute of this element *– not just the rotation*.
 
@@ -178,6 +190,7 @@ When **target** is provided, only first matching html node get updated.
 Provides all nodes picked up while running `start()` or `refresh()` or `enable()` method.
 It has the following structure:
 
+``` js
 	{
 		"#<layer-id-1>": <Layer>,
 		"#<layer-id-2>": <Layer>,
@@ -187,6 +200,7 @@ It has the following structure:
 		...
 		all: <Layer>[]
 	}
+```
 
 The **layers** property references all transformed html elements by their ids *(#layer-id)*, their css classes *(.layer-class)* and
 all elements are also referenced under `all`, including those not having neither id nor class attribute.
@@ -217,18 +231,22 @@ The `Layer` instance has the following methods:
 ## <a name="events"></a> Events
 It is possible to add event listeners like this
 
+``` js
 	var options = {
     	on: {
     		event: function(){ /* event code goes here */ },
     	}
 	};
 	AvalonA('frame-3d', 'avalona-inner-frame', options).start();
+```
 
 or this
 
+``` js
 	var a = AvalonA('frame-3d', 'avalona-inner-frame', options);
 	a.onevent = function(){ /* event code goes here */ };
 	a.start();
+```
 
 Available events:
 
@@ -265,10 +283,13 @@ Note that the **TweenMax** module includes the **TweenLite** one *– see [GSAP]
 ##### *Examples*
 *Example 1*
 
+``` js
 	animation: AvalonAnimation.Balance()
+```
 
 *Example 2*
 
+``` js
 	animation: AvalonAnimation.Balance({
       duration: 0.75,
 
@@ -282,6 +303,7 @@ Note that the **TweenMax** module includes the **TweenLite** one *– see [GSAP]
         ry: 30
       }
     })
+```
 
 ##### *Options*
 
@@ -301,15 +323,19 @@ Note that the **TweenMax** module includes the **TweenLite** and **BezierPlugin*
 ##### *Examples*
 *Example 1*
 
+``` js
 	animation: AvalonAnimation.Spotlight()
+```
 
 *Example 2*
 
+``` js
 	animation: AvalonAnimation.Spotlight({
       duration: 5,
       direction: 'ccw',
       angle: 10
     })
+```
 
 ##### *Options*
 
@@ -325,11 +351,13 @@ Rotates a layer or a group of layers like electrons around an atom's nucleus.
 
 ##### *Example*
 
+``` js
 	animation: AvalonAnimation.Atom({
       duration: 20,
       selector: '.electron',
       axis: ['y','z']
     })
+```
 
 ##### *Options*
 - duration *(seconds)* – ***default value is 2.75***
@@ -345,13 +373,16 @@ The **SpeedTester** *(SpeedTester.min.js)* allows you to check system performanc
 
 *Main html document – preferably before loading any other scripts*
 
+``` html
 	<script>
     	var speedTester = new SpeedTester(< how many times the test must be run (default 1) >);
     	speedTester.run();
 	</script>
+```
 
 *Main script – after document as been loaded*
 
+``` js
 	speedTester.oncomplete(function(results){
 		if(results.fps > 30){
 			AvalonA('frame-3d', 'avalona-inner-frame').start();
@@ -359,6 +390,7 @@ The **SpeedTester** *(SpeedTester.min.js)* allows you to check system performanc
 			console.warn('Your frame rate is too low, recommended: 30');
 		}
 	});
+```
 
 # <a name="browserCompatibility"></a> Browser compatibility
 - Safari

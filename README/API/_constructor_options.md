@@ -2,9 +2,11 @@
 ## <a name="constructorOptions"></a> Constructor options
 It is possible to pass an object along with the id of the `3d Frame` to set options:
 
-    $(function(){
-        AvalonA('frame-3d', 'avalona-inner-frame', {option: value}).start();
-    });
+``` js
+	$(function(){
+		AvalonA('frame-3d', 'avalona-inner-frame', {option: value}).start();
+	});
+```
 
 ##### *tAttr*
 Changes the name of the attribute used to define layer **transformations**. Default value is `data-avalonA-transform`.
@@ -12,9 +14,11 @@ Changes the name of the attribute used to define layer **transformations**. Defa
 ##### *fy*
 A function that affects the amount of rotation triggered by the mouse movements on the **y axis**.
 
+``` js
 	AvalonA('frame-3d', 'avalona-inner-frame', {fy: function(rotation){
 		return rotation * 2;
 	} }).start();
+```
 
 Default function as no effect on the rotation value.
 
@@ -24,6 +28,7 @@ A function that affects the amount of rotation triggered by the mouse movements 
 ##### *activeArea*
 When available, restrict mouse movements tracking to this area: moving outside the area reset the `transformed layer` rotation.
 
+``` js
 	var options = {
 		activeArea: {
 			position: {
@@ -36,6 +41,7 @@ When available, restrict mouse movements tracking to this area: moving outside t
 		}
 	};
 	AvalonA('frame-3d', 'avalona-inner-frame', options).start();
+```
 
 Enable the `debug` option to display the area *( for development purpose only )*.
 
@@ -74,6 +80,7 @@ Animates the `transformed layer` when mouse is outside the active area *– mean
 
 The `animation` object must have the following api:
 
+``` js
 	animation: {
 
 		play: function(transformedLayer){
@@ -84,6 +91,7 @@ The `animation` object must have the following api:
 			// pause code goes here
 		}
 	}
+```
 
 As the example shows, the `play()` method received as first argument the `transformed layer`, thus one can animate any attribute of this element *– not just the rotation*.
 
