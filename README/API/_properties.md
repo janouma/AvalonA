@@ -4,15 +4,15 @@ Provides all nodes picked up while running `start()` or `refresh()` or `enable()
 It has the following structure:
 
 ``` js
-	{
-		"#<layer-id-1>": <Layer>,
-		"#<layer-id-2>": <Layer>,
-		...
-		".<layer-class-1>": <Layer>[],
-		".<layer-class-2>": <Layer>[],
-		...
-		all: <Layer>[]
-	}
+{
+	"#<layer-id-1>": <Layer>,
+	"#<layer-id-2>": <Layer>,
+	...
+	".<layer-class-1>": <Layer>[],
+	".<layer-class-2>": <Layer>[],
+	...
+	all: <Layer>[]
+}
 ```
 
 The **layers** property references all transformed html elements by their ids *(#layer-id)*, their css classes *(.layer-class)* and

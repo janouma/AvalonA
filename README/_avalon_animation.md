@@ -14,25 +14,25 @@ Note that the **TweenMax** module includes the **TweenLite** one *– see [GSAP]
 *Example 1*
 
 ``` js
-	animation: AvalonAnimation.Balance()
+animation: AvalonAnimation.Balance()
 ```
 
 *Example 2*
 
 ``` js
-	animation: AvalonAnimation.Balance({
-      duration: 0.75,
+animation: AvalonAnimation.Balance({
+  duration: 0.75,
 
-      from:{
-        rx: 30,
-        ry: -30
-      },
+  from:{
+    rx: 30,
+    ry: -30
+  },
 
-      to:{
-        rx: -90,
-        ry: 30
-      }
-    })
+  to:{
+    rx: -90,
+    ry: 30
+  }
+})
 ```
 
 ##### *Options*
@@ -54,17 +54,17 @@ Note that the **TweenMax** module includes the **TweenLite** and **BezierPlugin*
 *Example 1*
 
 ``` js
-	animation: AvalonAnimation.Spotlight()
+animation: AvalonAnimation.Spotlight()
 ```
 
 *Example 2*
 
 ``` js
-	animation: AvalonAnimation.Spotlight({
-      duration: 5,
-      direction: 'ccw',
-      angle: 10
-    })
+animation: AvalonAnimation.Spotlight({
+  duration: 5,
+  direction: 'ccw',
+  angle: 10
+})
 ```
 
 ##### *Options*
@@ -82,11 +82,11 @@ Rotates a layer or a group of layers like electrons around an atom's nucleus.
 ##### *Example*
 
 ``` js
-	animation: AvalonAnimation.Atom({
-      duration: 20,
-      selector: '.electron',
-      axis: ['y','z']
-    })
+animation: AvalonAnimation.Atom({
+  duration: 20,
+  selector: '.electron',
+  axis: ['y','z']
+})
 ```
 
 ##### *Options*

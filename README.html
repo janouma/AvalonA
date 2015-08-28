@@ -45,15 +45,15 @@
 
 <h2 id="anamehtmlahtml"><a name="html"></a> Html</h2>
 
-<pre><code class="html">    &lt;div id=&quot;frame-3d&quot;&gt; &lt;!-- 3d Frame --&gt;
-        &lt;div id=&quot;avalona-inner-frame&quot;&gt; &lt;!-- transformed layer --&gt;
-            &lt;div id=&quot;half-circle&quot; data-avalonA-transform=&quot;z:-300&quot;&gt;&lt;/div&gt;
-                &lt;div id=&quot;square&quot; data-avalonA-transform=&quot;z:75; rx:20.32; ry:5; rz:-10.2&quot;&gt;
-                    &lt;div id=&quot;inner-square&quot; data-avalonA-transform=&quot;z:150&quot;&gt;&lt;/div&gt;
-                &lt;/div&gt;
-            &lt;div id=&quot;circle&quot; data-avalonA-transform=&quot;x:100; y:150; z:200;rx:45&quot;&gt;&lt;/div&gt;
-        &lt;/div&gt;
+<pre><code class="html">&lt;div id=&quot;frame-3d&quot;&gt; &lt;!-- 3d Frame --&gt;
+    &lt;div id=&quot;avalona-inner-frame&quot;&gt; &lt;!-- transformed layer --&gt;
+        &lt;div id=&quot;half-circle&quot; data-avalonA-transform=&quot;z:-300&quot;&gt;&lt;/div&gt;
+            &lt;div id=&quot;square&quot; data-avalonA-transform=&quot;z:75; rx:20.32; ry:5; rz:-10.2&quot;&gt;
+                &lt;div id=&quot;inner-square&quot; data-avalonA-transform=&quot;z:150&quot;&gt;&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;div id=&quot;circle&quot; data-avalonA-transform=&quot;x:100; y:150; z:200;rx:45&quot;&gt;&lt;/div&gt;
     &lt;/div&gt;
+&lt;/div&gt;
 </code></pre>
 
 <p>It is mandatory to have at least the <code>3d Frame</code> and <code>transformed layer</code> defined when <strong>Avalon(A)</strong> initialization occurs. Within the <code>3d Frame</code>, the element div having the id <code>avalona-inner-frame</code> becomes the <code>transformed layer</code>.</p>
@@ -66,9 +66,9 @@
 
 <h2 id="anamescriptascript"><a name="script"></a> Script</h2>
 
-<pre><code class="js">    $(function(){
-        AvalonA('frame-3d', 'avalona-inner-frame').start();
-    });
+<pre><code class="js">$(function(){
+    AvalonA('frame-3d', 'avalona-inner-frame').start();
+});
 </code></pre>
 
 <h1 id="anameapiaapi"><a name="api"></a> API</h1>
@@ -77,9 +77,9 @@
 
 <p>It is possible to pass an object along with the id of the <code>3d Frame</code> to set options:</p>
 
-<pre><code class="js">    $(function(){
-        AvalonA('frame-3d', 'avalona-inner-frame', {option: value}).start();
-    });
+<pre><code class="js">$(function(){
+    AvalonA('frame-3d', 'avalona-inner-frame', {option: value}).start();
+});
 </code></pre>
 
 <h5 id="tattr"><em>tAttr</em></h5>
@@ -90,9 +90,9 @@
 
 <p>A function that affects the amount of rotation triggered by the mouse movements on the <strong>y axis</strong>.</p>
 
-<pre><code class="js">    AvalonA('frame-3d', 'avalona-inner-frame', {fy: function(rotation){
-        return rotation * 2;
-    } }).start();
+<pre><code class="js">AvalonA('frame-3d', 'avalona-inner-frame', {fy: function(rotation){
+    return rotation * 2;
+} }).start();
 </code></pre>
 
 <p>Default function as no effect on the rotation value.</p>
@@ -105,18 +105,18 @@
 
 <p>When available, restrict mouse movements tracking to this area: moving outside the area reset the <code>transformed layer</code> rotation.</p>
 
-<pre><code class="js">    var options = {
-        activeArea: {
-            position: {
-                x: 'auto',
-                y: '15%'
-            },
-            attachment: 'scroll',
-            width: '150px',
-            height: 100
-        }
-    };
-    AvalonA('frame-3d', 'avalona-inner-frame', options).start();
+<pre><code class="js">var options = {
+    activeArea: {
+        position: {
+            x: 'auto',
+            y: '15%'
+        },
+        attachment: 'scroll',
+        width: '150px',
+        height: 100
+    }
+};
+AvalonA('frame-3d', 'avalona-inner-frame', options).start();
 </code></pre>
 
 <p>Enable the <code>debug</code> option to display the area <em>( for development purpose only )</em>.</p>
@@ -169,16 +169,15 @@
 
 <p>The <code>animation</code> object must have the following api:</p>
 
-<pre><code class="js">    animation: {
+<pre><code class="js">animation: {
+    play: function(transformedLayer){
+        // animation code goes here
+    },
 
-        play: function(transformedLayer){
-            // animation code goes here
-        },
-
-        pause: function(){
-            // pause code goes here
-        }
+    pause: function(){
+        // pause code goes here
     }
+}
 </code></pre>
 
 <p>As the example shows, the <code>play()</code> method received as first argument the <code>transformed layer</code>, thus one can animate any attribute of this element <em>– not just the rotation</em>.</p>
@@ -231,15 +230,15 @@ When <strong>target</strong> is provided, only first matching html node get upda
 <p>Provides all nodes picked up while running <code>start()</code> or <code>refresh()</code> or <code>enable()</code> method.
 It has the following structure:</p>
 
-<pre><code class="js">    {
-        &quot;#&lt;layer-id-1&gt;&quot;: &lt;Layer&gt;,
-        &quot;#&lt;layer-id-2&gt;&quot;: &lt;Layer&gt;,
-        ...
-        &quot;.&lt;layer-class-1&gt;&quot;: &lt;Layer&gt;[],
-        &quot;.&lt;layer-class-2&gt;&quot;: &lt;Layer&gt;[],
-        ...
-        all: &lt;Layer&gt;[]
-    }
+<pre><code class="js">{
+    &quot;#&lt;layer-id-1&gt;&quot;: &lt;Layer&gt;,
+    &quot;#&lt;layer-id-2&gt;&quot;: &lt;Layer&gt;,
+    ...
+    &quot;.&lt;layer-class-1&gt;&quot;: &lt;Layer&gt;[],
+    &quot;.&lt;layer-class-2&gt;&quot;: &lt;Layer&gt;[],
+    ...
+    all: &lt;Layer&gt;[]
+}
 </code></pre>
 
 <p>The <strong>layers</strong> property references all transformed html elements by their ids <em>(#layer-id)</em>, their css classes <em>(.layer-class)</em> and
@@ -275,19 +274,19 @@ this one will also end up as a <code>Layer</code> in the <code>layers</code> fie
 
 <p>It is possible to add event listeners like this</p>
 
-<pre><code class="js">    var options = {
-        on: {
-            event: function(){ /* event code goes here */ },
-        }
-    };
-    AvalonA('frame-3d', 'avalona-inner-frame', options).start();
+<pre><code class="js">var options = {
+    on: {
+        event: function(){ /* event code goes here */ },
+    }
+};
+AvalonA('frame-3d', 'avalona-inner-frame', options).start();
 </code></pre>
 
 <p>or this</p>
 
-<pre><code class="js">    var a = AvalonA('frame-3d', 'avalona-inner-frame', options);
-    a.onevent = function(){ /* event code goes here */ };
-    a.start();
+<pre><code class="js">var a = AvalonA('frame-3d', 'avalona-inner-frame', options);
+a.onevent = function(){ /* event code goes here */ };
+a.start();
 </code></pre>
 
 <p>Available events:</p>
@@ -336,24 +335,24 @@ this one will also end up as a <code>Layer</code> in the <code>layers</code> fie
 
 <p><em>Example 1</em></p>
 
-<pre><code class="js">    animation: AvalonAnimation.Balance()
+<pre><code class="js">animation: AvalonAnimation.Balance()
 </code></pre>
 
 <p><em>Example 2</em></p>
 
-<pre><code class="js">    animation: AvalonAnimation.Balance({
-      duration: 0.75,
+<pre><code class="js">animation: AvalonAnimation.Balance({
+  duration: 0.75,
 
-      from:{
-        rx: 30,
-        ry: -30
-      },
+  from:{
+    rx: 30,
+    ry: -30
+  },
 
-      to:{
-        rx: -90,
-        ry: 30
-      }
-    })
+  to:{
+    rx: -90,
+    ry: 30
+  }
+})
 </code></pre>
 
 <h5 id="options"><em>Options</em></h5>
@@ -380,16 +379,16 @@ this one will also end up as a <code>Layer</code> in the <code>layers</code> fie
 
 <p><em>Example 1</em></p>
 
-<pre><code class="js">    animation: AvalonAnimation.Spotlight()
+<pre><code class="js">animation: AvalonAnimation.Spotlight()
 </code></pre>
 
 <p><em>Example 2</em></p>
 
-<pre><code class="js">    animation: AvalonAnimation.Spotlight({
-      duration: 5,
-      direction: 'ccw',
-      angle: 10
-    })
+<pre><code class="js">animation: AvalonAnimation.Spotlight({
+  duration: 5,
+  direction: 'ccw',
+  angle: 10
+})
 </code></pre>
 
 <h5 id="options"><em>Options</em></h5>
@@ -412,11 +411,11 @@ this one will also end up as a <code>Layer</code> in the <code>layers</code> fie
 
 <h5 id="example"><em>Example</em></h5>
 
-<pre><code class="js">    animation: AvalonAnimation.Atom({
-      duration: 20,
-      selector: '.electron',
-      axis: ['y','z']
-    })
+<pre><code class="js">animation: AvalonAnimation.Atom({
+  duration: 20,
+  selector: '.electron',
+  axis: ['y','z']
+})
 </code></pre>
 
 <h5 id="options"><em>Options</em></h5>
@@ -435,21 +434,21 @@ this one will also end up as a <code>Layer</code> in the <code>layers</code> fie
 
 <p><em>Main html document – preferably before loading any other scripts</em></p>
 
-<pre><code class="html">    &lt;script&gt;
-        var speedTester = new SpeedTester(&lt; how many times the test must be run (default 1) &gt;);
-        speedTester.run();
-    &lt;/script&gt;
+<pre><code class="html">&lt;script&gt;
+    var speedTester = new SpeedTester(&lt; how many times the test must be run (default 1) &gt;);
+    speedTester.run();
+&lt;/script&gt;
 </code></pre>
 
 <p><em>Main script – after document as been loaded</em></p>
 
-<pre><code class="js">    speedTester.oncomplete(function(results){
-        if(results.fps &gt; 30){
-            AvalonA('frame-3d', 'avalona-inner-frame').start();
-        }else{
-            console.warn('Your frame rate is too low, recommended: 30');
-        }
-    });
+<pre><code class="js">speedTester.oncomplete(function(results){
+    if(results.fps &gt; 30){
+        AvalonA('frame-3d', 'avalona-inner-frame').start();
+    }else{
+        console.warn('Your frame rate is too low, recommended: 30');
+    }
+});
 </code></pre>
 
 <h1 id="anamebrowsercompatibilityabrowsercompatibility"><a name="browserCompatibility"></a> Browser compatibility</h1>
