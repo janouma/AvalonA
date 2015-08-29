@@ -87,7 +87,7 @@
 
 <h2 id="anamehtmlahtml"><a name="html"></a> Html</h2>
 
-<pre><code>&lt;div id=&quot;frame-3d&quot;&gt; &lt;!-- 3d Frame --&gt;
+<pre><code class="html">&lt;div id=&quot;frame-3d&quot;&gt; &lt;!-- 3d Frame --&gt;
     &lt;div id=&quot;avalona-inner-frame&quot;&gt; &lt;!-- transformed layer --&gt;
         &lt;div id=&quot;half-circle&quot; data-avalonA-transform=&quot;z:-300&quot;&gt;&lt;/div&gt;
             &lt;div id=&quot;square&quot; data-avalonA-transform=&quot;z:75; rx:20.32; ry:5; rz:-10.2&quot;&gt;
@@ -108,7 +108,7 @@
 
 <h2 id="anamescriptascript"><a name="script"></a> Script</h2>
 
-<pre><code>$(function(){
+<pre><code class="js">$(function(){
     AvalonA('frame-3d', 'avalona-inner-frame').start();
 });
 </code></pre>
@@ -119,7 +119,7 @@
 
 <p>It is possible to pass an object along with the id of the <code>3d Frame</code> to set options:</p>
 
-<pre><code>$(function(){
+<pre><code class="js">$(function(){
     AvalonA('frame-3d', 'avalona-inner-frame', {option: value}).start();
 });
 </code></pre>
@@ -132,7 +132,7 @@
 
 <p>A function that affects the amount of rotation triggered by the mouse movements on the <strong>y axis</strong>.</p>
 
-<pre><code>AvalonA('frame-3d', 'avalona-inner-frame', {fy: function(rotation){
+<pre><code class="js">AvalonA('frame-3d', 'avalona-inner-frame', {fy: function(rotation){
     return rotation * 2;
 } }).start();
 </code></pre>
@@ -147,7 +147,7 @@
 
 <p>When available, restrict mouse movements tracking to this area: moving outside the area reset the <code>transformed layer</code> rotation.</p>
 
-<pre><code>var options = {
+<pre><code class="js">var options = {
     activeArea: {
         position: {
             x: 'auto',
@@ -211,8 +211,7 @@ AvalonA('frame-3d', 'avalona-inner-frame', options).start();
 
 <p>The <code>animation</code> object must have the following api:</p>
 
-<pre><code>animation: {
-
+<pre><code class="js">animation: {
     play: function(transformedLayer){
         // animation code goes here
     },
@@ -273,7 +272,7 @@ When <strong>target</strong> is provided, only first matching html node get upda
 <p>Provides all nodes picked up while running <code>start()</code> or <code>refresh()</code> or <code>enable()</code> method.
 It has the following structure:</p>
 
-<pre><code>{
+<pre><code class="js">{
     &quot;#&lt;layer-id-1&gt;&quot;: &lt;Layer&gt;,
     &quot;#&lt;layer-id-2&gt;&quot;: &lt;Layer&gt;,
     ...
@@ -317,7 +316,7 @@ this one will also end up as a <code>Layer</code> in the <code>layers</code> fie
 
 <p>It is possible to add event listeners like this</p>
 
-<pre><code>var options = {
+<pre><code class="js">var options = {
     on: {
         event: function(){ /* event code goes here */ },
     }
@@ -327,7 +326,7 @@ AvalonA('frame-3d', 'avalona-inner-frame', options).start();
 
 <p>or this</p>
 
-<pre><code>var a = AvalonA('frame-3d', 'avalona-inner-frame', options);
+<pre><code class="js">var a = AvalonA('frame-3d', 'avalona-inner-frame', options);
 a.onevent = function(){ /* event code goes here */ };
 a.start();
 </code></pre>
@@ -378,12 +377,12 @@ a.start();
 
 <p><em>Example 1</em></p>
 
-<pre><code>animation: AvalonAnimation.Balance()
+<pre><code class="js">animation: AvalonAnimation.Balance()
 </code></pre>
 
 <p><em>Example 2</em></p>
 
-<pre><code>animation: AvalonAnimation.Balance({
+<pre><code class="js">animation: AvalonAnimation.Balance({
   duration: 0.75,
 
   from:{
@@ -422,12 +421,12 @@ a.start();
 
 <p><em>Example 1</em></p>
 
-<pre><code>animation: AvalonAnimation.Spotlight()
+<pre><code class="js">animation: AvalonAnimation.Spotlight()
 </code></pre>
 
 <p><em>Example 2</em></p>
 
-<pre><code>animation: AvalonAnimation.Spotlight({
+<pre><code class="js">animation: AvalonAnimation.Spotlight({
   duration: 5,
   direction: 'ccw',
   angle: 10
@@ -454,7 +453,7 @@ a.start();
 
 <h5 id="example"><em>Example</em></h5>
 
-<pre><code>animation: AvalonAnimation.Atom({
+<pre><code class="js">animation: AvalonAnimation.Atom({
   duration: 20,
   selector: '.electron',
   axis: ['y','z']
@@ -477,7 +476,7 @@ a.start();
 
 <p><em>Main html document – preferably before loading any other scripts</em></p>
 
-<pre><code>&lt;script&gt;
+<pre><code class="html">&lt;script&gt;
     var speedTester = new SpeedTester(&lt; how many times the test must be run (default 1) &gt;);
     speedTester.run();
 &lt;/script&gt;
@@ -485,7 +484,7 @@ a.start();
 
 <p><em>Main script – after document as been loaded</em></p>
 
-<pre><code>speedTester.oncomplete(function(results){
+<pre><code class="js">speedTester.oncomplete(function(results){
     if(results.fps &gt; 30){
         AvalonA('frame-3d', 'avalona-inner-frame').start();
     }else{
