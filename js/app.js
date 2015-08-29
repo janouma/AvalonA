@@ -62,13 +62,13 @@ require(
 			})
 		});
 
-		//avalona.enable();
+		avalona.enable();
 
 		/********************
 		* Update Avalon (A)
 		* *******************/
 
-		/*Object.create(FrameTimer)
+		Object.create(FrameTimer)
 			.every(300)
 			.run(function updateVortex(){
 				avalona.layers['.black-hole']
@@ -77,7 +77,7 @@ require(
 						layer.ry *= -1;
 						layer.refresh();
 					});
-			});*/
+			});
 
 	}
 );
