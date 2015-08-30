@@ -74,8 +74,8 @@
 	"\/assets\/js\/AvalonA.coffee": {
 		"createSourceMap": 0,
 		"fileType": 32,
-		"ignore": 1,
-		"ignoreWasSetByUser": 0,
+		"ignore": 0,
+		"ignoreWasSetByUser": 1,
 		"inputAbbreviatedPath": "\/assets\/js\/AvalonA.coffee",
 		"minifyOutput": 1,
 		"outputAbbreviatedPath": "\/dist\/AvalonA.js",
