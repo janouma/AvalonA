@@ -1,5 +1,5 @@
-### AvalonA 1.0.0 ###
-console.log '%cAvalonA 1.0.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
+### AvalonA 1.1.0 ###
+console.log '%cAvalonA 1.1.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
 
 defineAvalonA = (TweenLite)->
 	# @codekit-prepend 'ActiveArea'
@@ -277,13 +277,23 @@ defineAvalonA = (TweenLite)->
 			if (attrValue = target.getAttribute @transformAttribute)
 				transforms = {};
 
-				for t in attrValue.split(';')
+				for t in attrValue.split(';') when t.trim()
 					[prop, value] = t.split(':');
-					transforms[prop.trim()] = parseInt value.trim(), 10
+					transforms[prop.trim()] = parseFloat value.trim(), 10
 
-				{x:x, y:y, z:z, rx:rx, ry:ry, rz:rz} = transforms
+				{
+					x: x
+					y: y
+					z: z
+					rx: rx
+					ry: ry
+					rz: rz
+					ox: ox
+					oy: oy
+					oz: oz
+				} = transforms
 
-				if x or y or z or rx or ry or rz
+				if x or y or z or rx or ry or rz or ox or oy or oz
 					css = {}
 					css.x = x if x
 					css.y = y if y
@@ -291,6 +301,12 @@ defineAvalonA = (TweenLite)->
 					css.rotationX = rx if rx
 					css.rotationY = ry if ry
 					css.rotationZ = rz if rz
+
+					transformOrigin = []
+					for o in [oz,oy,ox] when o? or transformOrigin.length > 0
+						transformOrigin.unshift("#{100 * (o or 0.5)}%")
+
+					css.transformOrigin = transformOrigin.join(' ') if transformOrigin.length > 0
 
 					TweenLite.to(
 						target

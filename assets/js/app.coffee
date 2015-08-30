@@ -114,6 +114,9 @@ window.onload = ->
 					rx	: Math.random() * 360
 					ry	: Math.random() * 360
 					rz	: Math.random() * 360
+					ox	: Math.random()
+					oy	: Math.random()
+					oz	: Math.random()
 				)
 
 			do frame3d.refreshTransform
@@ -126,6 +129,9 @@ window.onload = ->
 					y	: Math.round(Math.random() * 400 - 200)
 					z	: Math.round(Math.random() * 400 - 200)
 					rz	: Math.random() * 360
+					ox	: Math.random()
+					oy	: Math.random()
+					oz	: Math.random()
 				)
 
 			do frame3d2.refreshTransform
@@ -147,6 +153,9 @@ window.onload = ->
 				y	: Math.round(Math.random() * 400 - 200)
 				z	: Math.round(Math.random() * 400 - 200)
 				rz	: Math.random() * 360
+				ox	: Math.random()
+				oy	: Math.random()
+				oz	: Math.random()
 			)
 
 			layerCursor = (layerCursor + 1) % layers.length

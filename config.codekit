@@ -74,10 +74,10 @@
 	"\/assets\/js\/AvalonA.coffee": {
 		"createSourceMap": 0,
 		"fileType": 32,
-		"ignore": 0,
-		"ignoreWasSetByUser": 1,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
 		"inputAbbreviatedPath": "\/assets\/js\/AvalonA.coffee",
-		"minifyOutput": 0,
+		"minifyOutput": 1,
 		"outputAbbreviatedPath": "\/dist\/AvalonA.js",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 1,
@@ -569,22 +569,14 @@
 			},
 		{
 			"followForSyntaxChecking": 1,
-			"linkedFileAbbreviatedPath": "\/assets\/js\/AvalonA.coffee",
+			"linkedFileAbbreviatedPath": "\/assets\/js\/AvalonAnimation.coffee",
 			"position": 1,
 			"type": 0
 			},
 		{
 			"followForSyntaxChecking": 1,
-			"linkedFileAbbreviatedPath": "\/assets\/js\/AvalonAnimation.coffee",
-			"position": 2,
-			"type": 0
-			}
-		],
-	"\/assets\/js\/AvalonA.min.coffee": [
-		{
-			"followForSyntaxChecking": 1,
 			"linkedFileAbbreviatedPath": "\/assets\/js\/AvalonA.coffee",
-			"position": 0,
+			"position": 2,
 			"type": 0
 			}
 		],
