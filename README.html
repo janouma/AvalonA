@@ -1,6 +1,6 @@
 <h1 id="avalona—bringdeepnesstoyourwebapps">Avalon(A) — Bring deepness to your web apps</h1>
 
-<p><em>version: 1.0.0</em></p>
+<p><em>version: 1.1.0</em></p>
 
 <p><strong>Avalon(A)</strong> allows you to easily add 3d to a set of html elements to simulate a deepness effect <em>(<a href="http://jsfiddle.net/K3kPx/9/show">see jsFiddle preview</a>)</em>. To make this 3d effect noticeable, all html elements pertaining to the <code>transformed layer</code> <em>(basically the root container to which the 3d effect get applied to)</em> - rotate on their x and y axis according to mouse movements.</p>
 
@@ -47,7 +47,7 @@
 
 <pre><code class="html">&lt;div id=&quot;frame-3d&quot;&gt; &lt;!-- 3d Frame --&gt;
     &lt;div id=&quot;avalona-inner-frame&quot;&gt; &lt;!-- transformed layer --&gt;
-        &lt;div id=&quot;half-circle&quot; data-avalonA-transform=&quot;z:-300&quot;&gt;&lt;/div&gt;
+        &lt;div id=&quot;half-circle&quot; data-avalonA-transform=&quot;ox: 0.5; oy: 0.35; z:-300&quot;&gt;&lt;/div&gt;
             &lt;div id=&quot;square&quot; data-avalonA-transform=&quot;z:75; rx:20.32; ry:5; rz:-10.2&quot;&gt;
                 &lt;div id=&quot;inner-square&quot; data-avalonA-transform=&quot;z:150&quot;&gt;&lt;/div&gt;
             &lt;/div&gt;
@@ -60,7 +60,7 @@
 
 <p><code>data-avalonA-transform</code> attribute value has the following structure:</p>
 
-<p><strong>z: z translation; rx: x rotation; ry: y rotation; rz: z rotation</strong></p>
+<p><strong>x: x translation; y: y translation; z: z translation; rx: x rotation; ry: y rotation; rz: z rotation; ox: x origin transform; oy: y origin transform; oz: z origin transform</strong></p>
 
 <p>All properties are optional.</p>
 
@@ -256,6 +256,9 @@ all elements are also referenced under <code>all</code>, including those not hav
 <li><code>rx</code> – get/set the rotateX style of the node</li>
 <li><code>ry</code> – get/set the rotateY style of the node</li>
 <li><code>rz</code> – get/set the rotateZ style of the node</li>
+<li><code>ox</code> – get/set the x origin transform style of the node</li>
+<li><code>oy</code> – get/set the y origin transform style of the node</li>
+<li><code>oz</code> – get/set the z origin transform style of the node</li>
 </ul>
 
 <p>The node style get updated – <em>according to the x, y, z, &#8230; getter/setter</em> – only after calling either

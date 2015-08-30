@@ -29,6 +29,9 @@ The `Layer` instance has the following properties:
 - `rx` – get/set the rotateX style of the node
 - `ry` – get/set the rotateY style of the node
 - `rz` – get/set the rotateZ style of the node
+- `ox` – get/set the x origin transform style of the node
+- `oy` – get/set the y origin transform style of the node
+- `oz` – get/set the z origin transform style of the node
 
 The node style get updated – *according to the x, y, z, ... getter/setter* – only after calling either
 `refreshTransform` method *([see `refreshTransform()`](#refreshTransform))* or `<Layer>.refresh()`.

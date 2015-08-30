@@ -580,6 +580,14 @@
 			"type": 0
 			}
 		],
+	"\/assets\/js\/AvalonA.min.coffee": [
+		{
+			"followForSyntaxChecking": 1,
+			"linkedFileAbbreviatedPath": "\/assets\/js\/AvalonA.coffee",
+			"position": 0,
+			"type": 0
+			}
+		],
 	"\/assets\/js\/AvalonAnimation.min.coffee": [
 		{
 			"followForSyntaxChecking": 1,

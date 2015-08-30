@@ -32,7 +32,7 @@
 ```html
 <div id="frame-3d"> <!-- 3d Frame -->
     <div id="avalona-inner-frame"> <!-- transformed layer -->
-        <div id="half-circle" data-avalonA-transform="z:-300"></div>
+        <div id="half-circle" data-avalonA-transform="ox: 0.5; oy: 0.35; z:-300"></div>
             <div id="square" data-avalonA-transform="z:75; rx:20.32; ry:5; rz:-10.2">
                 <div id="inner-square" data-avalonA-transform="z:150"></div>
             </div>
@@ -45,7 +45,7 @@ It is mandatory to have at least the `3d Frame` and `transformed layer` defined 
 
 `data-avalonA-transform` attribute value has the following structure:
 
-**z: z translation; rx: x rotation; ry: y rotation; rz: z rotation**
+**x: x translation; y: y translation; z: z translation; rx: x rotation; ry: y rotation; rz: z rotation; ox: x origin transform; oy: y origin transform; oz: z origin transform**
 
 All properties are optional.
 
@@ -215,6 +215,9 @@ The `Layer` instance has the following properties:
 - `rx` – get/set the rotateX style of the node
 - `ry` – get/set the rotateY style of the node
 - `rz` – get/set the rotateZ style of the node
+- `ox` – get/set the x origin transform style of the node
+- `oy` – get/set the y origin transform style of the node
+- `oz` – get/set the z origin transform style of the node
 
 The node style get updated – *according to the x, y, z, ... getter/setter* – only after calling either
 `refreshTransform` method *([see `refreshTransform()`](#refreshTransform))* or `<Layer>.refresh()`.
