@@ -1,1 +1,977 @@
-(function(){var t,e,i,r,o,n=[].indexOf||function(t){for(var e=0,i=this.length;i>e;e++)if(e in this&&this[e]===t)return e;return-1},s=function(t,e){return function(){return t.apply(e,arguments)}};t=function(){function t(t){var e,i;if(this.area=t,!this.area)throw new Error("area argument is missing");this.position=this.area.position||"auto","object"==typeof this.position&&(null==(e=this.position).x&&(e.x="auto"),null==(i=this.position).y&&(i.y="auto"),"auto"===this.position.x&&"auto"===this.position.y&&(this.position="auto")),this.attachment=this.area.attachment||"fixed",this.assertValid(),this.processActiveArea()}var e,i;return e=/^\d+(%|px)?$/gi,i=function(t){var i;return e.lastIndex=0,i=e.test(t),e.lastIndex=0,i},t.prototype.assertValid=function(){var t,e;if(t=["The following validation errors occured:"],"object"!=typeof this.position?"auto"!==this.position&&t.push("area.position is not valid ("+this.position+")"):("auto"===this.position.x||i(this.position.x)||t.push("area.position.x is not valid ("+this.position.x+"})"),"auto"===this.position.y||i(this.position.y)||t.push("area.position.y is not valid ("+this.position.y+"})")),"fixed"!==(e=this.attachment)&&"scroll"!==e&&t.push("area.attachment is not valid ("+this.attachment+")"),i(this.area.width)||t.push("area.width is not valid ("+this.area.width+")"),i(this.area.height)||t.push("area.height is not valid ("+this.area.height+")"),t.length>1)throw new Error(t.join("\n"))},t.prototype.processActiveArea=function(){return this.width=parseInt(this.area.width,10),this.widthIsFluid="%"===e.exec(this.area.width)[1],e.lastIndex=0,this.height=parseInt(this.area.height,10),this.heightIsFluid="%"===e.exec(this.area.height)[1],e.lastIndex=0,"object"==typeof this.position&&("auto"!==this.position.x&&(this.x=parseInt(this.position.x,10)),"auto"!==this.position.y)?this.y=parseInt(this.position.y,10):void 0},t.prototype.init=function(t){var e,i,r,o,n,s,a;if(this.frame=t,!this.frame)throw new Error("frame argument cannot be null");return this.xBase=(s=this.getXBaseComputation())(),this.yBase=(a=this.getYBaseComputation())(),this.widthIsFluid?this.xMaxComputation=function(){return this.xMin+this.width/100*parseInt(getComputedStyle(this.frame).width,10)}:this.xMaxComputation=function(){return this.xMin+this.width},this.heightIsFluid?this.yMaxComputation=function(){return this.yMin+this.height/100*parseInt(getComputedStyle(this.frame).height,10)}:this.yMaxComputation=function(){return this.yMin+this.height},"fixed"===this.attachment?(this.xPadding=this.frame.scrollLeft,this.yPadding=this.frame.scrollTop,this.debug===!0?(console.log("Listen to scroll event"),o=this,r=function(){return console.log("Scroll : @xPadding = "+o.xPadding+", @yPadding = "+o.yPadding)}):r=function(){},n=0,window.addEventListener("scroll",function(t){return function(){return++n%5>0?void 0:(t.xPadding=window.pageXOffset,t.yPadding=window.pageYOffset,t.refreshBounds(),r())}}(this),!1),e=0,this.frame.addEventListener("scroll",function(t){return function(){return++e%5>0?void 0:(t.xPadding=t.frame.scrollLeft,t.yPadding=t.frame.scrollTop,t.refreshBounds(),r())}}(this),!1)):this.xPadding=this.yPadding=0,this.debug===!0?(o=this,i=function(){return console.log("Resize : @frame.style.width = "+getComputedStyle(o.frame).width+", @frame.style.height = "+getComputedStyle(o.frame).height)}):i=function(){},window.addEventListener("resize",function(t){return function(){return t.xBase=s(),t.yBase=a(),t.refreshBounds(),i()}}(this),!1),this.refreshBounds()},t.prototype.refreshBounds=function(){return this.xMin=this.xBase+this.xPadding,this.xMax=this.xMaxComputation(),this.yMin=this.yBase+this.yPadding,this.yMax=this.yMaxComputation()},t.prototype.bounds=function(){return{xMin:this.xMin,xMax:this.xMax,yMin:this.yMin,yMax:this.yMax}},t.prototype.getXBaseComputation=function(){var t,i;return t=parseInt(getComputedStyle(this.frame).width,10),this.position.x&&"auto"!==this.position.x?(i="%"===e.exec(this.position.x)[1]?function(e){return function(){return e.x/100*t}}(this):function(t){return function(){return t.x}}(this),e.lastIndex=0):i=this.widthIsFluid?function(e){return function(){return(50-e.width/2)/100*t}}(this):function(e){return function(){return t/2-e.width/2}}(this),i},t.prototype.getYBaseComputation=function(){var t,i;return t=parseInt(getComputedStyle(this.frame).height,10),this.position.y&&"auto"!==this.position.y?(i="%"===e.exec(this.position.y)[1]?function(e){return function(){return e.y/100*t}}(this):function(t){return function(){return t.y}}(this),e.lastIndex=0):i=this.heightIsFluid?function(e){return function(){return(50-e.height/2)/100*t}}(this):function(e){return function(){return t/2-e.height/2}}(this),i},t.prototype.mouseover=function(t){var e,i;return this.xMin<=(e=t.pageX)&&e<=this.xMax&&this.yMin<=(i=t.pageY)&&i<=this.yMax},t}(),i=function(){function t(){}return t.prototype.register=function(t){return"function"==typeof t?(null!=this._listeners?this._listeners:this._listeners=[]).push(t):void 0},t.prototype.unregister=function(t){var e;return!this._listeners||(e=this._listeners.indexOf(t),0>e)?void 0:this._listeners.splice(e,1)},t.prototype.clear=function(){return this._listener=void 0},t.prototype.send=function(t,e){var i,r,o,n,s,a;if(this._listeners){for(a={},n=this._listeners,s=[],i=0,r=n.length;r>i;i++)o=n[i],s.push(o.call(a,t,e));return s}},t}(),e=function(){function t(t,e){var r;this.node=t,this._transformAttribute=e,this.node.id&&(this.id=this.node.id),this.node.className&&(this.classes=function(){var t,e,i,o;for(i=this.node.className.split(/\s+/g),o=[],t=0,e=i.length;e>t;t++)r=i[t],o.push(r);return o}.call(this)),this.on={refresh:new i}}var e,r,o,s,a;for(t.properties=["x","y","z","rx","ry","rz","ox","oy","oz"],a=t.properties,e=function(e){var i;return i=new RegExp("\\b"+e+"\\s*:\\s*(-?\\d+(\\.\\d+)?)\\b"),Object.defineProperty(t.prototype,e,{get:function(){var t,r,o;return r=this.node.getAttribute(this._transformAttribute),o=parseFloat(null!=(t=i.exec(r))?t[1].trim():void 0,10),isNaN(o)?"o"!==e[0]?0:.5:o},set:function(t){var r,o,n;if(o=parseFloat(t,10),isNaN(o))throw"[Layer] - set "+e+" - value ("+t+") is not valid";return n=this.node.getAttribute(this._transformAttribute).trim(),i.test(n)?r=n.replace(i,e+":"+o):(r=e+":"+o,n&&(r=n+"; "+r)),this.node.setAttribute(this._transformAttribute,r)}})},r=0,o=a.length;o>r;r++)s=a[r],e(s);return t.prototype.refresh=function(){return this.on.refresh.send(this)},t.prototype.transform=function(e){var i,r;i=[];for(s in e)r=e[s],n.call(t.properties,s)>=0&&i.push(this[s]=r);return i},t}(),console.log("%cAvalonA 1.1.0","font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;"),r=function(i){var r;return r=function(){function r(t,e,i){if(this.frameId=t,this.layerId=e,null==i&&(i={}),this.refreshChildTransform=s(this.refreshChildTransform,this),this.stopRotation=s(this.stopRotation,this),this.mousemove=s(this.mousemove,this),this.mouseout=s(this.mouseout,this),!this.frameId)throw new Error("frameId argument cannot be null");if(!this.layerId)throw new Error("layerId argument cannot be null");this.debug=i.debug,a(),this.debug===!0&&console.log("transformStyleIsSupported: "+f),f?this.init(i):this.flatten=this.disableRotationEvent=this.disable=this.start=this.enable=this.refresh=this.applyTransformOn=this.refreshChildTransform=this.refreshTransform=this.untrackMouseMovements=this.trackMouseMovements=this.addPerspective=this.removePerspective=function(){}}var o,n,a,h,u,f,l;return l=.75,u=function(t){return t},f=void 0,o="data-css-backup",a=function(){var t;return void 0===f&&(t=document.createElement("b"),t.id="avalona-detection-element",t.style.position="absolute",t.style.top=0,t.style.left=0,document.body.appendChild(t),t.style.webkitTransformStyle="preserve-3d",t.style.MozTransformStyle="preserve-3d",t.style.msTransformStyle="preserve-3d",t.style.transformStyle="preserve-3d",f="preserve-3d"===h(t),document.body.removeChild(t)),f},h=function(t){var e;return e=getComputedStyle(t,null),e.getPropertyValue("-webkit-transform-style")||e.getPropertyValue("-moz-transform-style")||e.getPropertyValue("-ms-transform-style")||e.getPropertyValue("transform-style")},n=function(t){return t.tagName+"("+(t.id||t.getAttribute("class")||t.getAttribute("href"))+")"},r.prototype.find3dFrames=function(){if(this.frame=document.getElementById(this.frameId),this.transformedLayer=this.frame.querySelector("#"+this.layerId),this.debug===!0&&(console.log("@transformAttribute: "+this.transformAttribute),console.log("@layerId: "+this.layerId)),!this.frame)throw new Error("Cannot find 3d frame '#"+this.frameId+"' in dom");if(!this.transformedLayer)throw new Error("Cannot find 3d inner frame '#"+this.frameId+" > #"+this.layerId+"' in dom")},r.prototype.addPerspective=function(){return i.set(this.transformedLayer,{css:{perspective:1e3}})},r.prototype.removePerspective=function(){return i.set(this.transformedLayer,{css:{perspective:"none"}})},r.prototype.trackMouseMovements=function(){var t,e,i,r,o;if(this.debug===!0&&this.activeArea){e="avalona-active-area",t=document.getElementById(e)||document.createElement("div"),t.textContent="AvalonA Active Area",t.id=e,i={"background-color":"hotpink",opacity:.5,"pointer-events":"none",position:"absolute",visibility:"hidden","z-index":1e4};for(r in i)o=i[r],t.style.setProperty(r,o);document.body.appendChild(t),this.debugMouseMove=function(){var e,i,n;console.log("rotationX: "+this.rotationX+", rotationY: "+this.rotationY),e=this.activeArea.bounds(),i={visibility:"visible",left:e.xMin+"px",top:e.yMin+"px",width:e.xMax-e.xMin+"px",height:e.yMax-e.yMin+"px"},n=[];for(r in i)o=i[r],n.push(t.style.setProperty(r,o));return n}}else this.debugMouseMove=function(){};return this.activeArea?this.activeArea.init(this.frame):this.frame.addEventListener("mouseleave",function(t){return t.target.id===this.frameId?this.mouseout():void 0},!1),this.frame.addEventListener("mousemove",this.mousemove,!1)},r.prototype.mouseout=function(){return this.disableRotation()},r.prototype.mouseMoveCount=0,r.prototype.mousemove=function(t){return++this.mouseMoveCount%5>0?void 0:!this.activeArea||this.activeArea.mouseover(t)?(this.onrotation(),this.rotationY=(t.pageX-window.innerWidth/2)/25,this.rotationX=-1*(t.pageY-window.innerHeight/2)/15,this.debugMouseMove(),i.to(this.transformedLayer,.1,{css:{rotationX:this.fy(this.rotationX),rotationY:this.fx(this.rotationY)}})):this.disableRotation()},r.prototype.onrotation=function(){var t;return clearTimeout(this.rotationTimeoutId),this.rotating||(null!=(t=this.animation)&&t.pause(),"function"==typeof this.onstartrotation&&this.onstartrotation(),this.rotating=!0),this.idleTimeout>0?this.rotationTimeoutId=setTimeout(this.stopRotation,this.idleTimeout):void 0},r.prototype.stopRotation=function(){var t;return clearTimeout(this.rotationTimeoutId),this.rotating?(this.rotating=!1,"function"==typeof this.onendrotation&&this.onendrotation(),null!=(t=this.animation)?t.play():void 0):void 0},r.prototype.disableRotation=function(t){return null==t&&(t=1),(this.rotationX||this.rotationY)&&null==this.animation&&this.resetRotation(t),this.stopRotation()},r.prototype.resetRotation=function(t){return null==t&&(t=1),clearTimeout(this.rotationTimeoutId),this.rotationX=this.rotationY=0,i.to(this.transformedLayer,t,{css:{rotationX:0,rotationY:0}})},r.prototype.resetTransform=function(){var t,e,i,r;clearTimeout(this.rotationTimeoutId),this.rotationX=this.rotationY=0,t={"-webkit-transform":"none","-moz-transform":"none","-o-transform":"none","-ms-transform":"none",transform:"none"},e=[];for(i in t)r=t[i],e.push(this.transformedLayer.style.setProperty(i,r));return e},r.prototype.untrackMouseMovements=function(){var t,e;return null!=(t=this.frame)&&t.removeEventListener("mousemove",this.mousemove),null!=(e=this.frame)?e.removeEventListener("mouseleave",this.mouseout):void 0},r.prototype.refreshTransform=function(t){var i,r,o,s,a,h,u,f,l,d,p,m,c,y,g,v,b,x;if(this.disabled!==!0){for("string"==typeof t&&(t=t.trim()),s=!t||t===this.transformedLayer,null==t&&(t=this.transformedLayer),b="string"==typeof t?this.transformedLayer.querySelector(t):t,this.debug===!0&&console.log("rootNode: "+n(b)),this.applyTransformOn(b),this.debug===!0&&console.log("refreshTransform firstChild: "+n(b.firstElementChild)),l={all:[]},c=b.children,a=0,d=c.length;d>a;a++)i=c[a],x=this.refreshChildTransform(i),x&&(y=l.all).push.apply(y,x);if(!s&&b.getAttribute(this.transformAttribute)&&(l.root=new e(b,this.transformAttribute),l.all.push(l.root)),s)for(this.layers=l,g=l.all,h=0,p=g.length;p>h;h++)if(f=g[h],f.id&&(l["#"+f.id]=f),f.registered||(f.registered=!0,f.on.refresh.register(function(t){return function(e){return t.refreshTransform(e.node)}}(this))),f.classes)for(v=f.classes,u=0,m=v.length;m>u;u++)o=v[u],r="."+o,null==l[r]&&(l[r]=[]),l[r].push(f);return l}},r.prototype.refreshChildTransform=function(t){if(!t)throw new Error("refreshChildTransform child argument cannot be null");return t.querySelectorAll("["+this.transformAttribute+"]").length?(this.debug===!0&&console.log("refreshTransform child "+n(t)+" has children"),this.refreshTransform(t).all):(t.getAttribute(this.transformAttribute)&&(this.debug===!0&&console.log("refreshTransform child "+n(t)+" has '"+this.transformAttribute+"'"),this.applyTransformOn(t)),t.getAttribute(this.transformAttribute)?[new e(t,this.transformAttribute)]:void 0)},r.prototype.applyTransformOn=function(t){var e,r,n,s,a,u,f,d,p,m,c,y,g,v,b,x,w,A,M,T,I,C,P,E,L,S,B;if(!t)throw new Error("applyTransformOn target argument cannot be null");if(t.getAttribute(o)||(T=getComputedStyle(t),r={transformStyle:h(t)||"flat",overflow:T.overflow||"inherit"},I=T.getPropertyValue("-webkit-transform")||T.getPropertyValue("-moz-transform")||T.getPropertyValue("-o-transform")||T.getPropertyValue("-ms-transform")||T.getPropertyValue("transform"),I&&(r.transform=I),t.setAttribute(o,JSON.stringify(r))),i.set(t,{css:{transformStyle:"preserve-3d",overflow:"visible"}}),e=t.getAttribute(this.transformAttribute)){for(P={},g=e.split(";"),s=0,u=g.length;u>s;s++)M=g[s],M.trim()&&(v=M.split(":"),y=v[0],E=v[1],P[y.trim()]=parseFloat(E.trim(),10));if(L=P.x,S=P.y,B=P.z,x=P.rx,w=P.ry,A=P.rz,p=P.ox,m=P.oy,c=P.oz,L||S||B||x||w||A||p||m||c){for(n={},L&&(n.x=L),S&&(n.y=S),B&&(n.z=B),x&&(n.rotationX=x),w&&(n.rotationY=w),A&&(n.rotationZ=A),C=[],b=[c,m,p],a=0,f=b.length;f>a;a++)d=b[a],(null!=d||C.length>0)&&C.unshift(100*(d||.5)+"%");return C.length>0&&(n.transformOrigin=C.join(" ")),i.to(t,l,{css:n})}}},r.prototype.refresh=function(){var t,e,i,r;if(this.disabled=!1,!this.ready){try{"function"==typeof this.onready&&this.onready()}catch(o){t=o,console.error("AvalonA - refresh - Error occured on ready",t)}this.ready=!0}return this.frame&&(this.untrackMouseMovements(),null!=(i=this.animation)&&i.pause()),this.find3dFrames(),this.addPerspective(),e=this.refreshTransform(),this.trackMouseMovements(),"function"==typeof this.onrefresh&&this.onrefresh(),null!=(r=this.animation)&&r.play(this.transformedLayer,this.transformAttribute),e},r.prototype.start=function(){return this.refresh()},r.prototype.enable=function(){return this.refresh()},r.prototype.disable=function(){var t;return this.frame&&(this.untrackMouseMovements(),this.disableRotationEvent(),null!=(t=this.animation)&&t.pause(),this.flatten(),this.removePerspective()),this.disabled=!0},r.prototype.disableRotationEvent=function(){return clearTimeout(this.rotationTimeoutId),this.rotating=!1,"function"==typeof this.onendrotation?this.onendrotation():void 0},r.prototype.flatten=function(){var t,e,r,s,a,h;for(this.resetTransform(),a=this.transformedLayer.querySelectorAll("["+o+"]"),h=[],e=0,r=a.length;r>e;e++)s=a[e],this.debug===!0&&console.log("flattening layer '"+n(s)+"'"),t=JSON.parse(s.getAttribute(o)),h.push(i.set(s,{css:t}));return h},r.prototype.init=function(e){var i,r,o,n;return this.transformAttribute=e.tAttr||"data-avalonA-transform",this.fx="function"==typeof e.fx?e.fx:u,this.fy="function"==typeof e.fy?e.fy:u,e.activeArea&&(this.activeArea=new t(e.activeArea)),null!=(i=this.activeArea)&&(i.debug=this.debug),this.onstartrotation=null!=(r=e.on)?r.startrotation:void 0,this.onendrotation=null!=(o=e.on)?o.endrotation:void 0,this.onready=null!=(n=e.on)?n.ready:void 0,this.onrefresh=e.on&&(e.on.refresh||e.on.enable||e.on.start),this.animation=e.animation,this.idleTimeout=parseInt(e.idleTimeout||1e3,10),this.animation&&this.assertAnimatorValid(),Object.defineProperties(this,{onenable:{get:function(){return this.onrefresh},set:function(t){return this.onrefresh=t}},onstart:{get:function(){return this.onrefresh},set:function(t){return this.onrefresh=t}}})},r.prototype.assertAnimatorValid=function(){if(!this.animation.play||"function"!=typeof this.animation.play)throw new Error("animation.play must be a function");if(!this.animation.pause||"function"!=typeof this.animation.pause)throw new Error("animation.pause must be a function")},r}(),function(t,e,i){return new r(t,e,i)}},"function"==typeof define&&define.amd?define("AvalonA",["tweenlite"],function(t){return r(t)}):window.AvalonA=r((null!=(o=window.GreenSockGlobals)?o.TweenLite:void 0)||TweenLite)}).call(this);
+// Generated by CoffeeScript 1.9.3
+(function() {
+  var ActiveArea, Layer, Signal, defineAvalonA, ref,
+    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
+    bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
+  ActiveArea = (function() {
+    var dimensionPattern, validDimension;
+
+    dimensionPattern = /^\d+(%|px)?$/gi;
+
+    validDimension = function(dimension) {
+      var result;
+      dimensionPattern.lastIndex = 0;
+      result = dimensionPattern.test(dimension);
+      dimensionPattern.lastIndex = 0;
+      return result;
+    };
+
+    ActiveArea.prototype.assertValid = function() {
+      var errors, ref;
+      errors = ['The following validation errors occured:'];
+      if (typeof this.position !== 'object') {
+        if (this.position !== 'auto') {
+          errors.push("area.position is not valid (" + this.position + ")");
+        }
+      } else {
+        if (this.position.x !== 'auto' && !validDimension(this.position.x)) {
+          errors.push("area.position.x is not valid (" + this.position.x + "})");
+        }
+        if (this.position.y !== 'auto' && !validDimension(this.position.y)) {
+          errors.push("area.position.y is not valid (" + this.position.y + "})");
+        }
+      }
+      if ((ref = this.attachment) !== 'fixed' && ref !== 'scroll') {
+        errors.push("area.attachment is not valid (" + this.attachment + ")");
+      }
+      if (!validDimension(this.area.width)) {
+        errors.push("area.width is not valid (" + this.area.width + ")");
+      }
+      if (!validDimension(this.area.height)) {
+        errors.push("area.height is not valid (" + this.area.height + ")");
+      }
+      if (errors.length > 1) {
+        throw new Error(errors.join("\n"));
+      }
+    };
+
+    ActiveArea.prototype.processActiveArea = function() {
+      this.width = parseInt(this.area.width, 10);
+      this.widthIsFluid = dimensionPattern.exec(this.area.width)[1] === '%';
+      dimensionPattern.lastIndex = 0;
+      this.height = parseInt(this.area.height, 10);
+      this.heightIsFluid = dimensionPattern.exec(this.area.height)[1] === '%';
+      dimensionPattern.lastIndex = 0;
+      if (typeof this.position === 'object') {
+        if (this.position.x !== 'auto') {
+          this.x = parseInt(this.position.x, 10);
+        }
+        if (this.position.y !== 'auto') {
+          return this.y = parseInt(this.position.y, 10);
+        }
+      }
+    };
+
+    ActiveArea.prototype.init = function(frame) {
+      var frameScrollCount, resizeDebugCode, scrollDebugCode, self, windowScrollCount, xBaseComputation, yBaseComputation;
+      this.frame = frame;
+      if (!this.frame) {
+        throw new Error("frame argument cannot be null");
+      }
+      this.xBase = (xBaseComputation = this.getXBaseComputation())();
+      this.yBase = (yBaseComputation = this.getYBaseComputation())();
+      if (this.widthIsFluid) {
+        this.xMaxComputation = function() {
+          return this.xMin + (this.width / 100) * parseInt(getComputedStyle(this.frame).width, 10);
+        };
+      } else {
+        this.xMaxComputation = function() {
+          return this.xMin + this.width;
+        };
+      }
+      if (this.heightIsFluid) {
+        this.yMaxComputation = function() {
+          return this.yMin + (this.height / 100) * parseInt(getComputedStyle(this.frame).height, 10);
+        };
+      } else {
+        this.yMaxComputation = function() {
+          return this.yMin + this.height;
+        };
+      }
+      if (this.attachment === 'fixed') {
+        this.xPadding = this.frame.scrollLeft;
+        this.yPadding = this.frame.scrollTop;
+        if (this.debug === true) {
+          console.log("Listen to scroll event");
+          self = this;
+          scrollDebugCode = function() {
+            return console.log("Scroll : @xPadding = " + self.xPadding + ", @yPadding = " + self.yPadding);
+          };
+        } else {
+          scrollDebugCode = function() {};
+        }
+        windowScrollCount = 0;
+        window.addEventListener('scroll', (function(_this) {
+          return function() {
+            if (++windowScrollCount % 5 > 0) {
+              return;
+            }
+            _this.xPadding = window.pageXOffset;
+            _this.yPadding = window.pageYOffset;
+            _this.refreshBounds();
+            return scrollDebugCode();
+          };
+        })(this), false);
+        frameScrollCount = 0;
+        this.frame.addEventListener('scroll', (function(_this) {
+          return function() {
+            if (++frameScrollCount % 5 > 0) {
+              return;
+            }
+            _this.xPadding = _this.frame.scrollLeft;
+            _this.yPadding = _this.frame.scrollTop;
+            _this.refreshBounds();
+            return scrollDebugCode();
+          };
+        })(this), false);
+      } else {
+        this.xPadding = this.yPadding = 0;
+      }
+      if (this.debug === true) {
+        self = this;
+        resizeDebugCode = function() {
+          return console.log("Resize : @frame.style.width = " + (getComputedStyle(self.frame).width) + ", @frame.style.height = " + (getComputedStyle(self.frame).height));
+        };
+      } else {
+        resizeDebugCode = function() {};
+      }
+      window.addEventListener('resize', (function(_this) {
+        return function() {
+          _this.xBase = xBaseComputation();
+          _this.yBase = yBaseComputation();
+          _this.refreshBounds();
+          return resizeDebugCode();
+        };
+      })(this), false);
+      return this.refreshBounds();
+    };
+
+    ActiveArea.prototype.refreshBounds = function() {
+      this.xMin = this.xBase + this.xPadding;
+      this.xMax = this.xMaxComputation();
+      this.yMin = this.yBase + this.yPadding;
+      return this.yMax = this.yMaxComputation();
+    };
+
+    ActiveArea.prototype.bounds = function() {
+      return {
+        xMin: this.xMin,
+        xMax: this.xMax,
+        yMin: this.yMin,
+        yMax: this.yMax
+      };
+    };
+
+    ActiveArea.prototype.getXBaseComputation = function() {
+      var frameWidth, xBaseComputation;
+      frameWidth = parseInt(getComputedStyle(this.frame).width, 10);
+      if (this.position.x && this.position.x !== 'auto') {
+        if (dimensionPattern.exec(this.position.x)[1] === '%') {
+          xBaseComputation = (function(_this) {
+            return function() {
+              return (_this.x / 100) * frameWidth;
+            };
+          })(this);
+        } else {
+          xBaseComputation = (function(_this) {
+            return function() {
+              return _this.x;
+            };
+          })(this);
+        }
+        dimensionPattern.lastIndex = 0;
+      } else {
+        if (this.widthIsFluid) {
+          xBaseComputation = (function(_this) {
+            return function() {
+              return ((50 - _this.width / 2) / 100) * frameWidth;
+            };
+          })(this);
+        } else {
+          xBaseComputation = (function(_this) {
+            return function() {
+              return frameWidth / 2 - _this.width / 2;
+            };
+          })(this);
+        }
+      }
+      return xBaseComputation;
+    };
+
+    ActiveArea.prototype.getYBaseComputation = function() {
+      var frameHeight, yBaseComputation;
+      frameHeight = parseInt(getComputedStyle(this.frame).height, 10);
+      if (this.position.y && this.position.y !== 'auto') {
+        if (dimensionPattern.exec(this.position.y)[1] === '%') {
+          yBaseComputation = (function(_this) {
+            return function() {
+              return (_this.y / 100) * frameHeight;
+            };
+          })(this);
+        } else {
+          yBaseComputation = (function(_this) {
+            return function() {
+              return _this.y;
+            };
+          })(this);
+        }
+        dimensionPattern.lastIndex = 0;
+      } else {
+        if (this.heightIsFluid) {
+          yBaseComputation = (function(_this) {
+            return function() {
+              return ((50 - _this.height / 2) / 100) * frameHeight;
+            };
+          })(this);
+        } else {
+          yBaseComputation = (function(_this) {
+            return function() {
+              return frameHeight / 2 - _this.height / 2;
+            };
+          })(this);
+        }
+      }
+      return yBaseComputation;
+    };
+
+    ActiveArea.prototype.mouseover = function(event) {
+      var ref, ref1;
+      return (this.xMin <= (ref = event.pageX) && ref <= this.xMax) && (this.yMin <= (ref1 = event.pageY) && ref1 <= this.yMax);
+    };
+
+    function ActiveArea(area) {
+      var base, base1;
+      this.area = area;
+      if (!this.area) {
+        throw new Error("area argument is missing");
+      }
+      this.position = this.area.position || 'auto';
+      if (typeof this.position === 'object') {
+        if ((base = this.position).x == null) {
+          base.x = 'auto';
+        }
+        if ((base1 = this.position).y == null) {
+          base1.y = 'auto';
+        }
+        if (this.position.x === 'auto' && this.position.y === 'auto') {
+          this.position = 'auto';
+        }
+      }
+      this.attachment = this.area.attachment || 'fixed';
+      this.assertValid();
+      this.processActiveArea();
+    }
+
+    return ActiveArea;
+
+  })();
+
+  Signal = (function() {
+    function Signal() {}
+
+    Signal.prototype.register = function(listener) {
+      if (typeof listener === 'function') {
+        return (this._listeners != null ? this._listeners : this._listeners = []).push(listener);
+      }
+    };
+
+    Signal.prototype.unregister = function(listener) {
+      var index;
+      if (this._listeners) {
+        index = this._listeners.indexOf(listener);
+        if (!(index < 0)) {
+          return this._listeners.splice(index, 1);
+        }
+      }
+    };
+
+    Signal.prototype.clear = function() {
+      return this._listener = void 0;
+    };
+
+    Signal.prototype.send = function(sender, data) {
+      var i, len, listener, ref, results, Ø;
+      if (this._listeners) {
+        Ø = {};
+        ref = this._listeners;
+        results = [];
+        for (i = 0, len = ref.length; i < len; i++) {
+          listener = ref[i];
+          results.push(listener.call(Ø, sender, data));
+        }
+        return results;
+      }
+    };
+
+    return Signal;
+
+  })();
+
+  Layer = (function() {
+    var fn, i, len, property, ref;
+
+    Layer.properties = ['x', 'y', 'z', 'rx', 'ry', 'rz', 'ox', 'oy', 'oz'];
+
+    ref = Layer.properties;
+    fn = function(property) {
+      var propertyPattern;
+      propertyPattern = new RegExp("\\b" + property + "\\s*:\\s*(-?\\d+(\\.\\d+)?)\\b");
+      return Object.defineProperty(Layer.prototype, property, {
+        get: function() {
+          var ref1, transforms, value;
+          transforms = this.node.getAttribute(this._transformAttribute);
+          value = parseFloat((ref1 = propertyPattern.exec(transforms)) != null ? ref1[1].trim() : void 0, 10);
+          if (isNaN(value)) {
+            if (property[0] !== 'o') {
+              return 0;
+            } else {
+              return 0.5;
+            }
+          } else {
+            return value;
+          }
+        },
+        set: function(value) {
+          var newTransforms, numericValue, transforms;
+          numericValue = parseFloat(value, 10);
+          if (isNaN(numericValue)) {
+            throw "[Layer] - set " + property + " - value (" + value + ") is not valid";
+          }
+          transforms = (this.node.getAttribute(this._transformAttribute)).trim();
+          if (propertyPattern.test(transforms)) {
+            newTransforms = transforms.replace(propertyPattern, property + ":" + numericValue);
+          } else {
+            newTransforms = property + ":" + numericValue;
+            if (transforms) {
+              newTransforms = transforms + "; " + newTransforms;
+            }
+          }
+          return this.node.setAttribute(this._transformAttribute, newTransforms);
+        }
+      });
+    };
+    for (i = 0, len = ref.length; i < len; i++) {
+      property = ref[i];
+      fn(property);
+    }
+
+    function Layer(node1, _transformAttribute) {
+      var cssClass;
+      this.node = node1;
+      this._transformAttribute = _transformAttribute;
+      if (this.node.id) {
+        this.id = this.node.id;
+      }
+      if (this.node.className) {
+        this.classes = (function() {
+          var j, len1, ref1, results;
+          ref1 = this.node.className.split(/\s+/g);
+          results = [];
+          for (j = 0, len1 = ref1.length; j < len1; j++) {
+            cssClass = ref1[j];
+            results.push(cssClass);
+          }
+          return results;
+        }).call(this);
+      }
+      this.on = {
+        refresh: new Signal
+      };
+    }
+
+    Layer.prototype.refresh = function() {
+      return this.on.refresh.send(this);
+    };
+
+    Layer.prototype.transform = function(properties) {
+      var results, value;
+      results = [];
+      for (property in properties) {
+        value = properties[property];
+        if (indexOf.call(Layer.properties, property) >= 0) {
+          results.push(this[property] = value);
+        }
+      }
+      return results;
+    };
+
+    return Layer;
+
+  })();
+
+
+  /* AvalonA 1.1.1 */
+
+  console.log('%cAvalonA 1.1.1', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;');
+
+  defineAvalonA = function(TweenLite) {
+    var Frame3d;
+    Frame3d = (function() {
+      var cssBackUpAttribute, debugName, detectTransformStyleSupport, getTransformStyle, noeffect, transformStyleIsSupported, transitionDuration;
+
+      transitionDuration = 0.75;
+
+      noeffect = function(rotation) {
+        return rotation;
+      };
+
+      transformStyleIsSupported = void 0;
+
+      cssBackUpAttribute = 'data-css-backup';
+
+      detectTransformStyleSupport = function() {
+        var element;
+        if (transformStyleIsSupported === void 0) {
+          element = document.createElement('b');
+          element.id = 'avalona-detection-element';
+          element.style.position = 'absolute';
+          element.style.top = 0;
+          element.style.left = 0;
+          document.body.appendChild(element);
+          element.style.webkitTransformStyle = 'preserve-3d';
+          element.style.MozTransformStyle = 'preserve-3d';
+          element.style.msTransformStyle = 'preserve-3d';
+          element.style.transformStyle = 'preserve-3d';
+          transformStyleIsSupported = getTransformStyle(element) === 'preserve-3d';
+          document.body.removeChild(element);
+        }
+        return transformStyleIsSupported;
+      };
+
+      getTransformStyle = function(element) {
+        var computedStyle;
+        computedStyle = getComputedStyle(element, null);
+        return computedStyle.getPropertyValue('-webkit-transform-style') || computedStyle.getPropertyValue('-moz-transform-style') || computedStyle.getPropertyValue('-ms-transform-style') || computedStyle.getPropertyValue('transform-style');
+      };
+
+      debugName = function(node) {
+        return node.tagName + "(" + (node.id || node.getAttribute('class') || node.getAttribute('href')) + ")";
+      };
+
+      Frame3d.prototype.find3dFrames = function() {
+        this.frame = document.getElementById(this.frameId);
+        this.transformedLayer = this.frame.querySelector("#" + this.layerId);
+        if (this.debug === true) {
+          console.log("@transformAttribute: " + this.transformAttribute);
+          console.log("@layerId: " + this.layerId);
+        }
+        if (!this.frame) {
+          throw new Error("Cannot find 3d frame '#" + this.frameId + "' in dom");
+        }
+        if (!this.transformedLayer) {
+          throw new Error("Cannot find 3d inner frame '#" + this.frameId + " > #" + this.layerId + "' in dom");
+        }
+      };
+
+      Frame3d.prototype.addPerspective = function() {
+        return TweenLite.set(this.transformedLayer, {
+          css: {
+            perspective: 1000
+          }
+        });
+      };
+
+      Frame3d.prototype.removePerspective = function() {
+        return TweenLite.set(this.transformedLayer, {
+          css: {
+            perspective: 'none'
+          }
+        });
+      };
+
+      Frame3d.prototype.trackMouseMovements = function() {
+        var activeAreaPlaceholder, activeAreaPlaceholderId, ref, rule, value;
+        if (this.debug === true && this.activeArea) {
+          activeAreaPlaceholderId = 'avalona-active-area';
+          activeAreaPlaceholder = document.getElementById(activeAreaPlaceholderId) || document.createElement('div');
+          activeAreaPlaceholder.textContent = 'AvalonA Active Area';
+          activeAreaPlaceholder.id = activeAreaPlaceholderId;
+          ref = {
+            'background-color': 'hotpink',
+            'opacity': 0.5,
+            'pointer-events': 'none',
+            'position': 'absolute',
+            'visibility': 'hidden',
+            'z-index': 10000
+          };
+          for (rule in ref) {
+            value = ref[rule];
+            activeAreaPlaceholder.style.setProperty(rule, value);
+          }
+          document.body.appendChild(activeAreaPlaceholder);
+          this.debugMouseMove = function() {
+            var bounds, ref1, results;
+            console.log("rotationX: " + this.rotationX + ", rotationY: " + this.rotationY);
+            bounds = this.activeArea.bounds();
+            ref1 = {
+              visibility: 'visible',
+              left: bounds.xMin + "px",
+              top: bounds.yMin + "px",
+              width: (bounds.xMax - bounds.xMin) + "px",
+              height: (bounds.yMax - bounds.yMin) + "px"
+            };
+            results = [];
+            for (rule in ref1) {
+              value = ref1[rule];
+              results.push(activeAreaPlaceholder.style.setProperty(rule, value));
+            }
+            return results;
+          };
+        } else {
+          this.debugMouseMove = function() {};
+        }
+        if (this.activeArea) {
+          this.activeArea.init(this.frame);
+        } else {
+          this.frame.addEventListener('mouseleave', function(e) {
+            if (e.target.id === this.frameId) {
+              return this.mouseout();
+            }
+          }, false);
+        }
+        return this.frame.addEventListener('mousemove', this.mousemove, false);
+      };
+
+      Frame3d.prototype.mouseout = function() {
+        return this.disableRotation();
+      };
+
+      Frame3d.prototype.mouseMoveCount = 0;
+
+      Frame3d.prototype.mousemove = function(event) {
+        if (++this.mouseMoveCount % 5 > 0) {
+          return;
+        }
+        if (!this.activeArea || this.activeArea.mouseover(event)) {
+          this.onrotation();
+          this.rotationY = (event.pageX - window.innerWidth / 2) / 25;
+          this.rotationX = -1 * (event.pageY - window.innerHeight / 2) / 15;
+          this.debugMouseMove();
+          return TweenLite.to(this.transformedLayer, 0.1, {
+            css: {
+              rotationX: this.fy(this.rotationX),
+              rotationY: this.fx(this.rotationY)
+            }
+          });
+        } else {
+          return this.disableRotation();
+        }
+      };
+
+      Frame3d.prototype.onrotation = function() {
+        var ref;
+        clearTimeout(this.rotationTimeoutId);
+        if (!this.rotating) {
+          if ((ref = this.animation) != null) {
+            ref.pause();
+          }
+          if (typeof this.onstartrotation === "function") {
+            this.onstartrotation();
+          }
+          this.rotating = true;
+        }
+        if (this.idleTimeout > 0) {
+          return this.rotationTimeoutId = setTimeout(this.stopRotation, this.idleTimeout);
+        }
+      };
+
+      Frame3d.prototype.stopRotation = function() {
+        var ref;
+        clearTimeout(this.rotationTimeoutId);
+        if (this.rotating) {
+          this.rotating = false;
+          if (typeof this.onendrotation === "function") {
+            this.onendrotation();
+          }
+          return (ref = this.animation) != null ? ref.play() : void 0;
+        }
+      };
+
+      Frame3d.prototype.disableRotation = function(duration) {
+        if (duration == null) {
+          duration = 1;
+        }
+        if ((this.rotationX || this.rotationY) && (this.animation == null)) {
+          this.resetRotation(duration);
+        }
+        return this.stopRotation();
+      };
+
+      Frame3d.prototype.resetRotation = function(duration) {
+        if (duration == null) {
+          duration = 1;
+        }
+        clearTimeout(this.rotationTimeoutId);
+        this.rotationX = this.rotationY = 0;
+        return TweenLite.to(this.transformedLayer, duration, {
+          css: {
+            rotationX: 0,
+            rotationY: 0
+          }
+        });
+      };
+
+      Frame3d.prototype.resetTransform = function() {
+        var ref, results, rule, value;
+        clearTimeout(this.rotationTimeoutId);
+        this.rotationX = this.rotationY = 0;
+        ref = {
+          '-webkit-transform': 'none',
+          '-moz-transform': 'none',
+          '-o-transform': 'none',
+          '-ms-transform': 'none',
+          'transform': 'none'
+        };
+        results = [];
+        for (rule in ref) {
+          value = ref[rule];
+          results.push(this.transformedLayer.style.setProperty(rule, value));
+        }
+        return results;
+      };
+
+      Frame3d.prototype.untrackMouseMovements = function() {
+        var ref, ref1;
+        if ((ref = this.frame) != null) {
+          ref.removeEventListener("mousemove", this.mousemove);
+        }
+        return (ref1 = this.frame) != null ? ref1.removeEventListener("mouseleave", this.mouseout) : void 0;
+      };
+
+      Frame3d.prototype.refreshTransform = function(root) {
+        var child, classSelector, cssClass, fromRoot, i, j, k, layer, layers, len, len1, len2, ref, ref1, ref2, ref3, rootNode, subLayers;
+        if (this.disabled === true) {
+          return;
+        }
+        if (typeof root === 'string') {
+          root = root.trim();
+        }
+        fromRoot = !root || root === this.transformedLayer;
+        if (root == null) {
+          root = this.transformedLayer;
+        }
+        rootNode = typeof root === 'string' ? this.transformedLayer.querySelector(root) : root;
+        if (this.debug === true) {
+          console.log("rootNode: " + (debugName(rootNode)));
+        }
+        this.applyTransformOn(rootNode);
+        if (this.debug === true) {
+          console.log("refreshTransform firstChild: " + (debugName(rootNode.firstElementChild)));
+        }
+        layers = {
+          all: []
+        };
+        ref = rootNode.children;
+        for (i = 0, len = ref.length; i < len; i++) {
+          child = ref[i];
+          subLayers = this.refreshChildTransform(child);
+          if (subLayers) {
+            (ref1 = layers.all).push.apply(ref1, subLayers);
+          }
+        }
+        if (!fromRoot && rootNode.getAttribute(this.transformAttribute)) {
+          layers.root = new Layer(rootNode, this.transformAttribute);
+          layers.all.push(layers.root);
+        }
+        if (fromRoot) {
+          this.layers = layers;
+          ref2 = layers.all;
+          for (j = 0, len1 = ref2.length; j < len1; j++) {
+            layer = ref2[j];
+            if (layer.id) {
+              layers["#" + layer.id] = layer;
+            }
+            if (!layer.registered) {
+              layer.registered = true;
+              layer.on.refresh.register((function(_this) {
+                return function(layer) {
+                  return _this.refreshTransform(layer.node);
+                };
+              })(this));
+            }
+            if (layer.classes) {
+              ref3 = layer.classes;
+              for (k = 0, len2 = ref3.length; k < len2; k++) {
+                cssClass = ref3[k];
+                classSelector = "." + cssClass;
+                if (layers[classSelector] == null) {
+                  layers[classSelector] = [];
+                }
+                layers[classSelector].push(layer);
+              }
+            }
+          }
+        }
+        return layers;
+      };
+
+      Frame3d.prototype.refreshChildTransform = function(child) {
+        if (!child) {
+          throw new Error("refreshChildTransform child argument cannot be null");
+        }
+        if (child.querySelectorAll("[" + this.transformAttribute + "]").length) {
+          if (this.debug === true) {
+            console.log("refreshTransform child " + (debugName(child)) + " has children");
+          }
+          return this.refreshTransform(child).all;
+        } else if (child.getAttribute(this.transformAttribute)) {
+          if (this.debug === true) {
+            console.log("refreshTransform child " + (debugName(child)) + " has '" + this.transformAttribute + "'");
+          }
+          this.applyTransformOn(child);
+        }
+        if (child.getAttribute(this.transformAttribute)) {
+          return [new Layer(child, this.transformAttribute)];
+        }
+      };
+
+      Frame3d.prototype.applyTransformOn = function(target) {
+        var attrValue, backup, css, i, j, len, len1, o, ox, oy, oz, prop, ref, ref1, ref2, rx, ry, rz, t, targetStyle, transformBackup, transformOrigin, transforms, value, x, y, z;
+        if (!target) {
+          throw new Error("applyTransformOn target argument cannot be null");
+        }
+        if (!target.getAttribute(cssBackUpAttribute)) {
+          targetStyle = getComputedStyle(target);
+          backup = {
+            transformStyle: getTransformStyle(target) || 'flat',
+            overflow: targetStyle.overflow || 'inherit'
+          };
+          transformBackup = targetStyle.getPropertyValue('-webkit-transform') || targetStyle.getPropertyValue('-moz-transform') || targetStyle.getPropertyValue('-o-transform') || targetStyle.getPropertyValue('-ms-transform') || targetStyle.getPropertyValue('transform');
+          if (transformBackup) {
+            backup.transform = transformBackup;
+          }
+          target.setAttribute(cssBackUpAttribute, JSON.stringify(backup));
+        }
+        TweenLite.set(target, {
+          css: {
+            transformStyle: 'preserve-3d',
+            overflow: 'visible'
+          }
+        });
+        if ((attrValue = target.getAttribute(this.transformAttribute))) {
+          transforms = {};
+          ref = attrValue.split(';');
+          for (i = 0, len = ref.length; i < len; i++) {
+            t = ref[i];
+            if (!(t.trim())) {
+              continue;
+            }
+            ref1 = t.split(':'), prop = ref1[0], value = ref1[1];
+            transforms[prop.trim()] = parseFloat(value.trim(), 10);
+          }
+          x = transforms.x, y = transforms.y, z = transforms.z, rx = transforms.rx, ry = transforms.ry, rz = transforms.rz, ox = transforms.ox, oy = transforms.oy, oz = transforms.oz;
+          if (x || y || z || rx || ry || rz || ox || oy || oz) {
+            css = {};
+            if (x) {
+              css.x = x;
+            }
+            if (y) {
+              css.y = y;
+            }
+            if (z) {
+              css.z = z;
+            }
+            if (rx) {
+              css.rotationX = rx;
+            }
+            if (ry) {
+              css.rotationY = ry;
+            }
+            if (rz) {
+              css.rotationZ = rz;
+            }
+            transformOrigin = [];
+            ref2 = [oz, oy, ox];
+            for (j = 0, len1 = ref2.length; j < len1; j++) {
+              o = ref2[j];
+              if ((o != null) || transformOrigin.length > 0) {
+                transformOrigin.unshift((100 * ((o != null) && o || 0.5)) + "%");
+              }
+            }
+            if (transformOrigin.length > 0) {
+              css.transformOrigin = transformOrigin.join(' ');
+            }
+            return TweenLite.to(target, transitionDuration, {
+              css: css
+            });
+          }
+        }
+      };
+
+      Frame3d.prototype.refresh = function() {
+        var error, layers, ref, ref1;
+        this.disabled = false;
+        if (!this.ready) {
+          try {
+            if (typeof this.onready === "function") {
+              this.onready();
+            }
+          } catch (_error) {
+            error = _error;
+            console.error('AvalonA - refresh - Error occured on ready', error);
+          }
+          this.ready = true;
+        }
+        if (this.frame) {
+          this.untrackMouseMovements();
+          if ((ref = this.animation) != null) {
+            ref.pause();
+          }
+        }
+        this.find3dFrames();
+        this.addPerspective();
+        layers = this.refreshTransform();
+        this.trackMouseMovements();
+        if (typeof this.onrefresh === "function") {
+          this.onrefresh();
+        }
+        if ((ref1 = this.animation) != null) {
+          ref1.play(this.transformedLayer, this.transformAttribute);
+        }
+        return layers;
+      };
+
+      Frame3d.prototype.start = function() {
+        return this.refresh();
+      };
+
+      Frame3d.prototype.enable = function() {
+        return this.refresh();
+      };
+
+      Frame3d.prototype.disable = function() {
+        var ref;
+        if (this.frame) {
+          this.untrackMouseMovements();
+          this.disableRotationEvent();
+          if ((ref = this.animation) != null) {
+            ref.pause();
+          }
+          this.flatten();
+          this.removePerspective();
+        }
+        return this.disabled = true;
+      };
+
+      Frame3d.prototype.disableRotationEvent = function() {
+        clearTimeout(this.rotationTimeoutId);
+        this.rotating = false;
+        return typeof this.onendrotation === "function" ? this.onendrotation() : void 0;
+      };
+
+      Frame3d.prototype.flatten = function() {
+        var css, i, len, node, ref, results;
+        this.resetTransform();
+        ref = this.transformedLayer.querySelectorAll("[" + cssBackUpAttribute + "]");
+        results = [];
+        for (i = 0, len = ref.length; i < len; i++) {
+          node = ref[i];
+          if (this.debug === true) {
+            console.log("flattening layer '" + (debugName(node)) + "'");
+          }
+          css = JSON.parse(node.getAttribute(cssBackUpAttribute));
+          results.push(TweenLite.set(node, {
+            css: css
+          }));
+        }
+        return results;
+      };
+
+      Frame3d.prototype.init = function(options) {
+        var ref, ref1, ref2, ref3;
+        this.transformAttribute = options.tAttr || 'data-avalonA-transform';
+        this.fx = typeof options.fx === 'function' ? options.fx : noeffect;
+        this.fy = typeof options.fy === 'function' ? options.fy : noeffect;
+        if (options.activeArea) {
+          this.activeArea = new ActiveArea(options.activeArea);
+        }
+        if ((ref = this.activeArea) != null) {
+          ref.debug = this.debug;
+        }
+        this.onstartrotation = (ref1 = options.on) != null ? ref1.startrotation : void 0;
+        this.onendrotation = (ref2 = options.on) != null ? ref2.endrotation : void 0;
+        this.onready = (ref3 = options.on) != null ? ref3.ready : void 0;
+        this.onrefresh = options.on && (options.on.refresh || options.on.enable || options.on.start);
+        this.animation = options.animation;
+        this.idleTimeout = parseInt(options.idleTimeout || 1000, 10);
+        if (this.animation) {
+          this.assertAnimatorValid();
+        }
+        return Object.defineProperties(this, {
+          onenable: {
+            get: function() {
+              return this.onrefresh;
+            },
+            set: function(onenable) {
+              return this.onrefresh = onenable;
+            }
+          },
+          onstart: {
+            get: function() {
+              return this.onrefresh;
+            },
+            set: function(onstart) {
+              return this.onrefresh = onstart;
+            }
+          }
+        });
+      };
+
+      Frame3d.prototype.assertAnimatorValid = function() {
+        if (!this.animation.play || typeof this.animation.play !== 'function') {
+          throw new Error("animation.play must be a function");
+        }
+        if (!this.animation.pause || typeof this.animation.pause !== 'function') {
+          throw new Error("animation.pause must be a function");
+        }
+      };
+
+      function Frame3d(frameId1, layerId1, options) {
+        this.frameId = frameId1;
+        this.layerId = layerId1;
+        if (options == null) {
+          options = {};
+        }
+        this.refreshChildTransform = bind(this.refreshChildTransform, this);
+        this.stopRotation = bind(this.stopRotation, this);
+        this.mousemove = bind(this.mousemove, this);
+        this.mouseout = bind(this.mouseout, this);
+        if (!this.frameId) {
+          throw new Error("frameId argument cannot be null");
+        }
+        if (!this.layerId) {
+          throw new Error("layerId argument cannot be null");
+        }
+        this.debug = options.debug;
+        detectTransformStyleSupport();
+        if (this.debug === true) {
+          console.log("transformStyleIsSupported: " + transformStyleIsSupported);
+        }
+        if (transformStyleIsSupported) {
+          this.init(options);
+        } else {
+          this.flatten = this.disableRotationEvent = this.disable = this.start = this.enable = this.refresh = this.applyTransformOn = this.refreshChildTransform = this.refreshTransform = this.untrackMouseMovements = this.trackMouseMovements = this.addPerspective = this.removePerspective = function() {};
+        }
+      }
+
+      return Frame3d;
+
+    })();
+    return function(frameId, layerId, options) {
+      return new Frame3d(frameId, layerId, options);
+    };
+  };
+
+
+  /* Export */
+
+  if (typeof define === 'function' && define.amd) {
+    define('AvalonA', ['tweenlite'], function(tweenlite) {
+      return defineAvalonA(tweenlite);
+    });
+  } else {
+    window.AvalonA = defineAvalonA(((ref = window.GreenSockGlobals) != null ? ref.TweenLite : void 0) || TweenLite);
+  }
+
+}).call(this);

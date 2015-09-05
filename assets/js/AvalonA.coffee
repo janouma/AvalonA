@@ -1,5 +1,5 @@
-### AvalonA 1.1.0 ###
-console.log '%cAvalonA 1.1.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
+### AvalonA 1.1.1 ###
+console.log '%cAvalonA 1.1.1', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
 
 defineAvalonA = (TweenLite)->
 	# @codekit-prepend 'ActiveArea'
@@ -304,7 +304,7 @@ defineAvalonA = (TweenLite)->
 
 					transformOrigin = []
 					for o in [oz,oy,ox] when o? or transformOrigin.length > 0
-						transformOrigin.unshift("#{100 * (o or 0.5)}%")
+						transformOrigin.unshift("#{100 * (o? and o or 0.5)}%")
 
 					css.transformOrigin = transformOrigin.join(' ') if transformOrigin.length > 0
 
