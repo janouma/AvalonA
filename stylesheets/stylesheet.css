@@ -491,7 +491,7 @@ p {
 }
 
 .front.page {
-  width: 100%;
+  max-width: 100%;
 }
 
 .sheet {
@@ -507,8 +507,10 @@ p {
 }
 
 .page{
-  background-color: floralwhite;
-  color: dimgray;
+  background-color: #e9eef1;
+  background-image: url(../images/placeholder.png);
+  background-position: center;
+  color: lightslategrey;
 }
 
 .outer-cover{
