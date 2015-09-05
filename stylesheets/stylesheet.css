@@ -405,6 +405,53 @@ p {
   }
 }
 
+.t3d-layer{
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1000px;
+}
+
+@media screen and (min-width: 42em) {
+  .lightfx,
+  .t3d-layer{
+    width: 60%;
+  }
+
+  .lightfx{
+     margin-top: -40vw;
+  }
+
+  .t3d-layer{
+    margin-top: -27.5vw;
+  }
+}
+
+@media screen and (max-width: 42em) {
+  .lightfx,
+  .t3d-layer{
+    width: 100%;
+  }
+
+  .lightfx{
+    margin-top: -75vw;
+  }
+
+  .t3d-layer{
+    margin-top: -47.5vw;
+  }
+}
+
+.gravity {
+  position: relative;
+}
+
+.preview {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+/**** common ****/
+
 .hide-back {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
@@ -419,15 +466,7 @@ p {
 }
 
 
-.black-hole,
-.group-hole,
-.portfolio-stand {
-  width: 100%;
-}
-
-.portfolio-stand {
-  height: 100%;
-}
+/**** portfolio ****/
 
 .portfolio {
   width: 30%;
@@ -436,18 +475,30 @@ p {
   position: relative;
 }
 
+.portfolio-stand,
 .front-cover,
 .outer-cover,
 .inner-cover,
-.back-cover {
+.back-cover,
+.sheet,
+.page {
   width: 100%;
   height: 100%;
 }
 
-.back-cover {
+.back-cover,
+.sheet,
+.back {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.page{
+  background-color: whitesmoke;
+
+  /* DEBUG */
+  color: black;
 }
 
 .outer-cover{
@@ -511,6 +562,15 @@ p {
   }
 }
 
+
+.black-hole,
+.group-hole {
+  width: 100%;
+}
+
+
+/**** black hole ****/
+
 .black-hole{
   border-radius: 40%;
 }
@@ -569,49 +629,4 @@ p {
   transform: scale(0.45);
   opacity: 0.1;
   z-index: -4;
-}
-
-.t3d-layer{
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 1000px;
-}
-
-@media screen and (min-width: 42em) {
-  .lightfx,
-  .t3d-layer{
-    width: 60%;
-  }
-
-  .lightfx{
-     margin-top: -40vw;
-  }
-
-  .t3d-layer{
-    margin-top: -27.5vw;
-  }
-}
-
-@media screen and (max-width: 42em) {
-  .lightfx,
-  .t3d-layer{
-    width: 100%;
-  }
-
-  .lightfx{
-    margin-top: -75vw;
-  }
-
-  .t3d-layer{
-    margin-top: -47.5vw;
-  }
-}
-
-.gravity {
-  position: relative;
-}
-
-.preview {
-  -moz-user-select: none;
-  -webkit-user-select: none;
 }
