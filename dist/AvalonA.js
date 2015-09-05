@@ -786,7 +786,7 @@
             for (j = 0, len1 = ref2.length; j < len1; j++) {
               o = ref2[j];
               if ((o != null) || transformOrigin.length > 0) {
-                transformOrigin.unshift((100 * ((o != null) && o || 0.5)) + "%");
+                transformOrigin.unshift((100 * (o != null ? o : 0.5)) + "%");
               }
             }
             if (transformOrigin.length > 0) {

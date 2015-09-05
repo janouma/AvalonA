@@ -304,7 +304,7 @@ defineAvalonA = (TweenLite)->
 
 					transformOrigin = []
 					for o in [oz,oy,ox] when o? or transformOrigin.length > 0
-						transformOrigin.unshift("#{100 * (o? and o or 0.5)}%")
+						transformOrigin.unshift("#{100 * (if o? then o else 0.5)}%")
 
 					css.transformOrigin = transformOrigin.join(' ') if transformOrigin.length > 0
 
