@@ -67,6 +67,7 @@ require(
 			portfolioStand.classList.remove('hidden');
 		};
 
+
 		avalona.enable();
 
 		/********************
