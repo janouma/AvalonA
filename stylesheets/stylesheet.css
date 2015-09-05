@@ -405,6 +405,15 @@ p {
   }
 }
 
+.hide-back {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
 .lightfx{
   pointer-events: none;
 }
@@ -475,20 +484,15 @@ p {
   border-radius: 0.35rem 0.35rem 0.2rem 0.2rem;
 }
 
-.hide-back {
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
-
 .inner-cover {
   background-color: antiquewhite;
 
   background-image: linear-gradient(to top, rgba(0,0,0,0.2), rgba(255,255,255,0.2)),
     linear-gradient(45deg, rgba(0, 0, 85, 0) 93%, rgba(25, 25, 75, 1) 93.5%),
     linear-gradient(-45deg, rgba(0, 0, 85, 0) 93%, rgba(25, 25, 75, 1) 93.5%),
-    linear-gradient(to right, seagreen 3%, rgba(46,139,87, 0) 3.5%),
-    linear-gradient(to left, seagreen 3%, rgba(46,139,87, 0) 3.5%),
-    linear-gradient(to bottom, seagreen 4.5%, rgba(46,139,87, 0) 5%);
+    linear-gradient(to right, #246f45 3%, rgba(36,111,69, 0) 3.5%),
+    linear-gradient(to left, #246f45 3%, rgba(36,111,69, 0) 3.5%),
+    linear-gradient(to bottom, #246f45 4.5%, rgba(36,111,69, 0) 5%);
 
   position: absolute;
   top: 0;

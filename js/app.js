@@ -62,6 +62,11 @@ require(
 			})
 		});
 
+		avalona.onenable = function onenable(){
+			var portfolioStand = document.querySelector('.portfolio-stand');
+			portfolioStand.classList.remove('hidden');
+		};
+
 		avalona.enable();
 
 		/********************
