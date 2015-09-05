@@ -31,6 +31,12 @@
 
 html {
   overflow-x: hidden;
+  overflow-y: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+  width: 0;
 }
 
 body {
