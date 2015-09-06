@@ -496,9 +496,27 @@ p {
   position: relative;
 }
 
-.front.page {
-  max-height: 100%;
-  max-width: 90%;
+/* 0.6 x 0.3 x 0.9 x vw */
+
+@media screen and (min-width: 64em) {
+  .front.page {
+    max-width: 208px;
+    max-height: 117px;
+  }
+}
+
+@media screen and (min-width: 42em) and (max-width: 64em) {
+  .front.page {
+    max-width: 14.4vw;
+    max-height: 8.1vw;
+  }
+}
+
+@media screen and (max-width: 42em) {
+  .front.page {
+    max-width: 27vw;
+    max-height: 15.1875vw;
+  }
 }
 
 .page{
