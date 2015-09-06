@@ -482,10 +482,6 @@ p {
   left: 0;
 }
 
-.transluent{
-  opacity: 0.93;
-}
-
 
 /**** portfolio ****/
 
@@ -495,8 +491,6 @@ p {
   margin: 28.7857143% auto 0 auto;
   position: relative;
 }
-
-/* 0.6 x 0.3 x 0.9 x vw */
 
 @media screen and (min-width: 64em) {
   .front.page {
