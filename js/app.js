@@ -4,7 +4,7 @@ require.config({
 	baseUrl: 'js',
 
 	paths: {
-		tweenmax: 'http://cdnjs.cloudflare.com/ajax/libs/gsap/1.17.0/TweenMax.min',
+		tweenmax: 'http://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min',
 		tweenlite: 'shim/tweenlite',
 		GSEases: 'shim/gs_eases',
 		AvalonA: 'avalona/AvalonA.min',
