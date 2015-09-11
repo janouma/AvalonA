@@ -492,6 +492,11 @@ p {
   position: relative;
 }
 
+.page {
+  border-radius: 0.2625rem 0.2625rem 0.2625rem 0.2625rem /
+    0.15rem 0.15rem 0.15rem 0.15rem;
+}
+
 @media screen and (min-width: 64em) {
   .front.page {
     max-width: 208px;
