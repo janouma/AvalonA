@@ -10,7 +10,9 @@ require.config({
 		AvalonA: 'avalona/AvalonA.min',
 		AvalonAnimation: 'avalona/AvalonAnimation.min',
 		ResponsiveImageLoader: 'modules/ResponsiveImageLoader',
-		FrameTimer: 'modules/FrameTimer'
+		FrameTimer: 'modules/FrameTimer',
+		photos: '../photos/data',
+		PhotoLoader: 'modules/PhotoLoader'
 	},
 
 	shim: {
@@ -25,20 +27,22 @@ require(
 		'AvalonA',
 		'AvalonAnimation',
 		'ResponsiveImageLoader',
-		'FrameTimer'
+		'FrameTimer',
+		'PhotoLoader'
 	],
 	function startApp(
 		AvalonA,
 		AvalonAnimation,
 		ResponsiveImageLoader,
-		FrameTimer
+		FrameTimer,
+		PhotoLoader
 	) {
 		/********************
 		* Init steps
 		* *******************/
 		var imgLoader = Object.create(ResponsiveImageLoader);
 		var placeholder = document.querySelector('#t3d-frame').getAttribute('data-placeholder');
-		var pages = document.querySelectorAll('img.front.page');
+		var pages = Array.prototype.slice.call(document.querySelectorAll('img.front.page'));
 
 		imgLoader.basenames = [
 			'lightfx',
@@ -48,9 +52,7 @@ require(
 		imgLoader.mediaQuery = 'screen and (min-width: 42em)';
 		imgLoader.init();
 
-		Array.prototype.slice.call(pages).forEach(function setPlaceholder(page){
-			page.src = placeholder;
-		});
+		pages.forEach(function setPlaceholder(page){ page.src = placeholder; });
 
 		/********************
 		* Start Avalon (A)
@@ -70,9 +72,10 @@ require(
 
 		avalona.onenable = function onenable(){
 			var portfolioStand = document.querySelector('.portfolio-stand');
-			portfolioStand.classList.remove('hidden');
-		};
 
+			portfolioStand.classList.remove('hidden');
+			Object.create(PhotoLoader).init(pages);
+		};
 
 		avalona.enable();
 
