@@ -37,6 +37,8 @@ require(
 		* Init steps
 		* *******************/
 		var imgLoader = Object.create(ResponsiveImageLoader);
+		var placeholder = document.querySelector('#t3d-frame').getAttribute('data-placeholder');
+		var pages = document.querySelectorAll('img.front.page');
 
 		imgLoader.basenames = [
 			'lightfx',
@@ -45,6 +47,10 @@ require(
 
 		imgLoader.mediaQuery = 'screen and (min-width: 42em)';
 		imgLoader.init();
+
+		Array.prototype.slice.call(pages).forEach(function setPlaceholder(page){
+			page.src = placeholder;
+		});
 
 		/********************
 		* Start Avalon (A)

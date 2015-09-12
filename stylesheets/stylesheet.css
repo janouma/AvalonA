@@ -519,7 +519,7 @@ p {
 
   background-color: #e9eef1;
   background-position: center;
-  color: lightslategrey;
+  color: darkslategray;
   box-shadow: 0 0 1px lightslategrey;
 }
 
@@ -529,14 +529,19 @@ p {
 
 .title,
 .description {
+  font-size: 0.75em;
   font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+  width: 100%;
 }
 
 .description {
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 100%;
 }
 
 .outer-cover{
