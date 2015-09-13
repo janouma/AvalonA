@@ -7,14 +7,52 @@ define(['photos', 'FrameTimer'], function definePhotoLoader(photos, FrameTimer){
 
 		_loadCount: 0,
 
-
 		_descriptionAttribute: 'data-description',
 
+		_shrinkClass: 'shrink',
 
-		_loadOne: function _loadOne(index){
-			var loader = this._loaders[index];
-			this._pages[index].src = loader.src;
-			this._descriptions[index].textContent = loader[this._descriptionAttribute];
+
+		_shrink: function _shrink(index){
+			var scaler = this._getScaler(index);
+			scaler.classList.add(this._shrinkClass);
+		},
+
+
+		_getScaler: function _getScaler(index){
+			var scaler = this._scalers[index];
+			var parent;
+
+			if( ! scaler ){
+				parent = this._pages[index].parentNode;
+
+				while( ! parent.classList.contains('scaler') ){
+					parent = parent.parentNode;
+				}
+
+				this._scalers[index] = scaler = parent;
+
+				if('ontransitionend' in window){
+					scaler.addEventListener('transitionend', this._expand.bind(this, index));
+				}else{
+					scaler.addEventListener('webkitTransitionEnd', this._expand.bind(this, index));
+				}
+			}
+
+			return scaler;
+		},
+
+
+		_expand: function _expand(index){
+			var scaler = this._scalers[index];
+			var loader;
+
+			if(scaler.classList.contains(this._shrinkClass)){
+				loader = this._loaders[index];
+
+				this._pages[index].src = loader.src;
+				this._descriptions[index].textContent = loader[this._descriptionAttribute];
+				scaler.classList.remove(this._shrinkClass);
+			}
 		},
 
 
@@ -48,11 +86,12 @@ define(['photos', 'FrameTimer'], function definePhotoLoader(photos, FrameTimer){
 
 			this._pages = pages;
 			this._descriptions = descriptions;
+			this._scalers = [];
 			this._frames = frames || 600;
 
 			for(var index = pages.length; index--;){
 				loader = new Image();
-				loader.addEventListener('load', this._loadOne.bind(this, index));
+				loader.addEventListener('load', this._shrink.bind(this, index));
 				loader.addEventListener('load', this._loadAll.bind(this));
 				loaders.unshift(loader);
 			}

@@ -485,15 +485,12 @@ p {
 .animated {
   transition-duration: 0.35s;
   transition-timing-function: ease-in-out;
+  transition-property: opacity, visibility, transform;
+}
 
-  transition-property: color,
-    background-color,
-    opacity,
-    visibility,
-    margin,
-    padding,
-    height,
-    width;
+.shrink {
+  -webkit-transform: scaleX(0) scaleY(0);
+  transform: scaleX(0) scaleY(0);
 }
 
 
