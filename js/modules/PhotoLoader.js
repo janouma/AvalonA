@@ -77,6 +77,8 @@ define(['photos', 'FrameTimer'], function definePhotoLoader(photos, FrameTimer){
 
 				this._pages[index].src = loader.src;
 				this._descriptions[index].textContent = loader[this._descriptionAttribute];
+
+				scaler.classList.remove("hidden");
 				scaler.classList.remove(this._shrinkClass);
 			}
 		},
