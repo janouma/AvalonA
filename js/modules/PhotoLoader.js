@@ -11,6 +11,14 @@ define(['photos', 'FrameTimer'], function definePhotoLoader(photos, FrameTimer){
 
 		_shrinkClass: 'shrink',
 
+		_supportedTransitionProperties: {
+			WebkitTransition: "webkitTransitionEnd",
+			MozTransition: "transitionend",
+			MsTransition: "transitionend",
+			OTransition: "transitionend",
+			transition: "transitionend"
+		},
+
 
 		_shrink: function _shrink(index){
 			var scaler = this._getScaler(index);
@@ -21,6 +29,8 @@ define(['photos', 'FrameTimer'], function definePhotoLoader(photos, FrameTimer){
 		_getScaler: function _getScaler(index){
 			var scaler = this._scalers[index];
 			var parent;
+			var style;
+			var supportedTransitionProperties;
 
 			if( ! scaler ){
 				parent = this._pages[index].parentNode;
@@ -31,11 +41,27 @@ define(['photos', 'FrameTimer'], function definePhotoLoader(photos, FrameTimer){
 
 				this._scalers[index] = scaler = parent;
 
-				if('ontransitionend' in window){
-					scaler.addEventListener('transitionend', this._expand.bind(this, index));
-				}else{
-					scaler.addEventListener('webkitTransitionEnd', this._expand.bind(this, index));
+				if(this._supportedTransitionEvent === undefined){
+					style = document.body.style;
+					supportedTransitionProperties = this._supportedTransitionProperties;
+
+					Object.keys(supportedTransitionProperties).forEach(
+						(function checkProperty(property){
+							if(style[property] !== undefined){
+								this._supportedTransitionEvent = supportedTransitionProperties[property];
+							}
+						}).bind(this)
+					);
+
+					if( ! this._supportedTransitionEvent ){
+						throw "[PhotoLoader] - _getScaler - \"transitionend\" event is not supported!";
+					}
 				}
+
+				scaler.addEventListener(
+					this._supportedTransitionEvent,
+					this._expand.bind(this, index)
+				);
 			}
 
 			return scaler;
