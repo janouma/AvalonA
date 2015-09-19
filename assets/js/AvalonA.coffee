@@ -1,13 +1,16 @@
+# @codekit-prepend 'utils/DomUtil'
+# @codekit-prepend 'ActiveArea'
+# @codekit-prepend 'Signal'
+# @codekit-prepend 'Layer'
+# @codekit-prepend 'Transformer'
+#================================================================================================
+
 ### AvalonA 1.2.0 ###
 console.log '%cAvalonA 1.2.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
 
-defineAvalonA = (TweenLite)->
-	# @codekit-prepend 'utils/DomUtil'
-	# @codekit-prepend 'ActiveArea'
-	# @codekit-prepend 'Signal'
-	# @codekit-prepend 'Layer'
-	# @codekit-prepend 'Transformer'
-	#================================================================================================
+_TweenLite = undefined
+
+defineAvalonA = ->
 	class Frame3d
 		noeffect = (rotation)-> rotation
 		transformStyleIsSupported = undefined
@@ -46,14 +49,14 @@ defineAvalonA = (TweenLite)->
 
 
 		addPerspective: ->
-			TweenLite.set(
+			_TweenLite.set(
 				@transformedLayer
 				css: perspective: 1000
 			)
 
 
 		removePerspective: ->
-			TweenLite.set(
+			_TweenLite.set(
 				@transformedLayer
 				css: perspective: 'none'
 			)
@@ -117,7 +120,7 @@ defineAvalonA = (TweenLite)->
 
 				@debugMouseMove()
 
-				TweenLite.to(
+				_TweenLite.to(
 					@transformedLayer
 					0.1
 					css:
@@ -157,7 +160,7 @@ defineAvalonA = (TweenLite)->
 		resetRotation: (duration = 1)->
 			clearTimeout @rotationTimeoutId
 			@rotationX = @rotationY = 0
-			TweenLite.to(
+			_TweenLite.to(
 				@transformedLayer
 				duration
 				css:
@@ -256,7 +259,7 @@ defineAvalonA = (TweenLite)->
 			for node in @transformedLayer.querySelectorAll("[#{Transformer.CSS_BACKUP_ATTRIBUTE}]")
 				console.log "flattening layer '#{DomUtil.getDebugName node}'" if @debug is on
 				css = JSON.parse node.getAttribute(Transformer.CSS_BACKUP_ATTRIBUTE)
-				TweenLite.set node, css: css
+				_TweenLite.set node, css: css
 
 
 		init: (options)->
@@ -322,7 +325,10 @@ defineAvalonA = (TweenLite)->
 ### Export ###
 
 if typeof define is 'function' and define.amd
-	define 'AvalonA', ['tweenlite'], (tweenlite)-> defineAvalonA(tweenlite)
+	define 'AvalonA', ['tweenlite'], (tweenlite)->
+		_TweenLite = tweenlite
+		do defineAvalonA
 else
-	window.AvalonA = defineAvalonA(window.GreenSockGlobals?.TweenLite or TweenLite)
+	_TweenLite = window.GreenSockGlobals?.TweenLite or TweenLite
+	window.AvalonA = do defineAvalonA
 

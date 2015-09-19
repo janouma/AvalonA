@@ -101,7 +101,7 @@ class Transformer
 
 		@_backup target
 
-		TweenLite.set(
+		_TweenLite.set(
 			target
 			css:
 				transformStyle: 'preserve-3d'
@@ -142,7 +142,7 @@ class Transformer
 
 				if transformOrigin.length > 0 then css.transformOrigin = transformOrigin.join(' ')
 
-				TweenLite.to(
+				_TweenLite.to(
 					target
 					@_static.TRANSITION_DURATION
 					css: css
