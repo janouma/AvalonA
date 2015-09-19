@@ -58,12 +58,15 @@ class Transformer
 					layer.registered = yes
 
 					layer.on.refresh.register (layer)=>
-						new Transformer(
+						transformer = new Transformer(
 							from: layer.node
 							isRoot: no
 							transformAttribute: transformAttribute
 							debug: @_debug
-						).applyTransform()
+						)
+
+						transformer.on.complete.register (sender, data)=> @on.complete.send sender, data
+						transformer.applyTransform()
 
 				if layer.classes
 					for cssClass in layer.classes
@@ -164,4 +167,4 @@ class Transformer
 
 	_onTweenComplete:=>
 		if @_debug is on then console.log "[Transformer] - _onTweenComplete - @_transformsCount: #{@_transformsCount}"
-		if --@_transformsCount is 0 then @on.complete.send @
+		if --@_transformsCount is 0 then @on.complete.send @_from, @_isRoot

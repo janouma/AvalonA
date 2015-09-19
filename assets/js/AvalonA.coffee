@@ -1,5 +1,5 @@
-### AvalonA 1.1.2 ###
-console.log '%cAvalonA 1.1.2', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
+### AvalonA 1.2.0 ###
+console.log '%cAvalonA 1.2.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
 
 defineAvalonA = (TweenLite)->
 	# @codekit-prepend 'utils/DomUtil'
@@ -199,7 +199,7 @@ defineAvalonA = (TweenLite)->
 				debug: @debug
 			)
 
-			transformer.on.complete.register => @onrefresh?()
+			transformer.on.complete.register (sender, data)=> @onrefresh?(sender, data)
 			layers = transformer.applyTransform()
 
 			if fromRoot then @layers = layers

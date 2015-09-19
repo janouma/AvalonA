@@ -34,7 +34,14 @@ window.onload = ->
 			startrotation: -> console.log "3d rotation on"
 			endrotation: -> console.log "3d rotation off"
 			ready: -> console.log 'frame3d is ready'
-			enable: -> console.log 'frame3d is enabled'
+
+			enable: (from, root)->
+				console.log(
+					'frame3d is enabled: from ='
+					(from.id or from.tagName)
+					'; root:'
+					root
+				)
 
 		#animation: AvalonAnimation.Balance()
 		#animation: AvalonAnimation.Spotlight()
@@ -46,7 +53,7 @@ window.onload = ->
 
 		#idleTimeout: -1
 
-		debug: on
+		#debug: on
 	)
 
 	frame3d2 = AvalonA(
@@ -79,7 +86,13 @@ window.onload = ->
 		debug: on
 	)
 
-	frame3d2.onenable = -> console.log 'frame3d II is enabled'
+	frame3d2.onenable = (from, root)->
+		console.log(
+			'frame3d II is enabled: from ='
+			(from.id or from.tagName)
+			'; root:'
+			root
+		)
 
 	layerCursor = 0
 

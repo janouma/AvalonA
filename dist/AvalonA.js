@@ -494,12 +494,17 @@
             layer.registered = true;
             layer.on.refresh.register((function(_this) {
               return function(layer) {
-                return new Transformer({
+                var transformer;
+                transformer = new Transformer({
                   from: layer.node,
                   isRoot: false,
                   transformAttribute: transformAttribute,
                   debug: _this._debug
-                }).applyTransform();
+                });
+                transformer.on.complete.register(function(sender, data) {
+                  return _this.on.complete.send(sender, data);
+                });
+                return transformer.applyTransform();
               };
             })(this));
           }
@@ -625,7 +630,7 @@
         console.log("[Transformer] - _onTweenComplete - @_transformsCount: " + this._transformsCount);
       }
       if (--this._transformsCount === 0) {
-        return this.on.complete.send(this);
+        return this.on.complete.send(this._from, this._isRoot);
       }
     };
 
@@ -634,9 +639,9 @@
   })();
 
 
-  /* AvalonA 1.1.2 */
+  /* AvalonA 1.2.0 */
 
-  console.log('%cAvalonA 1.1.2', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;');
+  console.log('%cAvalonA 1.2.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;');
 
   defineAvalonA = function(TweenLite) {
     var Frame3d;
@@ -881,8 +886,8 @@
           debug: this.debug
         });
         transformer.on.complete.register((function(_this) {
-          return function() {
-            return typeof _this.onrefresh === "function" ? _this.onrefresh() : void 0;
+          return function(sender, data) {
+            return typeof _this.onrefresh === "function" ? _this.onrefresh(sender, data) : void 0;
           };
         })(this));
         layers = transformer.applyTransform();
