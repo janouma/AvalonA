@@ -1,16 +1,16 @@
-### AvalonA 1.1.1 ###
-console.log '%cAvalonA 1.1.1', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
+### AvalonA 1.1.2 ###
+console.log '%cAvalonA 1.1.2', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;background-color:#FF0066;'
 
 defineAvalonA = (TweenLite)->
+	# @codekit-prepend 'utils/DomUtil'
 	# @codekit-prepend 'ActiveArea'
 	# @codekit-prepend 'Signal'
 	# @codekit-prepend 'Layer'
+	# @codekit-prepend 'Transformer'
 	#================================================================================================
 	class Frame3d
-		transitionDuration = 0.75
 		noeffect = (rotation)-> rotation
 		transformStyleIsSupported = undefined
-		cssBackUpAttribute = 'data-css-backup'
 
 		detectTransformStyleSupport = ->
 			if transformStyleIsSupported is undefined
@@ -27,18 +27,10 @@ defineAvalonA = (TweenLite)->
 				element.style.msTransformStyle = 'preserve-3d'
 				element.style.transformStyle = 'preserve-3d'
 
-				transformStyleIsSupported = getTransformStyle(element) is 'preserve-3d'
+				transformStyleIsSupported = DomUtil.getTransformStyle(getComputedStyle(element)) is 'preserve-3d'
 				document.body.removeChild(element)
 
 			transformStyleIsSupported
-
-
-		getTransformStyle = (element)->
-			computedStyle = getComputedStyle(element, null)
-			computedStyle.getPropertyValue('-webkit-transform-style') or computedStyle.getPropertyValue('-moz-transform-style') or computedStyle.getPropertyValue('-ms-transform-style') or computedStyle.getPropertyValue('transform-style')
-
-
-		debugName = (node)-> "#{node.tagName}(#{node.id or node.getAttribute('class') or node.getAttribute('href')})"
 
 
 		find3dFrames: ->
@@ -198,121 +190,18 @@ defineAvalonA = (TweenLite)->
 			root ?= @transformedLayer
 			rootNode = if typeof root is 'string' then @transformedLayer.querySelector(root) else root
 
-			console.log "rootNode: #{debugName rootNode}" if @debug is on
+			console.log "rootNode: #{DomUtil.getDebugName rootNode}" if @debug is on
 
-			@applyTransformOn rootNode
+			layers = new Transformer(
+				from: rootNode
+				isRoot: fromRoot
+				transformAttribute: @transformAttribute
+				debug: @debug
+			).applyTransform()
 
-			console.log "refreshTransform firstChild: #{debugName rootNode.firstElementChild}" if @debug is on
-
-			layers = all: []
-
-			for child in rootNode.children
-				subLayers = @refreshChildTransform child
-				layers.all.push subLayers... if subLayers
-
-			if not fromRoot and rootNode.getAttribute @transformAttribute
-				layers.root = new Layer rootNode, @transformAttribute
-				layers.all.push layers.root
-
-			if fromRoot
-				@layers = layers
-
-				for layer in layers.all
-					layers["##{layer.id}"] = layer if layer.id
-
-					unless layer.registered
-						layer.registered = yes
-						layer.on.refresh.register (layer)=> @refreshTransform layer.node
-
-					if layer.classes
-						for cssClass in layer.classes
-							classSelector = ".#{cssClass}"
-							layers[classSelector] ?= []
-							layers[classSelector].push layer
+			if fromRoot then @layers = layers
 
 			layers
-
-
-		refreshChildTransform: (child)=>
-			throw new Error "refreshChildTransform child argument cannot be null" if not child
-
-			if child.querySelectorAll("[#{@transformAttribute}]").length
-				console.log "refreshTransform child #{debugName child} has children" if @debug is on
-				return @refreshTransform(child).all
-			else if child.getAttribute @transformAttribute
-				console.log "refreshTransform child #{debugName child} has '#{@transformAttribute}'" if @debug is on
-				@applyTransformOn child
-
-			[new Layer child, @transformAttribute] if child.getAttribute @transformAttribute
-
-
-		applyTransformOn: (target)->
-			throw new Error "applyTransformOn target argument cannot be null" if not target
-
-			if not target.getAttribute(cssBackUpAttribute)
-				targetStyle = getComputedStyle(target)
-
-				backup =
-					transformStyle: getTransformStyle(target) or 'flat'
-					overflow: targetStyle.overflow or 'inherit'
-
-				transformBackup = targetStyle.getPropertyValue('-webkit-transform') or
-					targetStyle.getPropertyValue('-moz-transform') or
-					targetStyle.getPropertyValue('-o-transform') or
-					targetStyle.getPropertyValue('-ms-transform') or
-					targetStyle.getPropertyValue('transform')
-
-
-				backup.transform = transformBackup if transformBackup
-
-				target.setAttribute(cssBackUpAttribute, JSON.stringify(backup))
-
-			TweenLite.set(
-				target
-				css:
-					transformStyle: 'preserve-3d'
-					overflow: 'visible'
-			)
-
-			if (attrValue = target.getAttribute @transformAttribute)
-				transforms = {};
-
-				for t in attrValue.split(';') when t.trim()
-					[prop, value] = t.split(':');
-					transforms[prop.trim()] = parseFloat value.trim(), 10
-
-				{
-					x: x
-					y: y
-					z: z
-					rx: rx
-					ry: ry
-					rz: rz
-					ox: ox
-					oy: oy
-					oz: oz
-				} = transforms
-
-				if x or y or z or rx or ry or rz or ox or oy or oz
-					css = {}
-					css.x = x if x
-					css.y = y if y
-					css.z = z if z
-					css.rotationX = rx if rx
-					css.rotationY = ry if ry
-					css.rotationZ = rz if rz
-
-					transformOrigin = []
-					for o in [oz,oy,ox] when o? or transformOrigin.length > 0
-						transformOrigin.unshift("#{100 * (if o? then o else 0.5)}%")
-
-					css.transformOrigin = transformOrigin.join(' ') if transformOrigin.length > 0
-
-					TweenLite.to(
-						target
-						transitionDuration
-						css: css
-					)
 
 
 		refresh: ->
@@ -362,9 +251,9 @@ defineAvalonA = (TweenLite)->
 		flatten: ->
 			@resetTransform()
 
-			for node in @transformedLayer.querySelectorAll("[#{cssBackUpAttribute}]")
-				console.log "flattening layer '#{debugName node}'" if @debug is on
-				css = JSON.parse node.getAttribute(cssBackUpAttribute)
+			for node in @transformedLayer.querySelectorAll("[#{Transformer.CSS_BACKUP_ATTRIBUTE}]")
+				console.log "flattening layer '#{DomUtil.getDebugName node}'" if @debug is on
+				css = JSON.parse node.getAttribute(Transformer.CSS_BACKUP_ATTRIBUTE)
 				TweenLite.set node, css: css
 
 

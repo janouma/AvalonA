@@ -1,6 +1,6 @@
 # Avalon(A) — Bring deepness to your web apps
 
-*version: 1.1.1*
+*version: 1.1.2*
 
 
 **Avalon(A)** allows you to easily add 3d to a set of html elements to simulate a deepness effect *([see jsFiddle preview](http://jsfiddle.net/K3kPx/9/show))*. To make this 3d effect noticeable, all html elements pertaining to the `transformed layer` *(basically the root container to which the 3d effect get applied to)* - rotate on their x and y axis according to mouse movements.
@@ -405,7 +405,7 @@ speedTester.oncomplete(function(results){
 **Avalon(A)** is AMD compliant: if **require.js** is present, `AvalonA` function won't be exposed as a global variable but as a module having the same name.
 The same goes for `AvalonAnimation` plugin and `SpeedTester` utility.
 
-As an AMD module, `AvalonA` requires `jquery` and `tweenlite` modules. `AvalonAnimation` requires `tweenmax`,`tweenlite` and `GSEases`modules, where `GSEases` contains key/value pairs of standard greensock easing functions — *the ones bundled with TweenMax*.
+As an AMD module, `AvalonA` requires `tweenlite` module. `AvalonAnimation` requires `tweenmax`,`tweenlite` and `GSEases`modules, where `GSEases` contains key/value pairs of standard greensock easing functions — *the ones bundled with TweenMax*.
 
 #### GreenSock specifics
 Keep in mind that since GreenSock bundles several modules within one file — *indeed TweenMax file contains TweenMax as well as TweenLite, CSSPlugin, BezierPlugin, Eeasin, etc* — it needs special care to be used with **require.js**.
