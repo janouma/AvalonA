@@ -7,8 +7,8 @@ class Transformer
 
 	constructor: (params)->
 		@_from = params.from
-		@_transformAttribute = params.transformAttribute
 		@_isRoot = params.isRoot
+		@_transformAttribute = params.transformAttribute
 		@_debug = params.debug or no
 
 		if not @_from then throw "[Transformer] - constructor - from argument must be defined"
@@ -20,14 +20,16 @@ class Transformer
 
 
 	applyTransform: ->
-		from = @_from
-		isRoot = @_isRoot
-		transformAttribute = @_transformAttribute
+		do @_calcTransformsCount
+		@_applyTransform @_from, @_isRoot
 
+
+
+	_calcTransformsCount: ->
+		transformAttribute = @_transformAttribute
+		from = @_from
 		@_transformsCount = from.querySelectorAll("[#{transformAttribute}]").length
 		if from.getAttribute(transformAttribute) then @_transformsCount++
-		@_applyTransform from, isRoot
-
 
 
 	_applyTransform: (from, isRoot = no)->
@@ -54,7 +56,14 @@ class Transformer
 
 				unless layer.registered
 					layer.registered = yes
-					layer.on.refresh.register (layer)=> @_applyTransform layer.node
+
+					layer.on.refresh.register (layer)=>
+						new Transformer(
+							from: layer.node
+							isRoot: no
+							transformAttribute: transformAttribute
+							debug: @_debug
+						).applyTransform()
 
 				if layer.classes
 					for cssClass in layer.classes

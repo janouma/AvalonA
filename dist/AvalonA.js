@@ -423,8 +423,8 @@
     function Transformer(params) {
       this._onTweenComplete = bind(this._onTweenComplete, this);
       this._from = params.from;
-      this._transformAttribute = params.transformAttribute;
       this._isRoot = params.isRoot;
+      this._transformAttribute = params.transformAttribute;
       this._debug = params.debug || false;
       if (!this._from) {
         throw "[Transformer] - constructor - from argument must be defined";
@@ -441,15 +441,18 @@
     }
 
     Transformer.prototype.applyTransform = function() {
-      var from, isRoot, transformAttribute;
-      from = this._from;
-      isRoot = this._isRoot;
+      this._calcTransformsCount();
+      return this._applyTransform(this._from, this._isRoot);
+    };
+
+    Transformer.prototype._calcTransformsCount = function() {
+      var from, transformAttribute;
       transformAttribute = this._transformAttribute;
+      from = this._from;
       this._transformsCount = from.querySelectorAll("[" + transformAttribute + "]").length;
       if (from.getAttribute(transformAttribute)) {
-        this._transformsCount++;
+        return this._transformsCount++;
       }
-      return this._applyTransform(from, isRoot);
     };
 
     Transformer.prototype._applyTransform = function(from, isRoot) {
@@ -491,7 +494,12 @@
             layer.registered = true;
             layer.on.refresh.register((function(_this) {
               return function(layer) {
-                return _this._applyTransform(layer.node);
+                return new Transformer({
+                  from: layer.node,
+                  isRoot: false,
+                  transformAttribute: transformAttribute,
+                  debug: _this._debug
+                }).applyTransform();
               };
             })(this));
           }
