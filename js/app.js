@@ -41,7 +41,6 @@ require(
 		* Init steps
 		* *******************/
 		var imgLoader = Object.create(ResponsiveImageLoader);
-		var placeholder = document.querySelector('#t3d-frame').getAttribute('data-placeholder');
 		var pages = Array.prototype.slice.call(document.querySelectorAll('img.front.page'));
 
 		imgLoader.basenames = [
@@ -51,8 +50,6 @@ require(
 
 		imgLoader.mediaQuery = 'screen and (min-width: 42em)';
 		imgLoader.init();
-
-		pages.forEach(function setPlaceholder(page){ page.src = placeholder; });
 
 		/********************
 		* Start Avalon (A)
