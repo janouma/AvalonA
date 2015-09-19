@@ -46,7 +46,7 @@ window.onload = ->
 
 		#idleTimeout: -1
 
-		#debug: on
+		debug: on
 	)
 
 	frame3d2 = AvalonA(

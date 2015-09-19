@@ -192,12 +192,15 @@ defineAvalonA = (TweenLite)->
 
 			console.log "rootNode: #{DomUtil.getDebugName rootNode}" if @debug is on
 
-			layers = new Transformer(
+			transformer = new Transformer(
 				from: rootNode
 				isRoot: fromRoot
 				transformAttribute: @transformAttribute
 				debug: @debug
-			).applyTransform()
+			)
+
+			transformer.on.complete.register => @onrefresh?()
+			layers = transformer.applyTransform()
 
 			if fromRoot then @layers = layers
 
@@ -222,7 +225,6 @@ defineAvalonA = (TweenLite)->
 			@addPerspective()
 			layers = @refreshTransform()
 			@trackMouseMovements()
-			@onrefresh?()
 			@animation?.play @transformedLayer, @transformAttribute
 			layers
 

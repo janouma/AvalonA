@@ -1,4 +1,7 @@
 class Signal
+
+	_Ø: Object.create(null)
+
 	register: (listener)->
 		if typeof listener is 'function'
 			(@_listeners ?= []).push listener
@@ -12,5 +15,4 @@ class Signal
 
 	send: (sender, data) ->
 		if @_listeners
-			Ø = {}
-			listener.call(Ø, sender, data) for listener in @_listeners
+			listener.call(@_Ø, sender, data) for listener in @_listeners

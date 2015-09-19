@@ -15,9 +15,18 @@ class Transformer
 		if not @_transformAttribute then throw "[Transformer] - constructor - transformAttribute argument must be defined"
 		if not @_isRoot? then throw "[Transformer] - constructor - isRoot argument must be defined"
 
+		@on = complete: new Signal
 
 
-	applyTransform: -> @_applyTransform @_from, @_isRoot
+
+	applyTransform: ->
+		from = @_from
+		isRoot = @_isRoot
+		transformAttribute = @_transformAttribute
+
+		@_transformsCount = from.querySelectorAll("[#{transformAttribute}]").length
+		if from.getAttribute(transformAttribute) then @_transformsCount++
+		@_applyTransform from, isRoot
 
 
 
@@ -27,7 +36,9 @@ class Transformer
 
 		@_applyOn from
 
-		if @_debug is on then console.log  "[Transformer] - refreshTransform - firstChild: #{DomUtil.getDebugName from.firstElementChild}"
+		if @_debug is on
+			debugNode = from.firstElementChild
+			if debugNode then console.log  "[Transformer] - refreshTransform - firstChild: #{DomUtil.getDebugName debugNode}"
 
 		for child in from.children
 			subLayers = @_refreshChildTransform child
@@ -123,7 +134,7 @@ class Transformer
 					target
 					@_static.TRANSITION_DURATION
 					css: css
-				)
+				).eventCallback 'onComplete', @_onTweenComplete
 
 
 
@@ -139,3 +150,9 @@ class Transformer
 			if transformBackup then backup.transform = transformBackup
 
 			target.setAttribute(Transformer.CSS_BACKUP_ATTRIBUTE, JSON.stringify(backup))
+
+
+
+	_onTweenComplete:=>
+		if @_debug is on then console.log "[Transformer] - _onTweenComplete - @_transformsCount: #{@_transformsCount}"
+		if --@_transformsCount is 0 then @on.complete.send @

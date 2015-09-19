@@ -282,6 +282,8 @@
   Signal = (function() {
     function Signal() {}
 
+    Signal.prototype._Ø = Object.create(null);
+
     Signal.prototype.register = function(listener) {
       if (typeof listener === 'function') {
         return (this._listeners != null ? this._listeners : this._listeners = []).push(listener);
@@ -303,14 +305,13 @@
     };
 
     Signal.prototype.send = function(sender, data) {
-      var i, len, listener, ref, results, Ø;
+      var i, len, listener, ref, results;
       if (this._listeners) {
-        Ø = {};
         ref = this._listeners;
         results = [];
         for (i = 0, len = ref.length; i < len; i++) {
           listener = ref[i];
-          results.push(listener.call(Ø, sender, data));
+          results.push(listener.call(this._Ø, sender, data));
         }
         return results;
       }
@@ -420,6 +421,7 @@
     Transformer.prototype._static = Transformer;
 
     function Transformer(params) {
+      this._onTweenComplete = bind(this._onTweenComplete, this);
       this._from = params.from;
       this._transformAttribute = params.transformAttribute;
       this._isRoot = params.isRoot;
@@ -433,14 +435,25 @@
       if (this._isRoot == null) {
         throw "[Transformer] - constructor - isRoot argument must be defined";
       }
+      this.on = {
+        complete: new Signal
+      };
     }
 
     Transformer.prototype.applyTransform = function() {
-      return this._applyTransform(this._from, this._isRoot);
+      var from, isRoot, transformAttribute;
+      from = this._from;
+      isRoot = this._isRoot;
+      transformAttribute = this._transformAttribute;
+      this._transformsCount = from.querySelectorAll("[" + transformAttribute + "]").length;
+      if (from.getAttribute(transformAttribute)) {
+        this._transformsCount++;
+      }
+      return this._applyTransform(from, isRoot);
     };
 
     Transformer.prototype._applyTransform = function(from, isRoot) {
-      var child, classSelector, cssClass, i, j, k, layer, layers, len, len1, len2, ref, ref1, ref2, ref3, subLayers, transformAttribute;
+      var child, classSelector, cssClass, debugNode, i, j, k, layer, layers, len, len1, len2, ref, ref1, ref2, ref3, subLayers, transformAttribute;
       if (isRoot == null) {
         isRoot = false;
       }
@@ -450,7 +463,10 @@
       transformAttribute = this._transformAttribute;
       this._applyOn(from);
       if (this._debug === true) {
-        console.log("[Transformer] - refreshTransform - firstChild: " + (DomUtil.getDebugName(from.firstElementChild)));
+        debugNode = from.firstElementChild;
+        if (debugNode) {
+          console.log("[Transformer] - refreshTransform - firstChild: " + (DomUtil.getDebugName(debugNode)));
+        }
       }
       ref = from.children;
       for (i = 0, len = ref.length; i < len; i++) {
@@ -575,7 +591,7 @@
           }
           return TweenLite.to(target, this._static.TRANSITION_DURATION, {
             css: css
-          });
+          }).eventCallback('onComplete', this._onTweenComplete);
         }
       }
     };
@@ -593,6 +609,15 @@
           backup.transform = transformBackup;
         }
         return target.setAttribute(Transformer.CSS_BACKUP_ATTRIBUTE, JSON.stringify(backup));
+      }
+    };
+
+    Transformer.prototype._onTweenComplete = function() {
+      if (this._debug === true) {
+        console.log("[Transformer] - _onTweenComplete - @_transformsCount: " + this._transformsCount);
+      }
+      if (--this._transformsCount === 0) {
+        return this.on.complete.send(this);
       }
     };
 
@@ -826,7 +851,7 @@
       };
 
       Frame3d.prototype.refreshTransform = function(root) {
-        var fromRoot, layers, rootNode;
+        var fromRoot, layers, rootNode, transformer;
         if (this.disabled === true) {
           return;
         }
@@ -841,12 +866,18 @@
         if (this.debug === true) {
           console.log("rootNode: " + (DomUtil.getDebugName(rootNode)));
         }
-        layers = new Transformer({
+        transformer = new Transformer({
           from: rootNode,
           isRoot: fromRoot,
           transformAttribute: this.transformAttribute,
           debug: this.debug
-        }).applyTransform();
+        });
+        transformer.on.complete.register((function(_this) {
+          return function() {
+            return typeof _this.onrefresh === "function" ? _this.onrefresh() : void 0;
+          };
+        })(this));
+        layers = transformer.applyTransform();
         if (fromRoot) {
           this.layers = layers;
         }
@@ -877,9 +908,6 @@
         this.addPerspective();
         layers = this.refreshTransform();
         this.trackMouseMovements();
-        if (typeof this.onrefresh === "function") {
-          this.onrefresh();
-        }
         if ((ref1 = this.animation) != null) {
           ref1.play(this.transformedLayer, this.transformAttribute);
         }
