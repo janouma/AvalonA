@@ -422,10 +422,7 @@
 
     function Transformer(params) {
       this._onTweenComplete = bind(this._onTweenComplete, this);
-      this._from = params.from;
-      this._isRoot = params.isRoot;
-      this._transformAttribute = params.transformAttribute;
-      this._debug = params.debug || false;
+      this._from = params.from, this._isRoot = params.isRoot, this._transformAttribute = params.transformAttribute, this._debug = params.debug;
       if (!this._from) {
         throw "[Transformer] - constructor - from argument must be defined";
       }
@@ -888,8 +885,16 @@
           debug: this.debug
         });
         transformer.on.complete.register((function(_this) {
-          return function(sender, data) {
-            return typeof _this.onrefresh === "function" ? _this.onrefresh(sender, data) : void 0;
+          return function(sender, isRoot) {
+            return typeof _this.onrefresh === "function" ? _this.onrefresh(sender, isRoot) : void 0;
+          };
+        })(this));
+        transformer.on.complete.register((function(_this) {
+          return function(sender, isRoot) {
+            if (isRoot && !_this._enableTriggered) {
+              _this._enableTriggered = true;
+              return typeof _this.onenable === "function" ? _this.onenable(sender, isRoot) : void 0;
+            }
           };
         })(this));
         layers = transformer.applyTransform();
@@ -900,18 +905,9 @@
       };
 
       Frame3d.prototype.refresh = function() {
-        var error, layers, ref, ref1;
-        this.disabled = false;
-        if (!this.ready) {
-          try {
-            if (typeof this.onready === "function") {
-              this.onready();
-            }
-          } catch (_error) {
-            error = _error;
-            console.error('AvalonA - refresh - Error occured on ready', error);
-          }
-          this.ready = true;
+        var layers, ref, ref1;
+        if (this.disabled === true) {
+          return;
         }
         if (this.frame) {
           this.untrackMouseMovements();
@@ -930,15 +926,35 @@
       };
 
       Frame3d.prototype.start = function() {
-        return this.refresh();
+        return this.enable();
       };
 
       Frame3d.prototype.enable = function() {
+        var error;
+        if (this.disabled === false) {
+          return;
+        }
+        this.disabled = false;
+        this._enableTriggered = false;
+        if (!this.ready) {
+          try {
+            if (typeof this.onready === "function") {
+              this.onready();
+            }
+          } catch (_error) {
+            error = _error;
+            console.error('AvalonA - refresh - Error occured on ready', error);
+          }
+          this.ready = true;
+        }
         return this.refresh();
       };
 
       Frame3d.prototype.disable = function() {
         var ref;
+        if (this.disabled === true) {
+          return;
+        }
         if (this.frame) {
           this.untrackMouseMovements();
           this.disableRotationEvent();
@@ -976,7 +992,7 @@
       };
 
       Frame3d.prototype.init = function(options) {
-        var ref, ref1, ref2, ref3;
+        var ref, ref1;
         this.transformAttribute = options.tAttr || 'data-avalonA-transform';
         this.fx = typeof options.fx === 'function' ? options.fx : noeffect;
         this.fy = typeof options.fy === 'function' ? options.fy : noeffect;
@@ -986,30 +1002,21 @@
         if ((ref = this.activeArea) != null) {
           ref.debug = this.debug;
         }
-        this.onstartrotation = (ref1 = options.on) != null ? ref1.startrotation : void 0;
-        this.onendrotation = (ref2 = options.on) != null ? ref2.endrotation : void 0;
-        this.onready = (ref3 = options.on) != null ? ref3.ready : void 0;
-        this.onrefresh = options.on && (options.on.refresh || options.on.enable || options.on.start);
+        if (options.on) {
+          ref1 = options.on, this.onstartrotation = ref1.startrotation, this.onendrotation = ref1.endrotation, this.onready = ref1.ready, this.onrefresh = ref1.refresh, this.onenable = ref1.enable;
+        }
         this.animation = options.animation;
         this.idleTimeout = parseInt(options.idleTimeout || 1000, 10);
         if (this.animation) {
           this.assertAnimatorValid();
         }
         return Object.defineProperties(this, {
-          onenable: {
-            get: function() {
-              return this.onrefresh;
-            },
-            set: function(onenable) {
-              return this.onrefresh = onenable;
-            }
-          },
           onstart: {
             get: function() {
-              return this.onrefresh;
+              return this.onenable;
             },
             set: function(onstart) {
-              return this.onrefresh = onstart;
+              return this.onenable = onstart;
             }
           }
         });

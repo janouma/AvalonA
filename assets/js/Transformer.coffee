@@ -6,10 +6,12 @@ class Transformer
 
 
 	constructor: (params)->
-		@_from = params.from
-		@_isRoot = params.isRoot
-		@_transformAttribute = params.transformAttribute
-		@_debug = params.debug or no
+		{
+			from: @_from
+			isRoot: @_isRoot
+			transformAttribute: @_transformAttribute
+			debug: @_debug
+		} = params
 
 		if not @_from then throw "[Transformer] - constructor - from argument must be defined"
 		if not @_transformAttribute then throw "[Transformer] - constructor - transformAttribute argument must be defined"
@@ -115,17 +117,7 @@ class Transformer
 				[prop, value] = t.split(':');
 				transforms[prop.trim()] = parseFloat value.trim(), 10
 
-			{
-				x: x
-				y: y
-				z: z
-				rx: rx
-				ry: ry
-				rz: rz
-				ox: ox
-				oy: oy
-				oz: oz
-			} = transforms
+			{ x, y, z, rx, ry, rz, ox, oy, oz } = transforms
 
 			if x or y or z or rx or ry or rz or ox or oy or oz
 				css = {}

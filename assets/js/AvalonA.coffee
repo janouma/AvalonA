@@ -202,7 +202,14 @@ defineAvalonA = ->
 				debug: @debug
 			)
 
-			transformer.on.complete.register (sender, data)=> @onrefresh?(sender, data)
+			transformer.on.complete.register (sender, isRoot)=>
+				@onrefresh?(sender, isRoot)
+
+			transformer.on.complete.register (sender, isRoot)=>
+				if isRoot and not @_enableTriggered
+					@_enableTriggered = yes
+					@onenable?(sender, isRoot)
+
 			layers = transformer.applyTransform()
 
 			if fromRoot then @layers = layers
@@ -211,14 +218,7 @@ defineAvalonA = ->
 
 
 		refresh: ->
-			@disabled = off
-
-			if not @ready
-				try
-					@onready?()
-				catch error
-					console.error 'AvalonA - refresh - Error occured on ready', error
-				@ready = yes
+			return if @disabled is on
 
 			if @frame
 				@untrackMouseMovements()
@@ -232,11 +232,29 @@ defineAvalonA = ->
 			layers
 
 
-		start: -> @refresh()
+		start: -> @enable()
 
-		enable: -> @refresh()
+
+		enable: ->
+			return if @disabled is off
+
+			@disabled = off
+			@_enableTriggered = no
+
+			if not @ready
+				try
+					@onready?()
+				catch error
+					console.error 'AvalonA - refresh - Error occured on ready', error
+
+				@ready = yes
+
+			@refresh()
+
 
 		disable: ->
+			return if @disabled is on
+
 			if @frame
 				@untrackMouseMovements()
 				@disableRotationEvent()
@@ -268,23 +286,25 @@ defineAvalonA = ->
 			@fy = if typeof options.fy is 'function' then options.fy else noeffect
 			@activeArea = new ActiveArea(options.activeArea) if options.activeArea
 			@activeArea?.debug = @debug
-			@onstartrotation = options.on?.startrotation
-			@onendrotation = options.on?.endrotation
-			@onready = options.on?.ready
-			@onrefresh = options.on and (options.on.refresh or options.on.enable or options.on.start)
+
+			if options.on then {
+				startrotation: @onstartrotation
+				endrotation: @onendrotation
+				ready: @onready
+				refresh: @onrefresh
+				enable: @onenable
+			} = options.on
+
 			@animation = options.animation
 			@idleTimeout = parseInt(options.idleTimeout or 1000, 10)
-			@assertAnimatorValid() if @animation
+
+			if @animation then @assertAnimatorValid()
 
 			Object.defineProperties(
 				@
-				onenable:
-					get: -> @onrefresh
-					set: (onenable)-> @onrefresh = onenable
-
 				onstart:
-					get: -> @onrefresh
-					set: (onstart)-> @onrefresh = onstart
+					get: -> @onenable
+					set: (onstart)-> @onenable = onstart
 			)
 
 

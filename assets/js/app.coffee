@@ -43,6 +43,14 @@ window.onload = ->
 					root
 				)
 
+			refresh: (from, root)->
+				console.log(
+					'frame3d has been refreshed: from ='
+					(from.id or from.tagName)
+					'; root:'
+					root
+				)
+
 		#animation: AvalonAnimation.Balance()
 		#animation: AvalonAnimation.Spotlight()
 		animation: AvalonAnimation.Atom({
@@ -86,9 +94,20 @@ window.onload = ->
 		debug: on
 	)
 
+	# shouldn't appear
+	frame3d2.onstart = -> console.log 'frame3d II is started'
+
 	frame3d2.onenable = (from, root)->
 		console.log(
 			'frame3d II is enabled: from ='
+			(from.id or from.tagName)
+			'; root:'
+			root
+		)
+
+	frame3d2.onrefresh = (from, root)->
+		console.log(
+			'frame3d II has been refreshed: from ='
 			(from.id or from.tagName)
 			'; root:'
 			root
