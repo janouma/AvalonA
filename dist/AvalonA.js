@@ -918,9 +918,11 @@
         this.find3dFrames();
         this.addPerspective();
         layers = this.refreshTransform();
-        this.trackMouseMovements();
-        if ((ref1 = this.animation) != null) {
-          ref1.play(this.transformedLayer, this.transformAttribute);
+        if (!this.frozen) {
+          this.trackMouseMovements();
+          if ((ref1 = this.animation) != null) {
+            ref1.play(this.transformedLayer, this.transformAttribute);
+          }
         }
         return layers;
       };
@@ -943,7 +945,7 @@
             }
           } catch (_error) {
             error = _error;
-            console.error('AvalonA - refresh - Error occured on ready', error);
+            console.error('[AvalonA] - enable - Error occured on ready', error);
           }
           this.ready = true;
         }
@@ -969,8 +971,10 @@
 
       Frame3d.prototype.disableRotationEvent = function() {
         clearTimeout(this.rotationTimeoutId);
-        this.rotating = false;
-        return typeof this.onendrotation === "function" ? this.onendrotation() : void 0;
+        if (this.rotating) {
+          this.rotating = false;
+          return typeof this.onendrotation === "function" ? this.onendrotation() : void 0;
+        }
       };
 
       Frame3d.prototype.flatten = function() {
@@ -989,6 +993,31 @@
           }));
         }
         return results;
+      };
+
+      Frame3d.prototype.freeze = function() {
+        var ref;
+        if (this.frozen === true || !this.frame) {
+          return;
+        }
+        this.untrackMouseMovements();
+        this.disableRotationEvent();
+        if ((ref = this.animation) != null) {
+          ref.pause();
+        }
+        return this.frozen = true;
+      };
+
+      Frame3d.prototype.release = function() {
+        var ref;
+        if (this.frozen === false || !this.frame) {
+          return;
+        }
+        this.trackMouseMovements();
+        if ((ref = this.animation) != null) {
+          ref.play(this.transformedLayer, this.transformAttribute);
+        }
+        return this.frozen = false;
       };
 
       Frame3d.prototype.init = function(options) {

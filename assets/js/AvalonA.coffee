@@ -133,7 +133,7 @@ defineAvalonA = ->
 		onrotation: ->
 			clearTimeout @rotationTimeoutId
 
-			if not @rotating
+			unless @rotating
 				@animation?.pause()
 				@onstartrotation?()
 				@rotating = on
@@ -227,8 +227,11 @@ defineAvalonA = ->
 			@find3dFrames()
 			@addPerspective()
 			layers = @refreshTransform()
-			@trackMouseMovements()
-			@animation?.play @transformedLayer, @transformAttribute
+
+			if not @frozen
+				@trackMouseMovements()
+				@animation?.play @transformedLayer, @transformAttribute
+
 			layers
 
 
@@ -245,7 +248,7 @@ defineAvalonA = ->
 				try
 					@onready?()
 				catch error
-					console.error 'AvalonA - refresh - Error occured on ready', error
+					console.error '[AvalonA] - enable - Error occured on ready', error
 
 				@ready = yes
 
@@ -267,8 +270,9 @@ defineAvalonA = ->
 
 		disableRotationEvent: ->
 			clearTimeout @rotationTimeoutId
-			@rotating = off
-			@onendrotation?()
+			if @rotating
+				@rotating = off
+				@onendrotation?()
 
 
 		flatten: ->
@@ -278,6 +282,23 @@ defineAvalonA = ->
 				console.log "flattening layer '#{DomUtil.getDebugName node}'" if @debug is on
 				css = JSON.parse node.getAttribute(Transformer.CSS_BACKUP_ATTRIBUTE)
 				_TweenLite.set node, css: css
+
+
+		freeze: ->
+			return if @frozen is yes or not @frame
+
+			@untrackMouseMovements()
+			@disableRotationEvent()
+			@animation?.pause()
+			@frozen = yes
+
+
+		release: ->
+			return if @frozen is no or not @frame
+
+			@trackMouseMovements()
+			@animation?.play @transformedLayer, @transformAttribute
+			@frozen = no
 
 
 		init: (options)->

@@ -6,10 +6,9 @@ window.onload = ->
 		console.debug frame3d.enable()
 		console.debug frame3d2.enable()
 
-		document.getElementById('enable').style.display = 'none'
-		node.style.display = 'none' for node in document.querySelectorAll('#enable2,#enable3')
-		node.style.display = 'block' for node in document.querySelectorAll('#disable,#disable2,#disable3')
-		node.style.display = 'inline' for node in document.querySelectorAll('#shuffle-all,#shuffle-one')
+		node.style.display = 'none' for node in document.querySelectorAll('#enable,#enable2,#enable3')
+		node.style.display = 'block' for node in document.querySelectorAll('#disable2,#disable3')
+		node.style.display = 'inline' for node in document.querySelectorAll('#disable,#shuffle-all,#shuffle-one')
 
 	frame3d = AvalonA(
 		'body-3d'
@@ -128,7 +127,8 @@ window.onload = ->
 			node.style.display = 'none' for node in document.querySelectorAll('#shuffle-all,#shuffle-one')
 			this.style.display = 'none'
 			node.style.display = 'none' for node in document.querySelectorAll('#disable2,#disable3')
-			node.style.display = 'block' for node in document.querySelectorAll('#enable,#enable2,#enable3')
+			document.querySelector('#enable').style.display = 'inline'
+			node.style.display = 'block' for node in document.querySelectorAll('#enable2,#enable3')
 			frame3d.disable()
 			frame3d2.disable()
 
@@ -247,7 +247,7 @@ window.onload = ->
 		->
 			node.style.display = 'none' for node in document.querySelectorAll('#aa3d,#a3d2')
 			this.style.display = 'none'
-			document.getElementById('show').style.display = 'block'
+			document.getElementById('show').style.display = 'inline'
 
 		no
 	)
@@ -257,7 +257,29 @@ window.onload = ->
 		->
 			node.style.display = 'block' for node in document.querySelectorAll('#aa3d,#a3d2')
 			this.style.display = 'none'
-			document.getElementById('hide').style.display = 'block'
+			document.getElementById('hide').style.display = 'inline'
+
+		no
+	)
+
+	document.getElementById('freeze').addEventListener(
+		'click'
+		->
+			frame3d.freeze()
+			frame3d2.freeze()
+			this.style.display = 'none'
+			document.getElementById('release').style.display = 'inline'
+
+		no
+	)
+	
+	document.getElementById('release').addEventListener(
+		'click'
+		->
+			frame3d.release()
+			frame3d2.release()
+			this.style.display = 'none'
+			document.getElementById('freeze').style.display = 'inline'
 
 		no
 	)
@@ -286,6 +308,7 @@ window.onload = ->
 
 				if results.fps >= recommendedFps
 					enableAll()
+					node.style.display = 'inline' for node in document.querySelectorAll('#hide,#freeze')
 				else
 					console.log("Your frame rate is too low (recommended: #{recommendedFps}fps)")
 		5000
