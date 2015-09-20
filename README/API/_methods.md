@@ -16,3 +16,9 @@ Flatten `transformed layer`, remove mouse movement tracking, unable events and p
 ##### <a name="refreshTransform"></a> *refreshTransform( [target : selector OR html node] )*
 Update **transformations** according to new values of `data-avalonA-transform`.
 When **target** is provided, only first matching html node get updated.
+
+##### *freeze()*
+Stop animation – *if any* – and disable events if Avalon(A) is "enabled".
+
+##### *release()*
+Resume animation – *if any* – and enable events if Avalon(A) is "enabled".
