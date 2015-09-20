@@ -70,8 +70,10 @@ require(
 		avalona.onenable = function onenable(){
 			var descriptions = Array.prototype.slice.call(document.querySelectorAll('.sheet .description'));
 			var framesTimeout = 900;
+			var portfolioScaler = document.querySelector('.portfolio-scaler');
 
-			document.querySelector('.portfolio-stand').classList.remove('hidden');
+			portfolioScaler.classList.remove('hidden');
+			portfolioScaler.classList.remove('shrink');
 			Object.create(PhotoLoader).init(pages, descriptions, framesTimeout);
 		};
 
