@@ -4,11 +4,11 @@ Fetch `3d Frame` and `transformed layer` from the DOM and apply initial setup.
 
 Return **layers** *([see **layers** property](#layers))*.
 
-##### *start()*
-Alias for ***refresh()***.
-
 ##### *enable()*
-Alias for ***refresh()***.
+Set `disabled` flag to `false` and call ***refresh()***.
+
+##### *start()*
+Alias for ***enable()***.
 
 ##### *disable()*
 Flatten `transformed layer`, remove mouse movement tracking, unable events and pause animation.

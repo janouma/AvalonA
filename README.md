@@ -171,11 +171,11 @@ Fetch `3d Frame` and `transformed layer` from the DOM and apply initial setup.
 
 Return **layers** *([see **layers** property](#layers))*.
 
-##### *start()*
-Alias for ***refresh()***.
-
 ##### *enable()*
-Alias for ***refresh()***.
+Set `disabled` flag to `false` and call ***refresh()***.
+
+##### *start()*
+Alias for ***enable()***.
 
 ##### *disable()*
 Flatten `transformed layer`, remove mouse movement tracking, unable events and pause animation.
@@ -259,16 +259,19 @@ Triggered when `transformed layer` rotation starts.
 Triggered when `transformed layer` rotation ends.
 
 ##### *ready*
-Triggered ONLY ONCE by `start()`, `refresh()` or `enable()` BEFORE transformations gets actually applied.
+Triggered ONLY ONCE by `start()` or `enable()` BEFORE transformations gets actually applied.
 
 ##### *refresh*
-Triggered every time by `start()`, `refresh()` or `enable()` AFTER transformations has been applied.
-
-##### *start*
-Alias for `refresh` event.
+Triggered every time by `refresh()` or `refreshTransform()` AFTER transformations has been applied.
 
 ##### *enable*
-Alias for `refresh` event.
+Triggered every time Avalon(A) gets "enabled" – *by `enable()`* – AFTER transformations has been applied.
+
+If Avalon(A) was already "enabled" by the time `enable()` gets called, the event is not triggered again.
+
+##### *start*
+Alias for `enable` event.
+
 
 # <a name="avalonAnimation"></a> AvalonAnimation
 Provides a collection of preset animations.
