@@ -68,11 +68,10 @@ require(
 		});
 
 		avalona.onenable = function onenable(){
-			var portfolioStand = document.querySelector('.portfolio-stand');
 			var descriptions = Array.prototype.slice.call(document.querySelectorAll('.sheet .description'));
 			var framesTimeout = 900;
 
-			portfolioStand.classList.remove('hidden');
+			document.querySelector('.portfolio-stand').classList.remove('hidden');
 			Object.create(PhotoLoader).init(pages, descriptions, framesTimeout);
 		};
 

@@ -122,7 +122,7 @@
         </section>
 
         <section class="main-content">
-<p><em>version: 1.1.1</em></p>
+<p><em>version: 1.2.0</em></p>
 
 <p><strong>Avalon(A)</strong> allows you to easily add 3d to a set of html elements to simulate a deepness effect. To make this 3d effect noticeable, all html elements pertaining to the <code>transformed layer</code> <em>(basically the root container to which the 3d effect get applied to)</em> - rotate on their x and y axis according to mouse movements.</p>
 
@@ -327,13 +327,13 @@ AvalonA('frame-3d', 'avalona-inner-frame', options).start();
 
 <p>Return <strong>layers</strong> <em>(<a href="#layers">see <strong>layers</strong> property</a>)</em>.</p>
 
-<h5 id="start"><em>start()</em></h5>
-
-<p>Alias for <strong><em>refresh()</em></strong>.</p>
-
 <h5 id="enable"><em>enable()</em></h5>
 
-<p>Alias for <strong><em>refresh()</em></strong>.</p>
+<p>Set <code>disabled</code> flag to <code>false</code> and call <strong><em>refresh()</em></strong>.</p>
+
+<h5 id="start"><em>start()</em></h5>
+
+<p>Alias for <strong><em>enable()</em></strong>.</p>
 
 <h5 id="disable"><em>disable()</em></h5>
 
@@ -343,6 +343,14 @@ AvalonA('frame-3d', 'avalona-inner-frame', options).start();
 
 <p>Update <strong>transformations</strong> according to new values of <code>data-avalonA-transform</code>.
 When <strong>target</strong> is provided, only first matching html node get updated.</p>
+
+<h5 id="freeze"><em>freeze()</em></h5>
+
+<p>Stop animation – <em>if any</em> – and disable events if Avalon(A) is &#8220;enabled&#8221;.</p>
+
+<h5 id="release"><em>release()</em></h5>
+
+<p>Resume animation – <em>if any</em> – and enable events if Avalon(A) is &#8220;enabled&#8221;.</p>
 
 <h2 id="anamepropertiesaproperties"><a name="properties"></a> Properties</h2>
 
@@ -425,19 +433,21 @@ a.start();
 
 <h5 id="ready"><em>ready</em></h5>
 
-<p>Triggered ONLY ONCE by <code>start()</code>, <code>refresh()</code> or <code>enable()</code> BEFORE transformations gets actually applied.</p>
+<p>Triggered ONLY ONCE by <code>start()</code> or <code>enable()</code> BEFORE transformations gets actually applied.</p>
 
 <h5 id="refresh"><em>refresh</em></h5>
 
-<p>Triggered every time by <code>start()</code>, <code>refresh()</code> or <code>enable()</code> AFTER transformations has been applied.</p>
-
-<h5 id="start"><em>start</em></h5>
-
-<p>Alias for <code>refresh</code> event.</p>
+<p>Triggered every time by <code>refresh()</code> or <code>refreshTransform()</code> AFTER transformations has been applied.</p>
 
 <h5 id="enable"><em>enable</em></h5>
 
-<p>Alias for <code>refresh</code> event.</p>
+<p>Triggered every time Avalon(A) gets &#8220;enabled&#8221; – <em>by <code>enable()</code></em> – AFTER transformations has been applied.</p>
+
+<p>If Avalon(A) was already &#8220;enabled&#8221; by the time <code>enable()</code> gets called, the event is not triggered again.</p>
+
+<h5 id="start"><em>start</em></h5>
+
+<p>Alias for <code>enable</code> event.</p>
 
 <h1 id="anameavalonanimationaavalonanimation"><a name="avalonAnimation"></a> AvalonAnimation</h1>
 
