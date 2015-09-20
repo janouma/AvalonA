@@ -268,9 +268,9 @@ window.onload = ->
 			frame3d.freeze()
 			frame3d2.freeze()
 
-			if frame3d.frozen and frame3d.frozen
-				this.style.display = 'none'
-				document.getElementById('release').style.display = 'inline'
+			if frame3d.frozen and frame3d2.frozen
+				node.style.display = 'none' for node in document.querySelectorAll('#freeze,#freeze2,#freeze3')
+				node.style.display = 'inline' for node in document.querySelectorAll('#release,#release2,#release3')
 
 		no
 	)
@@ -281,9 +281,57 @@ window.onload = ->
 			frame3d.release()
 			frame3d2.release()
 
-			unless frame3d.frozen or frame3d.frozen
+			unless frame3d.frozen or frame3d2.frozen
+				node.style.display = 'none' for node in document.querySelectorAll('#release,#release2,#release3')
+				node.style.display = 'inline' for node in document.querySelectorAll('#freeze,#freeze2,#freeze3')
+
+		no
+	)
+
+	document.getElementById('freeze2').addEventListener(
+		'click'
+		->
+			frame3d.freeze()
+
+			if frame3d.frozen
 				this.style.display = 'none'
-				document.getElementById('freeze').style.display = 'inline'
+				document.getElementById('release2').style.display = 'inline'
+
+		no
+	)
+
+	document.getElementById('release2').addEventListener(
+		'click'
+		->
+			frame3d.release()
+
+			unless frame3d.frozen
+				this.style.display = 'none'
+				document.getElementById('freeze2').style.display = 'inline'
+
+		no
+	)
+
+	document.getElementById('freeze3').addEventListener(
+		'click'
+		->
+			frame3d2.freeze()
+
+			if frame3d2.frozen
+				this.style.display = 'none'
+				document.getElementById('release3').style.display = 'inline'
+
+		no
+	)
+
+	document.getElementById('release3').addEventListener(
+		'click'
+		->
+			frame3d2.release()
+
+			unless frame3d2.frozen
+				this.style.display = 'none'
+				document.getElementById('freeze3').style.display = 'inline'
 
 		no
 	)
@@ -312,7 +360,7 @@ window.onload = ->
 
 				if results.fps >= recommendedFps
 					enableAll()
-					node.style.display = 'inline' for node in document.querySelectorAll('#hide,#freeze')
+					node.style.display = 'inline' for node in document.querySelectorAll('#hide,#freeze,#freeze2,#freeze3')
 				else
 					console.log("Your frame rate is too low (recommended: #{recommendedFps}fps)")
 		5000
