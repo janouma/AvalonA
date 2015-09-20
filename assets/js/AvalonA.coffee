@@ -285,7 +285,7 @@ defineAvalonA = ->
 
 
 		freeze: ->
-			return if @frozen is yes or not @frame
+			return if @disabled is yes or @frozen is yes or not @frame
 
 			@untrackMouseMovements()
 			@disableRotationEvent()
@@ -294,7 +294,7 @@ defineAvalonA = ->
 
 
 		release: ->
-			return if @frozen is no or not @frame
+			return if @disabled is yes or @frozen is no or not @frame
 
 			@trackMouseMovements()
 			@animation?.play @transformedLayer, @transformAttribute

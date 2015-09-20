@@ -997,7 +997,7 @@
 
       Frame3d.prototype.freeze = function() {
         var ref;
-        if (this.frozen === true || !this.frame) {
+        if (this.disabled === true || this.frozen === true || !this.frame) {
           return;
         }
         this.untrackMouseMovements();
@@ -1010,7 +1010,7 @@
 
       Frame3d.prototype.release = function() {
         var ref;
-        if (this.frozen === false || !this.frame) {
+        if (this.disabled === true || this.frozen === false || !this.frame) {
           return;
         }
         this.trackMouseMovements();

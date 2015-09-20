@@ -267,19 +267,23 @@ window.onload = ->
 		->
 			frame3d.freeze()
 			frame3d2.freeze()
-			this.style.display = 'none'
-			document.getElementById('release').style.display = 'inline'
+
+			if frame3d.frozen and frame3d.frozen
+				this.style.display = 'none'
+				document.getElementById('release').style.display = 'inline'
 
 		no
 	)
-	
+
 	document.getElementById('release').addEventListener(
 		'click'
 		->
 			frame3d.release()
 			frame3d2.release()
-			this.style.display = 'none'
-			document.getElementById('freeze').style.display = 'inline'
+
+			unless frame3d.frozen or frame3d.frozen
+				this.style.display = 'none'
+				document.getElementById('freeze').style.display = 'inline'
 
 		no
 	)
