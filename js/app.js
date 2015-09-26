@@ -58,6 +58,8 @@ require(
 		* Start Avalon (A)
 		* *******************/
 
+		document.querySelector(".preview").classList.add("halo");
+
 		new SpeedTester(3).run().oncomplete(startAvalonA);
 
 		function startAvalonA(speedTestResults) {
