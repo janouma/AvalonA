@@ -42,4 +42,4 @@ Check out this [code sample](https://raw.github.com/janouma/AvalonA/master/dist/
 
 
 # <a name="preview"></a> Preview
-**[see jsFiddle preview](http://jsfiddle.net/K3kPx/9/show)**
+**[see preview](http://janouma.github.io/AvalonA)**
