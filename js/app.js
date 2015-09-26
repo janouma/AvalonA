@@ -12,7 +12,8 @@ require.config({
 		ResponsiveImageLoader: 'modules/ResponsiveImageLoader',
 		FrameTimer: 'modules/FrameTimer',
 		photos: '../photos/data',
-		PhotoLoader: 'modules/PhotoLoader'
+		PhotoLoader: 'modules/PhotoLoader',
+		SpeedTester: 'avalona/SpeedTester.min'
 	},
 
 	shim: {
@@ -28,14 +29,16 @@ require(
 		'AvalonAnimation',
 		'ResponsiveImageLoader',
 		'FrameTimer',
-		'PhotoLoader'
+		'PhotoLoader',
+		'SpeedTester'
 	],
 	function startApp(
 		AvalonA,
 		AvalonAnimation,
 		ResponsiveImageLoader,
 		FrameTimer,
-		PhotoLoader
+		PhotoLoader,
+		SpeedTester
 	) {
 		/********************
 		* Init steps
@@ -55,44 +58,54 @@ require(
 		* Start Avalon (A)
 		* *******************/
 
-		var avalona = AvalonA('t3d-frame', 't3d-layer', {
-			tAttr: 'transform',
-			fx: function fx(rotation) { return rotation * 0.5; },
-			fy: function fy(rotation) { return rotation * 0.15; },
+		new SpeedTester(3).run().oncomplete(startAvalonA);
 
-			animation: AvalonAnimation.Atom({
-				duration: 10,
-				selector: '.gravity, .group-hole',
-				axis: ['z']
-			})
-		});
+		function startAvalonA(speedTestResults) {
+			var avalona;
+			var requiredFps = 40;
 
-		avalona.onenable = function onenable(){
-			var descriptions = Array.prototype.slice.call(document.querySelectorAll('.sheet .description'));
-			var framesTimeout = 900;
-			var portfolioScaler = document.querySelector('.portfolio-scaler');
+			var options = {
+				tAttr: 'transform',
+				fx: function fx(rotation) { return rotation * 0.5; },
+				fy: function fy(rotation) { return rotation * 0.15; }
+			};
 
-			portfolioScaler.classList.remove('hidden');
-			portfolioScaler.classList.remove('shrink');
-			Object.create(PhotoLoader).init(pages, descriptions, framesTimeout);
-		};
+			if(speedTestResults.fps >= requiredFps){
+				options.animation = AvalonAnimation.Atom({
+					duration: 10,
+					selector: '.gravity, .group-hole',
+					axis: ['z']
+				});
+			}
 
-		avalona.enable();
+			avalona = AvalonA('t3d-frame', 't3d-layer', options);
 
-		/********************
-		* Update Avalon (A)
-		* *******************/
+			avalona.onenable = function onenable() {
+				var descriptions = Array.prototype.slice.call(document.querySelectorAll('.sheet .description'));
+				var framesTimeout = 900;
+				var portfolioScaler = document.querySelector('.portfolio-scaler');
 
-		Object.create(FrameTimer)
-			.every(300)
-			.run(function updateVortex(){
-				avalona.layers['.black-hole']
-					.forEach(function update(layer, index){
-						layer.rx *= -1;
-						layer.ry *= -1;
-						layer.refresh();
-					});
-			});
+				portfolioScaler.classList.remove('hidden');
+				portfolioScaler.classList.remove('shrink');
+				Object.create(PhotoLoader).init(pages, descriptions, framesTimeout);
+			};
 
+			avalona.enable();
+
+			/********************
+			* Update Avalon (A)
+			* *******************/
+
+			Object.create(FrameTimer)
+				.every(300)
+				.run(function updateVortex() {
+					avalona.layers['.black-hole']
+						.forEach(function update(layer, index) {
+							layer.rx *= -1;
+							layer.ry *= -1;
+							layer.refresh();
+						});
+				});
+		}
 	}
 );
