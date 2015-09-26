@@ -126,6 +126,7 @@ p {
  .preview{
    background-color: #1a1a1a;
    background-image: linear-gradient(#1a1a1a 33%, #000);
+   position: relative;
  }
 
 @media screen and (min-width: 64em) {
@@ -670,4 +671,23 @@ p {
   transform: scale(0.45);
   opacity: 0.1;
   z-index: -4;
+}
+
+/**** overlay ****/
+
+.preview::before {
+  content: "";
+  position: absolute;
+  width: 50%;
+  max-width: 412px;
+  height: 50%;
+  max-height: 412px;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  background: url(../images/halo.png) no-repeat;
+  background-position: center center;
+  background-size: auto 100%;
 }
