@@ -495,6 +495,11 @@ p {
 }
 
 
+.no-events::before {
+  pointer-events: none;
+}
+
+
 /**** portfolio ****/
 
 .portfolio {
@@ -533,6 +538,12 @@ p {
   background-position: center;
   color: darkslategray;
   box-shadow: 0 0 1px lightslategrey;
+}
+
+.page:hover {
+  box-shadow:0 0 5px 2px skyblue,
+    0 0 0 1px skyblue,
+    inset 0 0 3px 2px skyblue;
 }
 
 .animated.scaler {
@@ -612,7 +623,6 @@ p {
     background-size: auto, auto, auto, auto, 20vw;
   }
 }
-
 
 /**** black hole ****/
 
