@@ -675,17 +675,22 @@ p {
 
 /**** halo ****/
 
+.preview::before,
 .preview::after {
   content: "";
   position: absolute;
   transition-property: opacity visibility transform;
   transition-duration: 3.25s;
   transition-timing-function: cubic-bezier(.35,.5,.51,.66);
-  z-index: 2;
-  max-width: 412px;
-  max-height: 412px;
   top: 50%;
   left: 50%;
+}
+
+
+.preview::before {
+  z-index: 1;
+  max-width: 412px;
+  max-height: 412px;
   width: 50%;
   height: 50%;
   background: url(../images/halo.png) no-repeat;
@@ -697,9 +702,29 @@ p {
   transform: translate(-50%, -100%);
 }
 
-.halo::after {
+.halo::before {
   opacity: 1;
   visibility: visible;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
+}
+
+.preview::after {
+  z-index: 2;
+  width: 2px;
+  height: 20vh;
+  border-radius: 50%;
+  box-shadow: 0 3px 2px rgba(255,255,255,0.75);
+  background-image: linear-gradient(rgba(255,255,255,0), #fff);
+  -webkit-transform: scaleY(0) translate(-50%, -100%);
+  transform: scaleY(0) translate(-50%, -100%);
+  -webkit-transform-origin: 50% -100%;
+  transform-origin: 50% -100%;
+}
+
+.halo::after {
+  opacity: 0.1;
+  visibility: hidden;
+  -webkit-transform: scaleY(1) translate(-50%, -100%);
+  transform: scaleY(1) translate(-50%, -100%);
 }
