@@ -542,6 +542,7 @@ p {
   background-position: center;
   color: darkslategray;
   box-shadow: 0 0 1px lightslategrey;
+  cursor: pointer;
 }
 
 .page:hover {
@@ -774,4 +775,5 @@ p {
   border-radius: 0.2rem;
   max-width: 90vw;
   max-height: 90vh;
+  box-shadow: 0 0 1px lightslategrey;
 }
