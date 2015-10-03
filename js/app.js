@@ -86,10 +86,36 @@ require(
 				var descriptions = Array.prototype.slice.call(document.querySelectorAll('.sheet .description'));
 				var framesTimeout = 900;
 				var portfolioScaler = document.querySelector('.portfolio-scaler');
+				var allPages = Array.prototype.slice.call(document.querySelectorAll(".page"));
+				var overlay = document.querySelector(".overlay");
+				var zoom = document.querySelector(".zoom");
 
 				portfolioScaler.classList.remove('hidden');
 				portfolioScaler.classList.remove('shrink');
+
 				Object.create(PhotoLoader).init(pages, descriptions, framesTimeout);
+
+				allPages.forEach(function addClickEventTo(page){
+					page.addEventListener(
+						"click",
+						function zoomPhoto(){
+							var frontPage;
+
+							if(this.classList.contains("front")){
+								frontPage = this;
+							}else{
+								frontPage = this.nextElementSibling;
+							}
+
+							console.debug("frontPage:", frontPage);
+
+							avalona.freeze();
+							zoom.src = frontPage.src;
+							overlay.classList.remove("hidden");
+							overlay.classList.remove("no-opacity");
+						}
+					);
+				});
 			};
 
 			avalona.enable();
