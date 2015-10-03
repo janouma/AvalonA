@@ -760,4 +760,16 @@ p {
     rgba(0,0,0,0.75) 33%,
     #000
   );
+
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  -webkit-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+}
+
+.zoom {
+  margin: auto;
+  border-radius: 0.2rem;
 }
