@@ -60,7 +60,8 @@ define(['photos', 'FrameTimer'], function definePhotoLoader(photos, FrameTimer){
 
 				scaler.addEventListener(
 					this._supportedTransitionEvent,
-					this._expand.bind(this, index)
+					this._expand.bind(this, index),
+					false
 				);
 			}
 
@@ -119,8 +120,8 @@ define(['photos', 'FrameTimer'], function definePhotoLoader(photos, FrameTimer){
 
 			for(var index = pages.length; index--;){
 				loader = new Image();
-				loader.addEventListener('load', this._shrink.bind(this, index));
-				loader.addEventListener('load', this._loadAll.bind(this));
+				loader.addEventListener('load', this._shrink.bind(this, index), false);
+				loader.addEventListener('load', this._loadAll.bind(this), false);
 				loaders.unshift(loader);
 			}
 

@@ -54,6 +54,8 @@ require(
 		imgLoader.mediaQuery = 'screen and (min-width: 42em)';
 		imgLoader.init();
 
+
+
 		/********************
 		* Start Avalon (A)
 		* *******************/
@@ -65,6 +67,8 @@ require(
 		function startAvalonA(speedTestResults) {
 			var avalona;
 			var requiredFps = 40;
+			var zoom;
+			var overlay;
 
 			var options = {
 				tAttr: 'transform',
@@ -87,8 +91,6 @@ require(
 				var framesTimeout = 900;
 				var portfolioScaler = document.querySelector('.portfolio-scaler');
 				var allPages = Array.prototype.slice.call(document.querySelectorAll(".page"));
-				var overlay = document.querySelector(".overlay");
-				var zoom = document.querySelector(".zoom");
 
 				portfolioScaler.classList.remove('hidden');
 				portfolioScaler.classList.remove('shrink');
@@ -113,10 +115,23 @@ require(
 							zoom.src = frontPage.src;
 							overlay.classList.remove("hidden");
 							overlay.classList.remove("no-opacity");
-						}
+						},
+						false
 					);
 				});
 			};
+
+			overlay = document.querySelector(".overlay");
+			zoom = document.querySelector(".zoom");
+			zoom.addEventListener(
+				"click",
+				function closeZoom(){
+					overlay.classList.add("no-opacity");
+					overlay.classList.add("hidden");
+					avalona.release();
+				},
+				false
+			);
 
 			avalona.enable();
 
