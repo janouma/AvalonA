@@ -69,6 +69,7 @@ require(
 			var requiredFps = 40;
 			var zoom;
 			var overlay;
+			var tapEventName = "touchstart" in window ? "tap" : "click" ;
 
 			var options = {
 				tAttr: 'transform',
@@ -99,7 +100,7 @@ require(
 
 				allPages.forEach(function addClickEventTo(page){
 					page.addEventListener(
-						"click",
+						tapEventName,
 						function zoomPhoto(){
 							var frontPage;
 
@@ -108,8 +109,6 @@ require(
 							}else{
 								frontPage = this.nextElementSibling;
 							}
-
-							console.debug("frontPage:", frontPage);
 
 							avalona.freeze();
 							zoom.src = frontPage.src;
@@ -124,10 +123,11 @@ require(
 			overlay = document.querySelector(".overlay");
 			zoom = document.querySelector(".zoom");
 			zoom.addEventListener(
-				"click",
+				tapEventName,
 				function closeZoom(){
 					overlay.classList.add("no-opacity");
 					overlay.classList.add("hidden");
+					this.src = "";
 					avalona.release();
 				},
 				false
