@@ -770,6 +770,8 @@ p {
 }
 
 .zoom {
-  margin: auto;
+  margin: 25vh auto 0 auto;
   border-radius: 0.2rem;
+  max-width: 90vw;
+  max-height: 90vh;
 }
