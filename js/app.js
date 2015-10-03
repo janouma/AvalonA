@@ -113,6 +113,7 @@ require(
 							avalona.freeze();
 							zoom.src = frontPage.src;
 							overlay.classList.remove("hidden");
+							zoom.classList.remove("shrink");
 							overlay.classList.remove("no-opacity");
 						},
 						false
@@ -125,6 +126,7 @@ require(
 			zoom.addEventListener(
 				tapEventName,
 				function closeZoom(){
+					zoom.classList.add("shrink");
 					overlay.classList.add("no-opacity");
 					overlay.classList.add("hidden");
 					this.src = "";
