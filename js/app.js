@@ -1,3 +1,7 @@
+if( ! console.debug ){
+	console.debug = console.log;
+}
+
 window.GreenSockGlobals = {};
 
 require.config({
