@@ -96,7 +96,7 @@ define(['photos', 'FrameTimer'], function definePhotoLoader(photos, FrameTimer){
 		_next: function _next(){
 			this._loaders.forEach(function loadPhoto(loader){
 				var nextPhoto = this._getNextPhoto();
-				loader.src = nextPhoto.file;
+				loader.src = (this._prefix ? this._prefix : "") + nextPhoto.file;
 				loader[this._descriptionAttribute] = nextPhoto.description;
 			}.bind(this));
 		},
@@ -109,7 +109,7 @@ define(['photos', 'FrameTimer'], function definePhotoLoader(photos, FrameTimer){
 		},
 
 
-		init: function init(pages, descriptions, frames){
+		init: function init(pages, descriptions, frames, prefix){
 			var loaders = this._loaders = [];
 			var loader;
 
@@ -117,6 +117,7 @@ define(['photos', 'FrameTimer'], function definePhotoLoader(photos, FrameTimer){
 			this._descriptions = descriptions;
 			this._scalers = [];
 			this._frames = frames || 600;
+			this._prefix = prefix;
 
 			for(var index = pages.length; index--;){
 				loader = new Image();
