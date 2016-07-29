@@ -1,13 +1,12 @@
+dimensionPattern = /^\d+(%|px)?$/gi
+
+validDimension = (dimension)->
+	dimensionPattern.lastIndex = 0
+	result = dimensionPattern.test dimension
+	dimensionPattern.lastIndex = 0
+	result
+
 class ActiveArea
-	dimensionPattern = /^\d+(%|px)?$/gi
-
-	validDimension = (dimension)->
-		dimensionPattern.lastIndex = 0
-		result = dimensionPattern.test dimension
-		dimensionPattern.lastIndex = 0
-		result
-
-
 	assertValid: ->
 		errors = ['The following validation errors occured:']
 
