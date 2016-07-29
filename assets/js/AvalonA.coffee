@@ -10,32 +10,31 @@ console.log '%cAvalonA 1.2.0', 'font-size:80%;padding:0.2em 0.5em;color:#FFFFD5;
 
 _TweenLite = undefined
 
+noeffect = (rotation)-> rotation
+transformStyleIsSupported = undefined
+
+detectTransformStyleSupport = ->
+	if transformStyleIsSupported is undefined
+		element = document.createElement 'b'
+		element.id = 'avalona-detection-element'
+		element.style.position = 'absolute'
+		element.style.top = 0
+		element.style.left = 0
+
+		document.body.appendChild element
+
+		element.style.webkitTransformStyle = 'preserve-3d'
+		element.style.MozTransformStyle = 'preserve-3d'
+		element.style.msTransformStyle = 'preserve-3d'
+		element.style.transformStyle = 'preserve-3d'
+
+		transformStyleIsSupported = DomUtil.getTransformStyle(getComputedStyle(element)) is 'preserve-3d'
+		document.body.removeChild(element)
+
+	transformStyleIsSupported
+
 defineAvalonA = ->
 	class Frame3d
-		noeffect = (rotation)-> rotation
-		transformStyleIsSupported = undefined
-
-		detectTransformStyleSupport = ->
-			if transformStyleIsSupported is undefined
-				element = document.createElement 'b'
-				element.id = 'avalona-detection-element'
-				element.style.position = 'absolute'
-				element.style.top = 0
-				element.style.left = 0
-
-				document.body.appendChild element
-
-				element.style.webkitTransformStyle = 'preserve-3d'
-				element.style.MozTransformStyle = 'preserve-3d'
-				element.style.msTransformStyle = 'preserve-3d'
-				element.style.transformStyle = 'preserve-3d'
-
-				transformStyleIsSupported = DomUtil.getTransformStyle(getComputedStyle(element)) is 'preserve-3d'
-				document.body.removeChild(element)
-
-			transformStyleIsSupported
-
-
 		find3dFrames: ->
 			@frame = document.getElementById @frameId
 			@transformedLayer = @frame.querySelector "##{@layerId}"
@@ -84,13 +83,15 @@ defineAvalonA = ->
 					console.log "rotationX: #{@rotationX}, rotationY: #{@rotationY}"
 
 					bounds = @activeArea.bounds()
-					activeAreaPlaceholder.style.setProperty(rule, value) for rule, value of {
+
+					for rule, value of {
 						visibility: 'visible'
 						left: "#{bounds.xMin}px"
 						top: "#{bounds.yMin}px"
 						width: "#{bounds.xMax - bounds.xMin}px"
 						height: "#{bounds.yMax - bounds.yMin}px"
 					}
+						return activeAreaPlaceholder.style.setProperty(rule, value)
 			else
 				@debugMouseMove = ->
 
@@ -171,13 +172,15 @@ defineAvalonA = ->
 		resetTransform: ->
 			clearTimeout @rotationTimeoutId
 			@rotationX = @rotationY = 0
-			@transformedLayer.style.setProperty(rule, value) for rule, value of {
+
+			for rule, value of {
 				'-webkit-transform': 'none'
 				'-moz-transform': 'none'
 				'-o-transform': 'none'
 				'-ms-transform': 'none'
 				'transform': 'none'
 			}
+				return @transformedLayer.style.setProperty(rule, value)
 
 		untrackMouseMovements: ->
 			@frame?.removeEventListener "mousemove", @mousemove
@@ -281,7 +284,7 @@ defineAvalonA = ->
 			for node in @transformedLayer.querySelectorAll("[#{Transformer.CSS_BACKUP_ATTRIBUTE}]")
 				console.log "flattening layer '#{DomUtil.getDebugName node}'" if @debug is on
 				css = JSON.parse node.getAttribute(Transformer.CSS_BACKUP_ATTRIBUTE)
-				_TweenLite.set node, css: css
+				return _TweenLite.set node, css: css
 
 
 		freeze: ->
