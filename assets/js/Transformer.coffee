@@ -129,8 +129,9 @@ class Transformer
 				css.rotationZ = rz if rz
 
 				transformOrigin = []
-				for o in [oz,oy,ox] when o? or transformOrigin.length > 0
-					transformOrigin.unshift("#{100 * (if o? then o else 0.5)}%")
+				for o in [oz,oy,ox]
+					if o? or transformOrigin.length > 0
+						transformOrigin.unshift("#{100 * (if o? then o else 0.5)}%")
 
 				if transformOrigin.length > 0 then css.transformOrigin = transformOrigin.join(' ')
 
@@ -138,7 +139,7 @@ class Transformer
 					target
 					@_static.TRANSITION_DURATION
 					css: css
-				).eventCallback 'onComplete', @_onTweenComplete
+				).eventCallback 'onComplete', @_onTweenComplete.bind @
 
 
 
@@ -157,6 +158,6 @@ class Transformer
 
 
 
-	_onTweenComplete:=>
+	_onTweenComplete: ->
 		if @_debug is on then console.log "[Transformer] - _onTweenComplete - @_transformsCount: #{@_transformsCount}"
 		if --@_transformsCount is 0 then @on.complete.send @_from, @_isRoot
